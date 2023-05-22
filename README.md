@@ -2,7 +2,12 @@
 
 Technology Used:
 
-HTML5, CSS5, REACT, BOOTSTRAP5, NODE.JS, AND MYSQL
+- HTML5
+- CSS5
+- REACT
+- BOOTSTRAP 5
+- NODE.JS
+- MYSQL
 
 Development Completed:
 
