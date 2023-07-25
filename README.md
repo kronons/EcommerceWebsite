@@ -12,7 +12,8 @@ Technology Used:
 Development Completed:
 
 - Front-end completed.
+- Back-end completed.
 
 Development currently in progress:
-  
-- Back-end in progress.
+
+- Admin Panel
