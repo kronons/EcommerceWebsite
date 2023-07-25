@@ -17,4 +17,4 @@ Development Completed:
 Development currently in progress:
 
 - Admin Panel.
-- Connecting Front end and backend.
+- Connecting front end and backend.
