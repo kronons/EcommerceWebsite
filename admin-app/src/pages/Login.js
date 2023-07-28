@@ -16,13 +16,17 @@ const Login = () => {
         <form action="">
           <CustomInput type="text" label="Email Address" id="email" />
           <CustomInput type="password" label="Password" id="pass" />
-          <Link to="/admin"
-            className="border-0 px-3 py-2 text-white fw-bold w-100 text-center text-decoration-none fs-5" 
+          <div className="mb-3 text-end">
+            <Link to="forgot-password">Forgot Password?</Link>
+          </div>
+          <Link 
+            to="/admin"
+            className="d-block border-0 px-3 py-2 text-white fw-bold w-100 text-center text-decoration-none fs-5" 
             style={{ background: "#ffd333"}}
             type="submit"
           >
-              Login
-          </Link>className
+            Login
+          </Link>
         </form>
       </div>
     </div>
