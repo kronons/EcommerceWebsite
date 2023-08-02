@@ -10,6 +10,7 @@ import { BiCategoryAlt, BiLogoBlogger  } from "react-icons/bi";
 import { FaClipboardList } from "react-icons/fa";
 import { ImBlog } from "react-icons/im";
 import { BsFillMenuAppFill, BsFillMenuButtonWideFill  } from "react-icons/bs";
+import { IoMdNotifications } from "react-icons/io";
 
 import { useNavigate } from "react-router-dom";
 
@@ -161,11 +162,18 @@ const MainLayout = () => {
               height: 64,
             }}
           />
-          <div className="d-flex gap-3 align-items-center">
-            <div></div>
+          <div className="d-flex gap-4 align-items-center">
+            <div className="position-relative">
+                <IoMdNotifications className="fs-4" />
+                <span className="badge bg-warning rounded-circle p-1 position-absolute">
+                  3
+                </span>
+            </div>
               <div className="d-flex gap-3 align-items-center">
                 <div>
                   <img
+                    width={52}
+                    height={32}
                     src="https://image.shutterstock.com/mosaic_250/2780032/1714666150/stock-photo-head-shot-portrait-close-up-smiling-confident-businessman-wearing-glasses-looking-at-camera-1714666150.jpg" 
                     alt="" 
                   />

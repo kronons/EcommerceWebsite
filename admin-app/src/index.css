@@ -57,7 +57,9 @@ body {
 }
 
 main {
+  height: 85vh;
   overflow-y: scroll ;
+  background-color: transparent !important;
 }
 
 .ant-menu-title-content {
@@ -65,9 +67,17 @@ main {
 }
 
 .ant-layout-header h5 {
-  line-height: 30px;
+  line-height: 20px;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .ant-layout-header p {
   line-height: 20px;
+  font-size: 13px;
+}
+
+.ant-layout-header div .badge {
+  top: 16px;
+  right: -6px;
 }
