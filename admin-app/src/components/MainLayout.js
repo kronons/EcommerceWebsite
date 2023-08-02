@@ -168,7 +168,6 @@ const MainLayout = () => {
                   <img
                     src="https://image.shutterstock.com/mosaic_250/2780032/1714666150/stock-photo-head-shot-portrait-close-up-smiling-confident-businessman-wearing-glasses-looking-at-camera-1714666150.jpg" 
                     alt="" 
-                    style={{ maxWidth: '100%', height: '64px' }}
                   />
                 </div>
               <div>
