@@ -1,21 +1,25 @@
 import React from "react"
 import { BsArrowDownRight, BsArrowUpRight } from "react-icons/bs"
 import { Column } from "@ant-design/plots";
-import { Table } from 'antd';
+import { Table } from "antd";
 
 
 const columns = [
   {
-    title: 'Name',
-    dataIndex: 'name',
+    title: "Serical Number",
+    dataIndex: "key",
   },
   {
-    title: 'Age',
-    dataIndex: 'age',
+    title: "Name",
+    dataIndex: "name",
   },
   {
-    title: 'Address',
-    dataIndex: 'address',
+    title: "Product",
+    dataIndex: "product",
+  },
+  {
+    title: "Status",
+    dataIndex: "status",
   },
 ];
 const data1 = [];
@@ -23,8 +27,8 @@ for (let i = 0; i < 46; i++) {
   data1.push({
     key: i,
     name: `Edward King ${i}`,
-    age: 32,
-    address: `London, Park Lane no. ${i}`,
+    product: 32,
+    status: `London, Park Lane no. ${i}`,
   });
 }
 
