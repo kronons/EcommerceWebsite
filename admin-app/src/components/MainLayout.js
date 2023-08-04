@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-
 import { Layout, Menu, Button, theme } from "antd";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
+// Icons
 import { AiOutlineDashboard, AiOutlineShoppingCart, AiOutlineBgColors } from "react-icons/ai";
 import { LiaUserSolid  } from "react-icons/lia";
 import { SiBrandfolder  } from "react-icons/si";
@@ -11,11 +13,6 @@ import { FaClipboardList } from "react-icons/fa";
 import { ImBlog } from "react-icons/im";
 import { BsFillMenuAppFill, BsFillMenuButtonWideFill  } from "react-icons/bs";
 import { IoMdNotifications } from "react-icons/io";
-
-import { useNavigate } from "react-router-dom";
-
-// Default collapse menu icons
-//import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 
 const { Header, Sider, Content } = Layout;
 
@@ -67,7 +64,7 @@ const MainLayout = () => {
               label: "Catalog",
               children: [
                 {
-                  key: "product",
+                  key: "add-product",
                   icon: <AiOutlineShoppingCart className="fs-4" />,
                   label: "Add Product",
                 },
@@ -77,9 +74,9 @@ const MainLayout = () => {
                   label: "Product List",
                 },
                 {
-                  key: "brand",
+                  key: "add-brand",
                   icon: <SiBrandfolder className="fs-4" />,
-                  label: "Brand",
+                  label: "Add Brand",
                 },
                 {
                   key: "list-brand",
@@ -87,9 +84,9 @@ const MainLayout = () => {
                   label: "Brand List",
                 },
                 {
-                  key: "category",
+                  key: "add-category",
                   icon: <BiCategoryAlt  className="fs-4" />,
-                  label: "Category",
+                  label: "Add Category",
                 },
                 {
                   key: "list-category",
@@ -97,9 +94,9 @@ const MainLayout = () => {
                   label: "Category List",
                 },
                 {
-                  key: "color",
+                  key: "add-color",
                   icon: <AiOutlineBgColors  className="fs-4" />,
-                  label: "Color",
+                  label: "Add Color",
                 },
                 {
                   key: "list-color",
@@ -169,7 +166,7 @@ const MainLayout = () => {
                   3
                 </span>
             </div>
-              <div className="d-flex gap-3 align-items-center">
+              <div className="d-flex gap-3 align-items-center dropdown">
                 <div>
                   <img
                     width={52}
@@ -178,9 +175,18 @@ const MainLayout = () => {
                     alt="" 
                   />
                 </div>
-              <div>
+              <div                 
+                role="button" 
+                id="dropdownMenuLink" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false"
+              >
                 <h5 className="mb-0">Kongmeng Xiong</h5>
                 <p className="mb-0">kongmengxiong479@gmail.com</p>
+              </div>
+                <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                  <li><Link className="dropdown-item py-1 mb-1" style={{height: "auto", lineHeight: "20px"}} to="/">View Profile</Link></li>
+                  <li><Link className="dropdown-item py-1 mb-1" style={{height: "auto", lineHeight: "20px"}} to="/">Sign Out</Link></li>
               </div>
             </div>
           </div>

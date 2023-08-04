@@ -32,7 +32,7 @@ for (let i = 0; i < 46; i++) {
 const Enquires = () => {
   return (
     <div>
-        <h3 className="mb-4">Enquires</h3>
+        <h3 className="mb-4 title">Enquires</h3>
         <div>
           <Table 
               columns={columns} 
