@@ -9,7 +9,7 @@ const asyncHandler = require("express-async-handler");
 const validateMongoDbId = require("../utils/validateMongodbId");
 const {generateRefreshToken} = require("../config/refreshtoken");
 const jwt = require("jsonwebtoken");
-const sendEmail = require("./emailCrtl");
+const sendEmail = require("./emailCtrl");
 const crypto = require ("crypto");
 
 // Create a User
