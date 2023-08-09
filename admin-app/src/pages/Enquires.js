@@ -28,6 +28,10 @@ const columns = [
     dataIndex: "comment",
   },
   {
+    title: "Date",
+    dataIndex: "date",
+  },
+  {
     title: "Status",
     dataIndex: "status",
   },
@@ -55,7 +59,17 @@ const Enquires = () => {
       email: enquiryState[i].email,
       mobile: enquiryState[i].mobile,
       comment: enquiryState[i].comment,
-      status: enquiryState[i].status,
+      date: enquiryState[i].createdAt,
+      status: (
+        <>
+          <select name="" className='form-control form-select' value={enquiryState[i].status}>
+            <option value="">{enquiryState[i].status}</option>
+            <option value="pending">Pending</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+          </select>
+        </>
+      ),
       action: 
       <>
         <Link className='fs-3 text-danger' to='/'>

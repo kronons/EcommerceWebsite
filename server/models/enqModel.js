@@ -23,7 +23,11 @@ var enquirySchema = new mongoose.Schema({
         default: "Submitted",
         enum: ['Submitted', 'In Progress', 'Resolved']
     }
-});
+},
+{
+    timestamps : true,
+}
+);
 
 //Export the model
 module.exports = mongoose.model('Enquiry', enquirySchema);

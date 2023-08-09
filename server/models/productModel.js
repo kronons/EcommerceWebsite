@@ -59,7 +59,10 @@ var productSchema = new mongoose.Schema({
         default: 0,
     }
 },
-{timestamps: true});
+{
+    timestamps: true
+}
+);
 
 // Export the model
 module.exports = mongoose.model("Product", productSchema);
