@@ -186,7 +186,7 @@ const MainLayout = () => {
               </div>
                 <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
                   <li><Link className="dropdown-item py-1 mb-1" style={{height: "auto", lineHeight: "20px"}} to="/">View Profile</Link></li>
-                  <li><Link className="dropdown-item py-1 mb-1" style={{height: "auto", lineHeight: "20px"}} to="/">Sign Out</Link></li>
+                  <li><Link className="dropdown-item py-1 mb-1" style={{height: "auto", lineHeight: "20px"}} to="/">Log Out</Link></li>
               </div>
             </div>
           </div>

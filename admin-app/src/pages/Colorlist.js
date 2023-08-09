@@ -3,7 +3,7 @@ import { Table } from "antd";
 
 const columns = [
   {
-    title: "Serical Number",
+    title: "Serial Number",
     dataIndex: "key",
   },
   {
@@ -30,7 +30,8 @@ for (let i = 0; i < 46; i++) {
 }
 
 const Colors= () => {
-  return (
+  
+return (
     <div>
     <h3 className="mb-4 title">Colors</h3>
     <div>

@@ -16,9 +16,11 @@ const enquiryRouter = require("./routes/enqRoute");
 const colorRouter = require("./routes/colorRoute");
 const couponRouter = require("./routes/couponRoute");
 const morgan = require("morgan");
+const cors = require("cors");
 
 dbConnect();
 
+app.use(cors());
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
