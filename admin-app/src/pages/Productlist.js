@@ -8,8 +8,13 @@ import { AiFillDelete } from 'react-icons/ai'
 
 const columns = [
   {
-    title: "Serial Number",
+    title: "ID Number",
     dataIndex: "key",
+    sorter: (a, b) => a.key - b.key,
+  },
+  {
+    title: "Serial Number",
+    dataIndex: "serial",
     sorter: (a, b) => a.key - b.key,
   },
   {
@@ -54,7 +59,8 @@ const Productlist= () => {
   const data1 = [];
   for (let i = 0; i < productState.length; i++) {
     data1.push({
-      key: i + 1,
+      key: productState[i]._id,
+      serial: i + 1,
       title: productState[i].title,
       brand: productState[i].brand,
       category: productState[i].category,

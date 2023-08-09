@@ -8,7 +8,7 @@ import { getColors } from '../features/color/colorSlice';
 
 const columns = [
   {
-    title: "Serial Number",
+    title: "ID Number",
     dataIndex: "key",
   },
   {

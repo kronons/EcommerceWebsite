@@ -8,7 +8,7 @@ import { getBrands } from '../features/brand/brandSlice';
 
 const columns = [
   {
-    title: "Serial Number", 
+    title: "ID Number", 
     dataIndex: "key",
   },
   {
@@ -30,7 +30,7 @@ const Brandlist = () => {
 
   const brandState = useSelector((state) => state.brand.brands);
   const data1 = brandState.map((brand, i) => ({
-    key: i + 1,
+    key: brandState[i]._id,
     name: brandState[i].title, 
     product: 32,
     status: `London, Park Lane no. ${i}`,

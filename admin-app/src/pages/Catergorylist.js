@@ -8,7 +8,7 @@ import { getCategories } from '../features/pcategory/pcategorySlice';
 
 const columns = [
   {
-    title: "Serical Number",
+    title: "ID Number",
     dataIndex: "key",
   },
   {
@@ -34,7 +34,7 @@ const Categorylist = () => {
   const data1 = [];
   for (let i = 0; i < pCatState.length; i++) {
     data1.push({
-      key: i + 1,
+      key: pCatState[i]._id,
       name: pCatState[i].title,
       action: 
       <>
