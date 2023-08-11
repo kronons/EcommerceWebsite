@@ -3,6 +3,8 @@ import { Outlet } from "react-router-dom";
 import { Layout, Menu, Button, theme } from "antd";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Icons
 import { AiOutlineDashboard, AiOutlineShoppingCart, AiOutlineBgColors } from "react-icons/ai";
@@ -199,6 +201,17 @@ const MainLayout = () => {
             background: colorBgContainer,
           }}
         >
+            <ToastContainer
+              position="top-right"
+              autoClose={250}
+              hideProgressBar={false}
+              newestOnTop={true}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              theme="light"
+            />
           <Outlet />
         </Content>
       </Layout>

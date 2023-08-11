@@ -59,7 +59,7 @@ const Enquires = () => {
       email: enquiryState[i].email,
       mobile: enquiryState[i].mobile,
       comment: enquiryState[i].comment,
-      date: enquiryState[i].createdAt,
+      date: new Date(enquiryState[i].createdAt).toLocaleString(),
       status: (
         <>
           <select name="" className='form-control form-select' value={enquiryState[i].status}>

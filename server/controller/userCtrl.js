@@ -504,8 +504,27 @@ const blockUser = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     validateMongoDbId(_id);
     try {
-      const userorders = await Order.findOne({ orderby: _id }).populate("products.product").exec();
-      res.json(userorders);
+      const userOrders = await Order.findOne({ orderby: _id })
+      .populate("products.product")
+      .populate("orderby")
+      .exec();
+      
+      res.json(userOrders);
+    }
+    catch (error) {
+      throw new Error(error);
+    }
+  });
+
+  const getAllOrders = asyncHandler(async ( req, res ) => {
+
+    try {
+      const allUserOrders = await Order.find()
+      .populate("products.product")
+      .populate("orderby")
+      .exec();
+      
+      res.json(allUserOrders);
     }
     catch (error) {
       throw new Error(error);
@@ -561,4 +580,5 @@ module.exports = {
     createOrder,
     getOrders,
     updateOrderStatus,
+    getAllOrders,
 };
