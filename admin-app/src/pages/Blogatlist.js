@@ -15,6 +15,10 @@ const columns = [
     title: "Title",
     dataIndex: "title",
   },
+  {
+    title: "Action",
+    dataIndex: "action",
+  },
 ];
 
 const BlogatList = () => {

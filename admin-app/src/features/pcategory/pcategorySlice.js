@@ -1,8 +1,8 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import pCategoryService from "./pcategoryService";
 
 
-export const getCategories = createAsyncThunk('productCategory/get-categories', async ( thunkAPI ) => {
+export const getProductCategories = createAsyncThunk('productCategory/get-categories', async ( thunkAPI ) => {
     try{
         return await pCategoryService.getProductCategories();
     }
@@ -10,6 +10,17 @@ export const getCategories = createAsyncThunk('productCategory/get-categories', 
         return thunkAPI.rejectWithValue(error);
     }
 });
+
+export const createProductCategories = createAsyncThunk('productCategory/create-product-categories', async ( categoryData, thunkAPI ) => {
+    try{
+        return await pCategoryService.createProductCategories(categoryData);
+    }
+    catch (error) {
+        return thunkAPI.rejectWithValue(error);
+    }
+});
+
+export const resetState = createAction("Reset_All");
 
 const initialState = {
     pCategories: [],
@@ -25,21 +36,37 @@ export const pCategorySlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-        .addCase(getCategories.pending, (state) => {
+        .addCase(getProductCategories.pending, (state) => {
             state.isLoading = true;
         }) 
-        .addCase(getCategories.fulfilled, (state, action) => {
+        .addCase(getProductCategories.fulfilled, (state, action) => {
             state.isLoading = false;
             state.isError = false;
             state.isSuccess = true;
             state.pCategories = action.payload;
         })
-        .addCase(getCategories.rejected, (state, action) => {
+        .addCase(getProductCategories.rejected, (state, action) => {
             state.isLoading = false;
             state.isError = true;
             state.isSuccess = false;
             state.message = action.error;
-        });
+        })
+        .addCase(createProductCategories.pending, (state) => {
+            state.isLoading = true;
+        }) 
+        .addCase(createProductCategories.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.isError = false;
+            state.isSuccess = true;
+            state.createdCategories = action.payload;
+        })
+        .addCase(createProductCategories.rejected, (state, action) => {
+            state.isLoading = false;
+            state.isError = true;
+            state.isSuccess = false;
+            state.message = action.error;
+        })
+        .addCase(resetState, () => initialState);
     },
 });
 

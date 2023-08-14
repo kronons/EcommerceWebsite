@@ -5,13 +5,13 @@ import 'react-quill/dist/quill.snow.css';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import {getBrands} from "../features/brand/brandSlice";
-import {getCategories} from "../features/pcategory/pcategorySlice";
+import { getBrands } from "../features/brand/brandSlice";
+import { getProductCategories } from "../features/pcategory/pcategorySlice";
 import { Select } from "antd";
 import { getColors } from "../features/color/colorSlice";
 import Dropzone from 'react-dropzone'
 import { deleteImg, uploadImg } from '../features/upload/uploadSlice';
-import { createProducts } from '../features/product/productSlice';
+import { createProducts, resetState } from '../features/product/productSlice';
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 
@@ -36,7 +36,7 @@ const Addproduct = () => {
 
   useEffect(() => {
     dispatch(getBrands());
-    dispatch(getCategories());
+    dispatch(getProductCategories());
     dispatch(getColors());
   }, [dispatch])
 
@@ -98,7 +98,7 @@ const Addproduct = () => {
       formik.resetForm();
       setColor(null);
       setTimeout(() => {
-        navigate('/admin/list-product');
+        dispatch(resetState());
       }, 3000);
     },
   });
@@ -163,7 +163,8 @@ const Addproduct = () => {
                       onChange= {formik.handleChange("category")} 
                       onBlur= {formik.handleBlur("category")}
                       value = {formik.values.category}
-                      className='form-control py-3 mb-3' id=''
+                      className='form-control py-3 mb-3' 
+                      id=''
                     >
 
                         <option value=''>Select Category</option>

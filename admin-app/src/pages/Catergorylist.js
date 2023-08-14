@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { BiEdit } from 'react-icons/bi'
 import { AiFillDelete } from 'react-icons/ai'
-import { getCategories } from '../features/pcategory/pcategorySlice';
+import { getProductCategories } from '../features/pcategory/pcategorySlice';
 
 const columns = [
   {
@@ -27,7 +27,7 @@ const Categorylist = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getCategories());
+    dispatch(getProductCategories());
   }, [dispatch]);
 
   const pCatState = useSelector((state) => state.pCategory.pCategories);
