@@ -10,11 +10,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import { AiOutlineDashboard, AiOutlineShoppingCart, AiOutlineBgColors } from "react-icons/ai";
 import { LiaUserSolid  } from "react-icons/lia";
 import { SiBrandfolder  } from "react-icons/si";
-import { BiCategoryAlt, BiLogoBlogger  } from "react-icons/bi";
+import { BiCategoryAlt, BiLogoBlogger, BiSolidCoupon  } from "react-icons/bi";
 import { FaClipboardList } from "react-icons/fa";
 import { ImBlog } from "react-icons/im";
 import { BsFillMenuAppFill, BsFillMenuButtonWideFill  } from "react-icons/bs";
 import { IoMdNotifications } from "react-icons/io";
+
 
 const { Header, Sider, Content } = Layout;
 
@@ -27,7 +28,8 @@ const MainLayout = () => {
   const navigate = useNavigate();
 
   return (
-    <Layout>
+    // Commented out code is to disable right click on website
+    <Layout /* onContextMenu={(e) => e.preventDefault()} */>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo">
           <h2 className="text-white fs-5 text-center py-3 mb-0">
@@ -67,7 +69,7 @@ const MainLayout = () => {
               children: [
                 {
                   key: "add-product",
-                  icon: <AiOutlineShoppingCart className="fs-4" />,
+                  icon: <ImBlog className="fs-4" />,
                   label: "Add Product",
                 },
                 {
@@ -77,7 +79,7 @@ const MainLayout = () => {
                 },
                 {
                   key: "add-brand",
-                  icon: <SiBrandfolder className="fs-4" />,
+                  icon: <ImBlog className="fs-4" />,
                   label: "Add Brand",
                 },
                 {
@@ -87,7 +89,7 @@ const MainLayout = () => {
                 },
                 {
                   key: "add-category",
-                  icon: <BiCategoryAlt  className="fs-4" />,
+                  icon: <ImBlog className="fs-4" />,
                   label: "Add Category",
                 },
                 {
@@ -97,7 +99,7 @@ const MainLayout = () => {
                 },
                 {
                   key: "add-color",
-                  icon: <AiOutlineBgColors  className="fs-4" />,
+                  icon: <ImBlog className="fs-4" />,
                   label: "Add Color",
                 },
                 {
@@ -111,6 +113,23 @@ const MainLayout = () => {
               key: "orders",
               icon: <FaClipboardList className="fs-4" />,
               label: "Orders",
+            },
+            {
+              key: "marketing",
+              icon: <BiSolidCoupon className="fs-4" />,
+              label: "Marketing",
+              children: [
+                {
+                  key: "add-coupon",
+                  icon: <ImBlog className="fs-4" />,
+                  label: "Add Coupon",
+                },
+                {
+                  key: "list-coupon",
+                  icon: <BiSolidCoupon className="fs-4" />,
+                  label: "Coupon List",
+                },
+              ]
             },
             {
               key: "blog",

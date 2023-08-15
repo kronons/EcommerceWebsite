@@ -4,7 +4,7 @@ import { Table } from "antd";
 import { Link } from 'react-router-dom'; 
 import { BiEdit } from 'react-icons/bi'; 
 import { AiFillDelete } from 'react-icons/ai'; 
-import { getBrands } from '../features/brand/brandSlice';
+import { getCoupons } from '../features/coupon/couponSlice';
 
 const columns = [
   {
@@ -12,8 +12,19 @@ const columns = [
     dataIndex: "key",
   },
   {
-    title: "Name",
+    title: "Coupon Code",
     dataIndex: "name",
+    sorter: (a, b) => a.name.length - b.name.length,
+  },
+  {
+    title: "Discount",
+    dataIndex: "discount",
+    sorter: (a, b) => a.discount - b.discount,
+  },
+  {
+    title: "Date of Expiration",
+    dataIndex: "expired",
+    sorter: (a, b) => new Date(a.expired) - new Date(b.expired),
   },
   {
     title: "Action", 
@@ -21,19 +32,20 @@ const columns = [
   },
 ];
 
-const Brandlist = () => {
+const Couponlist = () => {
   const dispatch = useDispatch(); 
 
   useEffect(() => {
-    dispatch(getBrands()); 
+    dispatch(getCoupons()); 
   }, [dispatch]);
 
-  const brandState = useSelector((state) => state.brand.brands);
-  
-  const data1 = brandState.map((brand, i) => ({
-    key: brandState[i]._id,
-    name: brandState[i].title, 
-    status: `London, Park Lane no. ${i}`,
+  const couponState = useSelector((state) => state.coupon.coupons);
+
+  const data1 = couponState.map((coupon, i) => ({
+    key: couponState[i]._id,
+    name: couponState[i].name,
+    discount: couponState[i].discount, 
+    expired: new Date(couponState[i].expired).toLocaleString(),
     action: (
       <>
         <Link className='fs-3 text-danger' to='/'>
@@ -48,7 +60,7 @@ const Brandlist = () => {
 
   return (
     <div>
-      <h3 className="mb-4 title">Brands</h3>
+      <h3 className="mb-4 title">Coupons</h3>
       <div>
         <Table
           columns={columns}
@@ -59,4 +71,4 @@ const Brandlist = () => {
   );
 };
 
-export default Brandlist;
+export default Couponlist;

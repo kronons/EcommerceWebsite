@@ -31,6 +31,7 @@ const Categorylist = () => {
   }, [dispatch]);
 
   const pCatState = useSelector((state) => state.pCategory.pCategories);
+  
   const data1 = [];
   for (let i = 0; i < pCatState.length; i++) {
     data1.push({
