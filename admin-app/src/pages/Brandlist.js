@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { BiEdit } from 'react-icons/bi'; 
 import { AiFillDelete } from 'react-icons/ai'; 
 import { getBrands } from '../features/brand/brandSlice';
+import { resetState } from '../features/blog/blogSlice';
 
 const columns = [
   {
@@ -25,6 +26,7 @@ const Brandlist = () => {
   const dispatch = useDispatch(); 
 
   useEffect(() => {
+    dispatch(resetState());
     dispatch(getBrands()); 
   }, [dispatch]);
 
@@ -33,10 +35,11 @@ const Brandlist = () => {
   const data1 = brandState.map((brand, i) => ({
     key: brandState[i]._id,
     name: brandState[i].title, 
-    status: `London, Park Lane no. ${i}`,
     action: (
       <>
-        <Link className='fs-3 text-danger' to='/'>
+        <Link 
+          to={`/admin/brand/${brandState[i]._id}`} 
+          className='fs-3 text-danger'>
           <BiEdit />
         </Link>
         <Link className='ms-3 fs-3 text-danger' to='/'>

@@ -51,7 +51,7 @@ const Orders = () => {
     data1.push({
       key: orderState[i]._id,
       name: orderState[i].orderby.firstname,
-      product: orderState[i].products.map((i) => {
+      product: orderState[i].products.map((productItem) => {
         return (
           <>
             <ul>
