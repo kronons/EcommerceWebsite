@@ -1,11 +1,11 @@
-import { React, useEffect, useState } from 'react'
+import { React, useEffect } from 'react'
 import CustomInput from "../components/CustomInput";
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { createProductCategories, resetState } from '../features/pcategory/pcategorySlice';
+import { createProductCategories, getProductCategory, resetState, updateProductCategories } from '../features/pcategory/pcategorySlice';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 let schema = Yup.object({
@@ -17,37 +17,62 @@ const Addcat = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
+  const getPcatId = location.pathname.split('/')[3];
   const newCategory = useSelector((state) => state.pCategory);
 
-  const { isSuccess, isError, isLoading, createdCategories } = newCategory;
+  const { isSuccess, isError, isLoading, createdCategory, categoryName, updatedCategory } = newCategory;
+
   useEffect(() => {
-    if( isSuccess && createdCategories) {
-      toast.success('Category Added Successfully!');
+    if(getPcatId !== undefined) {
+      dispatch(getProductCategory(getPcatId));
+    }
+    else {
+      dispatch(resetState());
+    }
+  }, [getPcatId, dispatch]);
+
+  useEffect(() => {
+    if( isSuccess && createdCategory) {
+      toast.success('Product Category Added Successfully!');
+    }
+    if( isSuccess && updatedCategory) {
+      toast.success('Product Category Updated Successfully!');
+      navigate('/admin/list-category');
     }
     if(isError) {
       toast.error('Something went wrong. Category Added Unsuccessfull!');
     }
-  }, [isSuccess, isError, isLoading]);
+  }, [isSuccess, isError, isLoading, createdCategory, updatedCategory, navigate]);
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: "",
+      title: categoryName || "",
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      dispatch(createProductCategories(values));
-      formik.resetForm();
-      setTimeout(() => {
+      if (getPcatId !== undefined ) {
+        const data = {id: getPcatId, categoryData: values };
+        dispatch(updateProductCategories(data));
         dispatch(resetState());
-      }, 3000);
+      }
+      else {
+        dispatch(createProductCategories(values));
+        formik.resetForm();
+        setTimeout(() => {
+          dispatch(resetState());
+        }, 300);
+      }
+
     },
   });
 
 
   return (
     <div>
-        <h3 className='mb-4 title'>Add Product Category</h3>
+        <h3 className='mb-4 title'>{ getPcatId !== undefined ? "Edit" : "Add"} Product Category</h3>
         <div>
             <form action='' onSubmit={formik.handleSubmit}>
                <CustomInput 
@@ -63,7 +88,7 @@ const Addcat = () => {
                 {formik.touched.title && formik.errors.title}
               </div>
 
-               <button className="btn btn-success border-0 rounded-3 my-5" type="submit">Add Category</button>
+               <button className="btn btn-success border-0 rounded-3 my-5" type="submit">{ getPcatId !== undefined ? "Edit" : "Add"} Product Category</button>
             </form>
         </div>
     </div>

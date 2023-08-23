@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react';
 import { Table } from "antd";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { BiEdit } from 'react-icons/bi'
 import { AiFillDelete } from 'react-icons/ai'
-import { getProductCategories } from '../features/pcategory/pcategorySlice';
+import { deleteAProductCategory, getProductCategories, resetState } from '../features/pcategory/pcategorySlice';
+import CustomModal from "../components/CustomModal";
+
 
 const columns = [
   {
@@ -26,7 +28,22 @@ const Categorylist = () => {
 
   const dispatch = useDispatch();
 
+  const [ open, setOpen ] = useState(false);
+  const [ pcatId, setpcatId ] = useState("");
+  const [ pcatTitle, setpcatTitle ] = useState("");
+
+  const showModal = (id, title) => {
+    setOpen(true);
+    setpcatId(id);
+    setpcatTitle(title);
+  };
+
+  const hideModal = () => {
+    setOpen(false);
+  };
+
   useEffect(() => {
+    dispatch(resetState());
     dispatch(getProductCategories());
   }, [dispatch]);
 
@@ -37,17 +54,31 @@ const Categorylist = () => {
     data1.push({
       key: pCatState[i]._id,
       name: pCatState[i].title,
-      action: 
-      <>
-        <Link className='fs-3 text-danger' to='/'>
+      action: (
+        <>
+        <Link className='fs-3 text-danger' to={`/admin/category/${pCatState[i]._id}`}>
           <BiEdit />
         </Link>
-        <Link className='ms-3 fs-3 text-danger' to='/'>
+        <button 
+          className='ms-3 fs-3 text-danger bg-transparent border-0'
+          onClick={() => showModal(pCatState[i]._id, pCatState[i].title)}
+        >
           <AiFillDelete />
-        </Link>
+        </button>
       </>
+    ),
+
     });
   }
+
+  const deleteProductCategory = (e) => {
+    dispatch(deleteAProductCategory(e));
+
+    setOpen(false);
+    setTimeout(() => {
+      dispatch(getProductCategories());
+    }, 100);
+  };
 
   return (
     <div>
@@ -58,6 +89,20 @@ const Categorylist = () => {
           dataSource={data1} 
         />
     </div>
+    <CustomModal
+        hideModal = {hideModal}
+        open = {open}
+        performAction = {() => {
+          deleteProductCategory(pcatId);
+        }}
+        title={
+          <>
+            Are you sure you want to delete this product category?
+            <br />
+            <p className='text-danger'> {pcatTitle} </p>
+          </>
+        }
+      />
 </div>
   )
 }

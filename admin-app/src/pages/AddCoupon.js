@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { createCoupons, resetState } from '../features/coupon/couponSlice';
+import { createCoupons, getACoupon, resetState, updateACoupon } from '../features/coupon/couponSlice';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 let schema = Yup.object({
@@ -16,39 +17,93 @@ let schema = Yup.object({
 
 const AddCoupon = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const newCoupon = useSelector((state) => state.coupon.coupons);
+  const getCouponId = location.pathname.split('/')[3];
+  const newCoupon = useSelector((state) => state.coupon);
+  let couponName = "";
+  let couponExpired = "";
+  let couponDiscount = 0;
 
-  const { isSuccess, isError, isLoading, createdCoupons } = newCoupon;
+  const { isSuccess, isError, isLoading, createdCoupon, updatedCoupon, coupons} = newCoupon;
+
+  for( let i = 0; i < coupons.length; i++) {
+    if(coupons[i]._id === getCouponId) {
+      couponName = coupons[i].name;
+      couponExpired = coupons[i].expired;
+      couponDiscount = coupons[i].discount;
+    }
+  };
+
+  // Format the date to the correct format to be displayed
+  const changeDateFormat = (date) => {
+    if (!date) return ""; // Return an empty string if date is not available
+    const newDate = new Date(date);
+    const year = newDate.getFullYear();
+    const month = String(newDate.getMonth() + 1).padStart(2, "0");
+    const day = String(newDate.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   useEffect(() => {
-    if( isSuccess && createdCoupons ) {
+    if(getCouponId !== undefined) {
+      dispatch(getACoupon(getCouponId));
+    }
+    else {
+      dispatch(resetState());
+    }
+  }, [getCouponId, dispatch]);
+
+  useEffect(() => {
+    if( isSuccess && createdCoupon ) {
       toast.success('Coupon Added Successfully!');
+    }
+    if( isSuccess && updatedCoupon) {
+      toast.success('Coupon Updated Successfully!');
+      navigate('/admin/list-coupon');
     }
     if(isError) {
       toast.error('Something went wrong. Coupon Added Unsuccessfull!');
     }
-  }, [isSuccess, isError, isLoading, createdCoupons]);
+  }, [isSuccess, isError, isLoading, createdCoupon, coupons, navigate]);
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      name: "",
-      expired: "",
-      discount: "",
+      name: couponName || "",
+      expired: changeDateFormat(couponExpired) ||  "",
+      discount: couponDiscount ||  "",
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      dispatch(createCoupons(values));
-      formik.resetForm();
-      setTimeout(() => {
+      if(getCouponId !== undefined) {
+
+        const couponData = {
+          id: getCouponId,
+          name: formik.values.name,
+          expired: formik.values.expired,
+          discount: formik.values.discount,
+        };
+        
+        // Dispatch the update action
+        dispatch(updateACoupon(couponData));
         dispatch(resetState());
-      }, 3000);
+      } 
+      else {
+        dispatch(createCoupons(values));
+        formik.resetForm();
+        setTimeout(() => {
+          dispatch(resetState());
+        }, 300);
+      }
     },
   });
 
 
   return (
     <div>
-        <h3 className='mb-4 title'>Add Coupon Code</h3>
+        <h3 className='mb-4 title'>{ getCouponId !== undefined ? "Edit" : "Add"} Coupon Code</h3>
         <div>
             <form action='' onSubmit={formik.handleSubmit}>
                <CustomInput 
@@ -93,7 +148,7 @@ const AddCoupon = () => {
                 {formik.touched.discount && formik.errors.discount}
               </div>
 
-               <button className="btn btn-success border-0 rounded-3 my-5" type="submit">Add Coupon Code</button>
+               <button className="btn btn-success border-0 rounded-3 my-5" type="submit">{ getCouponId !== undefined ? "Edit" : "Add"} Coupon Code</button>
             </form>
         </div>
     </div>

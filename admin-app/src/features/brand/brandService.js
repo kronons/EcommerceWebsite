@@ -15,7 +15,6 @@ const getBrands = async() => {
     return response.data;
 };
 
-
 const createBrands = async(brand) => {
     const response = await axios.post(`${base_url}brand/`, brand, config);
 
@@ -28,11 +27,18 @@ const updateBrand = async(brand) => {
     return response.data;
 };
 
+const deleteBrand = async (id) => {
+    const response = await axios.delete(`${base_url}brand/${id}`, config);
+
+    return response.data;
+};
+
 const brandService = {
     getBrand,
     getBrands,
     createBrands,
     updateBrand,
+    deleteBrand,
 };
 
 export default brandService;
