@@ -13,8 +13,8 @@ Development Completed:
 
 - Front-end completed.
 - Back-end completed.
+- Admin Panel.
 
 Development currently in progress:
 
-- Admin Panel.
 - Connecting front end and backend.
