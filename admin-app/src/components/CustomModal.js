@@ -12,7 +12,8 @@ const CustomModal = (props) => {
       okText="Ok"
       cancelText="Cancel"
     >
-      <p>{title}</p>
+    
+    <div className="paragraph-style">{title}</div>
     </Modal>
   );
 };

@@ -70,7 +70,7 @@ export const pCategorySlice = createSlice({
             state.isLoading = false;
             state.isError = false;
             state.isSuccess = true;
-            state.categoryName = action.payload.title;
+            state.categoryName = action.payload;
         })
         .addCase(getProductCategory.rejected, (state, action) => {
             state.isLoading = false;

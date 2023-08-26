@@ -7,7 +7,7 @@ import Forgotpassword from './pages/Forgotpassword';
 import MainLayout from './components/MainLayout';
 import Enquires from './pages/Enquires';
 import BlogList from './pages/BlogList';
-import BlogatList from './pages/Blogatlist';
+import BlogcatList from './pages/Blogcatlist';
 import Orders from './pages/Orders';
 import Customers from './pages/Customers';
 import Colors from './pages/Colorlist';
@@ -21,6 +21,7 @@ import Addbrand from './pages/Addbrand';
 import Addproduct from './pages/Addproduct';
 import Couponlist from './pages/Couponlist';
 import AddCoupon from './pages/AddCoupon';
+import Addblogcat from './pages/Addblogcat';
 
 
 function App() {
@@ -34,15 +35,16 @@ function App() {
         <Route path = "/admin" element={<MainLayout />} >
           <Route index element = {<Dashboard />} />
           <Route path="enquires" element = {<Enquires />} />
-          <Route path="add-category" element = {<Addcat />} />
           <Route path="brand/:id" element = {<Addbrand />} />
           <Route path="category/:id" element = {<Addcat />} />
+          <Route path="blog-category/:id" element = {<Addblogcat />} />
           <Route path="color/:id" element = {<Addcolor />} />
           <Route path="coupon/:id" element = {<AddCoupon />} />
           <Route path="orders" element = {<Orders />} />
           <Route path="customers" element = {<Customers />} />
           <Route path="add-blog" element = {<Addblog />} />
           <Route path="add-color" element = {<Addcolor />} />
+          <Route path="add-blog-category" element = {<Addblogcat />} />
           <Route path="add-category" element = {<Addcat />} />
           <Route path="add-brand" element = {<Addbrand />} />
           <Route path="add-product" element = {<Addproduct />} />
@@ -53,7 +55,7 @@ function App() {
           <Route path="list-brand" element = {<Brandlist />} />
           <Route path="list-product" element = {<Productlist />} />
           <Route path="list-blog" element = {<BlogList />} />
-          <Route path="list-blog-category" element = {<BlogatList />} />
+          <Route path="list-blog-category" element = {<BlogcatList />} />
         </Route>
       </Routes>
     </Router>
