@@ -22,6 +22,7 @@ const AddCoupon = () => {
 
   const getCouponId = location.pathname.split('/')[3];
   const newCoupon = useSelector((state) => state.coupon);
+  
   let couponName = "";
   let couponExpired = "";
   let couponDiscount = 0;

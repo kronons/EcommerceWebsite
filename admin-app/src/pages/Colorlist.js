@@ -27,13 +27,13 @@ const Colors= () => {
   const dispatch = useDispatch();
 
   const [ open, setOpen ] = useState(false);
-  const [ colorId, setcolorId ] = useState("");
-  const [ colorTitle, setcolorTitle ] = useState("");
+  const [ colorId, setColorId ] = useState("");
+  const [ colorTitle, setColorTitle ] = useState("");
 
   const showModal = (id, title) => {
     setOpen(true);
-    setcolorId(id);
-    setcolorTitle(title);
+    setColorId(id);
+    setColorTitle(title);
   };
 
   const hideModal = () => {

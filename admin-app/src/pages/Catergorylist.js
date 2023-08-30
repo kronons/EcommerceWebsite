@@ -29,13 +29,13 @@ const Categorylist = () => {
   const dispatch = useDispatch();
 
   const [ open, setOpen ] = useState(false);
-  const [ pcatId, setpcatId ] = useState("");
-  const [ pcatTitle, setpcatTitle ] = useState("");
+  const [ pcatId, setPCatId ] = useState("");
+  const [ pcatTitle, setPCatTitle ] = useState("");
 
   const showModal = (id, title) => {
     setOpen(true);
-    setpcatId(id);
-    setpcatTitle(title);
+    setPCatId(id);
+    setPCatTitle(title);
   };
 
   const hideModal = () => {

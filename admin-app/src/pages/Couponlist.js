@@ -37,13 +37,13 @@ const Couponlist = () => {
   const dispatch = useDispatch(); 
 
   const [ open, setOpen ] = useState(false);
-  const [ couponId, setcouponId ] = useState("");
-  const [ couponTitle, setcouponTitle ] = useState("");
+  const [ couponId, setCouponId ] = useState("");
+  const [ couponTitle, setCouponTitle ] = useState("");
 
   const showModal = (id, title) => {
     setOpen(true);
-    setcouponId(id);
-    setcouponTitle(title);
+    setCouponId(id);
+    setCouponTitle(title);
   };
 
   const hideModal = () => {

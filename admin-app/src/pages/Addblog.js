@@ -1,16 +1,17 @@
-import { React, useEffect, useState } from 'react'
+import { React, useEffect } from 'react'
 import CustomInput from '../components/CustomInput'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Dropzone from 'react-dropzone'
-import { deleteImg, uploadImg } from '../features/upload/uploadSlice';
+import { deleteImg, resetImageState, uploadImg } from '../features/upload/uploadSlice';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { useNavigate } from "react-router-dom";
-import { createBlogs, getBlogs, resetState } from "../features/blog/blogSlice";
-import { getBlogCategories } from '../features/bcategory/bcategorySlice';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { createBlogs, getABlog, resetState, updateABlog } from "../features/blog/blogSlice";
+import { getBlogCategories } from "../features/bcategory/bcategorySlice";
+
 
 let schema = Yup.object({
   title: Yup.string().required("Blog Title is Required"),
@@ -22,71 +23,96 @@ const Addblog = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [ images, setImages ] = useState([]);
+
+  const getBlogId = location.pathname.split('/')[3];
+  const imgState = useSelector((state) => state.upload.images);
+  const bCatState = useSelector((state) => state.bCategory.bCategories);
+  const newBlog = useSelector((state) => state.blog);
+
+  const { 
+        isSuccess, 
+        isError, 
+        isLoading, 
+        createdBlogs, 
+        updatedABlog, 
+        blogName, 
+        blogCategory, 
+        blogDescription, 
+        blogImages 
+      } = newBlog;
 
   useEffect(() => {
-    dispatch(getBlogs());
-    dispatch(getBlogCategories())
-  }, [dispatch])
+    dispatch(resetState());
+    dispatch(getBlogCategories());
+  }, [dispatch]);
+
+  const img = imgState.map((i) => ({
+    public_id: i.public_id,
+    url: i.url,
+  }));
+
+  useEffect(() => {
+    if(getBlogId !== undefined) {
+      dispatch(getABlog(getBlogId));
+    }
+    else {
+      dispatch(resetState());
+    }
+  }, [getBlogId, dispatch]);
 
 
-  const imgState = useSelector((state) => state.upload.images);
-  const newBlog = useSelector((state) => state.blog.blogs);
-  const bCatState = useSelector((state) => state.bCategory.bCategories);
-
-  const img = [];
-  imgState.forEach((i) => {
-    img.push({
-      public_id : i.public_id,
-      url: i.url,
-    })
-  });
-
-  const { isSuccess, isError, isLoading, createdBlogs } = newBlog;
   useEffect(() => {
     if( isSuccess && createdBlogs ) {
       toast.success('Blog Added Successfully!');
     }
-    if(isError) {
-      toast.error('Something went wrong. blog Added Unsuccessfull!');
+    if( isSuccess && updatedABlog) {
+      toast.success('Blog Updated Successfully!');
+      navigate('/admin/list-blog');
     }
-  }, [isSuccess, isError, isLoading]);
+    if(isError) {
+      toast.error('Something went wrong. Blog Added Unsuccessfull!');
+    }
+  }, [isSuccess, isError, isLoading, createdBlogs, navigate, updatedABlog]);
 
-  useEffect(() => {
-    formik.values.images = img;
-  }, [img]);
 
+  
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: "",
-      description: "",
-      category: "",
-      images: "",
+      title: blogName || "",
+      category: blogCategory|| "",
+      description: blogDescription || "",
+      images: blogImages || [],
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      // Used to test values
-      // alert(JSON.stringify(values));
-      dispatch(createBlogs(values));
-      formik.resetForm();
-      setTimeout(() => {
-        dispatch(resetState())
-      }, 3000);
+      if(getBlogId !== undefined) {
+        const data = {id: getBlogId, blogData: values};
+        dispatch(updateABlog(data))
+        dispatch(resetState());
+        dispatch(resetImageState());
+      } 
+      else {
+        dispatch(createBlogs(values));
+        formik.resetForm();
+        setTimeout(() => {
+          dispatch(resetState());
+          dispatch(resetImageState());
+        }, 300);
+      }
     },
   });
 
-  const [desc, setDesc] = useState();
-  const handleDesc = (e) => {
-      setDesc(e);
-  };
+  useEffect(() => {
+    formik.values.images = img;
+  });
 
   return (
 
-    
-
     <div>
-        <h3 className='mb-4 title'>Add Blog</h3>
+        <h3 className='mb-4 title'>{ getBlogId !== undefined ? "Edit" : "Add"} Blog</h3>
         
         <div className=''>
             <form action=''  onSubmit={formik.handleSubmit}>
@@ -140,7 +166,7 @@ const Addblog = () => {
                       {formik.touched.description && formik.errors.description}
                 </div>
 
-                <div className='bg-white border-1 p-5 text-center'>
+                <div className='bg-white border border-1 p-5 text-center'>
                   <Dropzone onDrop={acceptedFiles => dispatch(uploadImg(acceptedFiles))}>
                     {({getRootProps, getInputProps}) => (
                       <section>
@@ -153,26 +179,31 @@ const Addblog = () => {
                   </Dropzone>
                 </div>
 
-                <div className='showimages d-flex flex-wrap gap-3'>
-                      {imgState?.map ((i, j) => {
-                        return(
-                          <div className='position-relative' key={j}>
-                            <button 
-                              type = "button"
-                              onClick={() => dispatch(deleteImg(i.public_id))}
-                              className='btn-close position-absolute' 
-                              style={{ top: "10px", right: "10px"}}
-                            >
-
-                            </button>
-
-                            <img src={i.url} alt='' width={250} height={200}/>
-                          </div>
-                        );
-                      })}
+                <div className='showimages d-flex flex-wrap gap-3 mt-3'>
+                  {getBlogId === undefined ? (
+                    // For creating a new blog
+                    imgState?.map((i, j) => (
+                      <div className='position-relative' key={j}>
+                        <button
+                          type='button'
+                          onClick={() => dispatch(deleteImg(i.public_id))}
+                          className='btn-close position-absolute'
+                          style={{ top: '10px', right: '10px' }}
+                        ></button>
+                        <img src={i.url} alt='No Blog' width={250} height={200} />
+                      </div>
+                    ))
+                  ) : (
+                    // For updating an existing blog
+                    formik.values.images.map((i, j) => (
+                      <div className='position-relative' key={j}>
+                        <img src={i.url} alt='No Blog' width={250} height={200} />
+                      </div>
+                    ))
+                  )}
                 </div>
 
-                <button className="btn btn-success border-0 rounded-3 my-5" type="submit">Add Blog</button>
+                <button className="btn btn-success border-0 rounded-3 my-5" type="submit">{ getBlogId !== undefined ? "Edit" : "Add"} Blog</button>
             
             </form>
         </div>

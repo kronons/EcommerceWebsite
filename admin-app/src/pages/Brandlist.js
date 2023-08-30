@@ -26,13 +26,13 @@ const Brandlist = () => {
   const dispatch = useDispatch(); 
   
   const [ open, setOpen ] = useState(false);
-  const [ brandId, setbrandId ] = useState("");
-  const [ brandTitle, setbrandTitle ] = useState("");
+  const [ brandId, setBrandId ] = useState("");
+  const [ brandTitle, setBrandTitle ] = useState("");
 
   const showModal = (id, title) => {
     setOpen(true);
-    setbrandId(id);
-    setbrandTitle(title);
+    setBrandId(id);
+    setBrandTitle(title);
   };
 
   const hideModal = () => {
