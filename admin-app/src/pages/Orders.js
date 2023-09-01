@@ -27,14 +27,6 @@ const columns = [
     title: "Date",
     dataIndex: "date",
   },
-  {
-    title: "Status",
-    dataIndex: "status",
-  },
-  {
-    title: "Action",
-    dataIndex: "action",
-  },
 ];
 
 const Orders = () => {
@@ -51,27 +43,11 @@ const Orders = () => {
     data1.push({
       key: orderState[i]._id,
       name: orderState[i].orderby.firstname,
-      product: orderState[i].products.map((productItem) => {
-        return (
-          <>
-            <ul>
-              <li>{i.product.title}</li>
-            </ul>
-          </>
-        )
-      }),
+      product: (
+        <Link to={`/admin/order/${orderState[i].orderby._id}`}>View Order</Link>
+      ),
       amount: orderState[i].paymentIntent.amount,
       date: new Date(orderState[i].createdAt).toLocaleString(),
-      status: `London, Park Lane no. ${i}`,
-      action: 
-      <>
-        <Link className='fs-3 text-danger' to='/'>
-          <BiEdit />
-        </Link>
-        <Link className='ms-3 fs-3 text-danger' to='/'>
-          <AiFillDelete />
-        </Link>
-      </>
     });
   }
 

@@ -24,7 +24,7 @@ const updateEnquiry = asyncHandler(async( req, res ) => {
 }
     catch (error) {
         throw new Error(error);
-    }menu
+    }
 });
 
 const deleteEnquiry = asyncHandler(async( req, res ) => {
