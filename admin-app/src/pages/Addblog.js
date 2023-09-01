@@ -77,7 +77,6 @@ const Addblog = () => {
   }, [isSuccess, isError, isLoading, createdBlogs, navigate, updatedABlog]);
 
 
-  
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -105,9 +104,6 @@ const Addblog = () => {
     },
   });
 
-  useEffect(() => {
-    formik.values.images = img;
-  });
 
   return (
 
@@ -197,6 +193,12 @@ const Addblog = () => {
                     // For updating an existing blog
                     formik.values.images.map((i, j) => (
                       <div className='position-relative' key={j}>
+                        <button
+                          type='button'
+                          onClick={() => dispatch(deleteImg(i.public_id), dispatch(resetImageState()))}
+                          className='btn-close position-absolute'
+                          style={{ top: '10px', right: '10px' }}
+                        ></button>
                         <img src={i.url} alt='No Blog' width={250} height={200} />
                       </div>
                     ))

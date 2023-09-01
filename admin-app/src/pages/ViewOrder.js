@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react';
 import { Table } from "antd";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { getOrderByUser, resetState } from '../features/auth/authSlice';
-import { BiEdit } from 'react-icons/bi';
-import { AiFillDelete } from 'react-icons/ai';
 import { BiArrowBack } from 'react-icons/bi';
 
 const columns = [

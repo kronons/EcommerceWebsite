@@ -36,6 +36,7 @@ function App() {
         <Route path = "/forgot-password" element={<Forgotpassword /> } />
         <Route path = "/admin" element={<MainLayout />} >
           <Route index element = {<Dashboard />} />
+          <Route path="product/:id" element = {<Addproduct />} />
           <Route path="enquires" element = {<Enquires />} />
           <Route path="enquires/:id" element = {<ViewEnq />} />
           <Route path="brand/:id" element = {<Addbrand />} />

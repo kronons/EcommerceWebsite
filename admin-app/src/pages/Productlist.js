@@ -1,26 +1,34 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from "react-router-dom";
 import { Table } from "antd";
-import { getProducts } from '../features/product/productSlice';
+import { deleteAProduct, getProducts, resetState } from '../features/product/productSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { BiEdit } from 'react-icons/bi'
 import { AiFillDelete } from 'react-icons/ai'
+import CustomModal from "../components/CustomModal";
+
+
 
 const columns = [
   {
     title: "ID Number",
     dataIndex: "key",
-    sorter: (a, b) => a.key - b.key,
-  },
-  {
-    title: "Serial Number",
-    dataIndex: "serial",
-    sorter: (a, b) => a.key - b.key,
+    sorter: (a, b) => a.key.localeCompare(b.key),
   },
   {
     title: "Title",
     dataIndex: "title",
     sorter: (a, b) => a.title.length - b.title.length,
+  },
+  {
+    title: "Description",
+    dataIndex: "description",
+    sorter: (a, b) => a.description.length - b.description.length,
+  },
+  {
+    title: "Price",
+    dataIndex: "price",
+    sorter: (a, b) => a.price - b.price,
   },
   {
     title: "Brand",
@@ -33,13 +41,23 @@ const columns = [
     sorter: (a, b) => a.category.length - b.category.length,
   },
   {
+    title: "Tags",
+    dataIndex: "tags",
+    sorter: (a, b) => a.tags.length - b.tags.length,
+  },
+  {
     title: "Color",
     dataIndex: "color",
   },
   {
-    title: "Price",
-    dataIndex: "price",
-    sorter: (a, b) => a.price - b.price,
+    title: "Quantity",
+    dataIndex: "quantity",
+    sorter: (a, b) => a.quantity - b.quantity,
+  },
+  {
+    title: "Images",
+    dataIndex: "image",
+    render: (imageURL) => <img src={imageURL} alt="No Product" style={{ maxWidth: '100px' }} />,
   },
   {
     title: "Action",
@@ -50,7 +68,22 @@ const columns = [
 const Productlist= () => {
   const dispatch = useDispatch();
 
+  const [ open, setOpen ] = useState(false);
+  const [ productId, setProductId ] = useState("");
+  const [ productTitle, setProductTitle ] = useState("");
+
+  const showModal = (id, title) => {
+    setOpen(true);
+    setProductId(id);
+    setProductTitle(title);
+  };
+
+  const hideModal = () => {
+    setOpen(false);
+  };
+
   useEffect(() => {
+    dispatch(resetState());
     dispatch(getProducts());
   }, [dispatch]);
 
@@ -60,23 +93,41 @@ const Productlist= () => {
   for (let i = 0; i < productState.length; i++) {
     data1.push({
       key: productState[i]._id,
-      serial: i + 1,
       title: productState[i].title,
+      description: productState[i].description,
+      price: productState[i].price,
       brand: productState[i].brand,
       category: productState[i].category,
+      tags: productState[i].tags,
       color: productState[i].color,
-      price: `${productState[i].price}`,
+      quantity: productState[i].quantity,
+      image: productState[i].images && productState[i].images.length > 0 ? productState[i].images[0].url : null,
       action: 
       <>
-        <Link className='fs-3 text-danger' to='/'>
+        <Link 
+          className='fs-3 text-danger' 
+          to={`/admin/product/${productState[i]._id}`}
+        >
           <BiEdit />
         </Link>
-        <Link className='ms-3 fs-3 text-danger' to='/'>
+        <button 
+          className='ms-3 fs-3 text-danger bg-transparent border-0'
+          onClick={() => showModal(productState[i]._id, productState[i].title)}
+        >
           <AiFillDelete />
-        </Link>
+        </button>
       </>
     });
   }
+
+  const deleteProduct = (e) => {
+    dispatch(deleteAProduct(e));
+
+    setOpen(false);
+    setTimeout(() => {
+      dispatch(getProducts());
+    }, 100);
+  };
 
   return (
     <div>
@@ -87,6 +138,20 @@ const Productlist= () => {
           dataSource={data1} 
         />
     </div>
+    <CustomModal
+        hideModal = {hideModal}
+        open = {open}
+        performAction = {() => {
+          deleteProduct(productId);
+        }}
+        title={
+          <>
+            Are you sure you want to delete this product?
+            <br />
+             <p className='text-danger'>{productTitle} </p>
+          </>
+        }
+      />
 </div>
   )
 }
