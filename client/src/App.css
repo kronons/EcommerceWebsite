@@ -19,6 +19,11 @@
   --color-eaeaea : #eaeaea;
  }
 
+ .error {
+  color: red;
+  margin-left: 10px;
+ }
+
 .section-heading {
   font-size: 26px;
   line-height: 32px;
