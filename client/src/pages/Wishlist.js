@@ -1,73 +1,68 @@
-import React from 'react'
-import Breadcrumb from '../components/Breadcrumb'
-import Meta from '../components/Meta'
-import Container from '../components/Container'
+import React, { useEffect } from 'react';
+import Breadcrumb from '../components/Breadcrumb';
+import Meta from '../components/Meta';
+import Container from '../components/Container';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserWishList } from '../features/user/userSlice';
+import { addToWishList } from '../features/products/productSlice';
 
 const Wishlist = () => {
-  return (
-    <>
-        <Meta title={'Wishlist'}/>
-        <Breadcrumb title='Wishlist' />
-        <Container class1='wishlist-wrapper home-wrapper-2 py-5'>
-                <div className='row'>
-                    <div className='col-3'>
-                        <div className='wishlist-card'>
-                            <div className='wishlist-card-image position-relative'>
-                            <img 
-                                src='images/cross.svg' 
-                                alt='cross' 
-                                className='position-absolute cross img-fluid' 
-                            />
-                            <img src='images/watch.jpg' className='img-fluid w-100' alt='watch' />
-                            </div>
-                            <div className='py-3 px-3'>
-                                <h5 className='title'>
-                                    Honor T1 7.0 1 GB RAM 8 GB ROM 7 Inch With Wi-fi+3g Tablet
-                                </h5>
-                                <h6 className='price'>$100</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div className='col-3'>
-                        <div className='wishlist-card'>
-                            <div className='wishlist-card-image position-relative'>
-                            <img 
-                                src='images/cross.svg' 
-                                alt='cross' 
-                                className='position-absolute cross img-fluid' 
-                            />
-                            <img src='images/watch.jpg' className='img-fluid w-100' alt='watch' />
-                            </div>
-                            <div className='py-3 px-3'>
-                                <h5 className='title'>
-                                    Honor T1 7.0 1 GB RAM 8 GB ROM 7 Inch With Wi-fi+3g Tablet
-                                </h5>
-                                <h6 className='price'>$100</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div className='col-3'>
-                        <div className='wishlist-card'>
-                            <div className='wishlist-card-image position-relative'>
-                            <img 
-                                src='images/cross.svg' 
-                                alt='cross' 
-                                className='position-absolute cross img-fluid' 
-                            />
-                            <img src='images/watch.jpg' className='img-fluid w-100' alt='watch' />
-                            </div>
-                            <div className='py-3 px-3'>
-                                <h5 className='title'>
-                                    Honor T1 7.0 1 GB RAM 8 GB ROM 7 Inch With Wi-fi+3g Tablet
-                                </h5>
-                                <h6 className='price'>$100</h6>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-        </Container>
-    </>
-  )
-}
+    const dispatch = useDispatch();
 
-export default Wishlist
+    useEffect(() => {
+            dispatch(getUserWishList());
+    }, [dispatch]);
+
+    const wishListState = useSelector((state) => state.auth.wishlist.wishlist);
+
+    const removeFromWishList = (id) => {
+        dispatch(addToWishList(id));
+        setTimeout(() => {
+            dispatch(getUserWishList());
+        }, 300)
+    }
+
+    return (
+        <>
+            <Meta title={'Wishlist'} />
+            <Breadcrumb title='Wishlist' />
+            <Container class1='wishlist-wrapper home-wrapper-2 py-5'>
+                <div className='row'>
+                    {wishListState !== null ? ( 
+                        wishListState.map((item, index) => (
+                            <div className='col-3' key={index}>
+                                <div className='wishlist-card'>
+                                    <div className='wishlist-card-image position-relative'>
+                                        <img
+                                            onClick={() => {removeFromWishList(item?._id)}}
+                                            src='images/cross.svg'
+                                            alt='cross'
+                                            className='position-absolute cross img-fluid'
+                                        />
+                                        <img
+                                            src={
+                                                item.images[0].url
+                                                    ? item.images[0].url
+                                                    : 'images/cross.svg'
+                                            }
+                                            className='img-fluid w-100 d-block mx-auto'
+                                            alt='watch'
+                                        />
+                                    </div>
+                                    <div className='py-3 px-3'>
+                                        <h5 className='title'>{item.title}</h5>
+                                        <h6 className='price'>{item.price}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No items in your wishlist.</p>
+                    )}
+                </div>
+            </Container>
+        </>
+    );
+};
+
+export default Wishlist;

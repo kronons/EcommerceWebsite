@@ -25,12 +25,12 @@ function ProductCard(props) {
                     return(
                         <div
                             key={index} 
-                            className={` ${location.pathname == '/product' ? `gr-${grid}` : 'col-3'} `}>
+                            className={` ${location.pathname === '/product' ? `gr-${grid}` : 'col-3'} `}>
                             <Link 
                             to={`${
-                                location.pathname == "/" 
+                                location.pathname === "/" 
                                 ? `/product/${item?._id}` 
-                                : location.pathname ==  `/product/${item?._id}` 
+                                : location.pathname ===  `/product/${item?._id}` 
                                 ?  `/product/${item?._id}` 
                                 : item?._id
                             }`}
@@ -49,13 +49,13 @@ function ProductCard(props) {
                                 <img 
                                     src={item?.images[0].url}
                                     className='img-fluid' 
-                                    alt='product image' 
+                                    alt='product' 
                                 />
 
                                 <img 
                                     src={item?.images[0].url}
                                     className='img-fluid'  
-                                    alt='product image' 
+                                    alt='product' 
                                 />
 
                             </div>
@@ -71,7 +71,7 @@ function ProductCard(props) {
                                     edit={false}
                                     activeColor="#ffd700"
                                 />
-                                <p className={`description ${grid == 12 ? 'd-block' : 'd-none'}`}
+                                <p className={`description ${grid === 12 ? 'd-block' : 'd-none'}`}
                                         dangerouslySetInnerHTML={{__html: item?.description}}
                                 >
                                     

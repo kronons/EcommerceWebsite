@@ -13,15 +13,13 @@ const OurStore = () => {
     const dispatch = useDispatch();
     const [ grid , setGrid ] = useState(4);
     const productState = useSelector((state) => state.product.product);
-
-    const getProducts = () => {
-        dispatch(getAllProducts());
-    };
-
+    
     useEffect(() => {
+        const getProducts = () => {
+            dispatch(getAllProducts());
+        };
         getProducts();
-    }, [getProducts()]);
-
+    }, [dispatch]);
 
   return (
     <>
@@ -246,7 +244,7 @@ const OurStore = () => {
                         <div className='products-list pb-5'>
                             <div className='d-flex gap-10 flex-wrap'>
                                 {productState.length > 0 ? (
-                                <ProductCard data={productState} grid={grid} />
+                                    <ProductCard data={productState} grid={grid} />
                                 ) : (
                                 <p>Loading...</p>
                                 )}
