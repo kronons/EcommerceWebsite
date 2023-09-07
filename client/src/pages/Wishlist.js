@@ -28,7 +28,7 @@ const Wishlist = () => {
             <Breadcrumb title='Wishlist' />
             <Container class1='wishlist-wrapper home-wrapper-2 py-5'>
                 <div className='row'>
-                    {wishListState !== null ? ( 
+                    {wishListState.length > 0 ? ( 
                         wishListState.map((item, index) => (
                             <div className='col-3' key={index}>
                                 <div className='wishlist-card'>
