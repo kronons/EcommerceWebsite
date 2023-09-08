@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom/';
 import Marquee from 'react-fast-marquee';
 import BlogCard from '../components/BlogCard';
@@ -6,8 +6,22 @@ import ProductCard from '../components/ProductCard';
 import SpecialProduct from '../components/SpecialProduct';
 import Container from '../components/Container';
 import { services } from '../utils/Data';
+import { getAllBlogs } from '../features/blogs/blogSlice';
+import { useDispatch, useSelector } from 'react-redux'
+import moment from "moment";
 
-const home = () => {
+
+const Home = () => {
+  const dispatch = useDispatch();
+  const blogState = useSelector((state) => state.blog.blog);
+  
+  useEffect(() => {
+      const getBlogs = () => {
+          dispatch(getAllBlogs());
+      };
+      getBlogs();
+  }, [dispatch]);
+
   return (
     <>
       <Container class1='home-wrapper-1 py-5'>          
@@ -350,22 +364,27 @@ const home = () => {
             </div>
           </div>
           <div className='row'>
-            <div className='col-3'>
-              <BlogCard />
-            </div>
-            <div className='col-3'>
-              <BlogCard />
-            </div>
-            <div className='col-3'>
-              <BlogCard />
-            </div>
-            <div className='col-3'>
-              <BlogCard />
-            </div>
+          {
+            blogState && blogState?.map(( item, index ) => {
+              if( index < 4 ) {
+                return (
+                  <div className = 'col-3 mb-3' key = { index }>
+                      <BlogCard 
+                          id = {item?._id}
+                          title = {item?.title}
+                          description = {item?.description}
+                          date = {moment(item?.createdAt).format("MM-DD-YYYY, h:MM:A")}
+                          image = {item?.images[0].url}
+                      />
+                  </div>
+                )
+              }
+            })
+        }
           </div>
       </Container>
     </>
   )
 }
 
-export default home
+export default Home

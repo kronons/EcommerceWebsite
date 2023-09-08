@@ -57,6 +57,9 @@ const loginUserCtrl = asyncHandler(async ( req, res ) => {
             lastname: findUser?.lastname,
             email: findUser?.email,
             mobile: findUser?.mobile,
+            address: findUser?.address,
+            cart: findUser?.cart,
+            wishlist: findUser?.wishlist,
             token: generateToken(findUser?.id),
         })
     } else {

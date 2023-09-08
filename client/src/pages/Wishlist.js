@@ -3,22 +3,24 @@ import Breadcrumb from '../components/Breadcrumb';
 import Meta from '../components/Meta';
 import Container from '../components/Container';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserWishList } from '../features/user/userSlice';
+import { getWishList } from '../features/user/userSlice';
 import { addToWishList } from '../features/products/productSlice';
 
 const Wishlist = () => {
     const dispatch = useDispatch();
 
-    useEffect(() => {
-            dispatch(getUserWishList());
-    }, [dispatch]);
-
     const wishListState = useSelector((state) => state.auth.wishlist.wishlist);
+
+    useEffect(() => {
+            dispatch(getWishList());
+    }, []);
+
+
 
     const removeFromWishList = (id) => {
         dispatch(addToWishList(id));
         setTimeout(() => {
-            dispatch(getUserWishList());
+            dispatch(getWishList());
         }, 300)
     }
 
