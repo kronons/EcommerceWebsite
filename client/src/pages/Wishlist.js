@@ -6,16 +6,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getWishList } from '../features/user/userSlice';
 import { addToWishList } from '../features/products/productSlice';
 
+
 const Wishlist = () => {
     const dispatch = useDispatch();
-
+    
     const wishListState = useSelector((state) => state.auth.wishlist.wishlist);
 
     useEffect(() => {
-            dispatch(getWishList());
-    }, []);
-
-
+        dispatch(getWishList());
+    }, [dispatch]);
 
     const removeFromWishList = (id) => {
         dispatch(addToWishList(id));
@@ -31,7 +30,7 @@ const Wishlist = () => {
             <Container class1='wishlist-wrapper home-wrapper-2 py-5'>
                 <div className='row'>
                     {wishListState.length > 0 ? ( 
-                        wishListState.map((item, index) => (
+                        wishListState && wishListState.map((item, index) => (
                             <div className='col-3' key={index}>
                                 <div className='wishlist-card'>
                                     <div className='wishlist-card-image position-relative'>

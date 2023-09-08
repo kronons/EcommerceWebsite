@@ -1,8 +1,11 @@
 import React from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import {BsSearch} from 'react-icons/bs'
+import { useSelector } from 'react-redux'
 
 const Header = () => {
+  const userState = useSelector((state) => state.auth.user);
+
   return (
     <>
       <header className='header-top-strip py-3'>
@@ -59,17 +62,16 @@ const Header = () => {
                   </Link>
                 </div>
 
-                <div>
-                  <Link 
-                    to='/wishlist' 
-                    className='d-flex align-items-center gap10 text-white'
-                  >
+                
+                {userState && (
+                    <Link to='/wishlist' className='d-flex align-items-center gap10 text-white'>
                       <img src="/images/wishlist.svg" alt="wishlist" />
                       <p className='mb-0'>
                         Favorite <br /> WishList
                       </p>
                     </Link>
-                </div>
+                  )}
+                
 
                 <div>
                   <Link 
