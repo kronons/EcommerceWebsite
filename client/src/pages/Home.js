@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import Marquee from 'react-fast-marquee';
 import BlogCard from '../components/BlogCard';
-import ProductCard from '../components/ProductCard';
 import SpecialProduct from '../components/SpecialProduct';
 import Container from '../components/Container';
 import { services } from '../utils/Data';
@@ -12,8 +11,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import moment from "moment";
 import ReactStars from 'react-rating-stars-component'
 import { addToWishList } from '../features/products/productSlice';
-import { getWishList } from '../features/user/userSlice';
-
 
 
 const Home = () => {
@@ -22,6 +19,7 @@ const Home = () => {
 
   const blogState = useSelector((state) => state.blog.blog);
   const productState = useSelector((state) => state.product.product);
+  const userState = useSelector((state) => state.auth.user);
   
   useEffect(() => {
       const getBlogs = () => {
@@ -30,12 +28,8 @@ const Home = () => {
       const getProducts = () => {
           dispatch(getAllProducts());
       };
-      const getUserWishList = () => {
-        dispatch(getWishList());
-      }
       getBlogs();
       getProducts();
-      getUserWishList();
   }, [dispatch]);
 
   const addProductsToWishList = (id) => {
@@ -243,25 +237,31 @@ const Home = () => {
                 return (
                   <div
                       key={index} 
-                      className={'col-3'}>
-                      <Link 
-                      to={`${
-                          location.pathname === "/" 
-                          ? `/product/${item?._id}` 
-                          : location.pathname ===  `/product/${item?._id}` 
-                          ?  `/product/${item?._id}` 
-                          : item?._id
-                      }`}
-                      className='product-card position-relative'>
+                      className={'col-3'}
+                  >
 
-                      <div className='wishlist-icon position-absolute'>
-                          <button 
-                              className='border-0 bg-transparent'
-                              onClick={(e) => addProductsToWishList(item?._id)}
-                          >
-                              <img src='/images/wish.svg' alt='' />
-                          </button>
-                      </div>
+                  <Link 
+                  to={`${
+                      location.pathname === "/" 
+                      ? `/product/${item?._id}` 
+                      : location.pathname ===  `/product/${item?._id}` 
+                      ?  `/product/${item?._id}` 
+                      : item?._id
+                  }`}
+                  className='product-card position-relative'>
+
+                  {userState && (
+                  <div className='wishlist-icon position-absolute'>
+                    <button 
+                        className='border-0 bg-transparent'
+                        onClick={(e) => addProductsToWishList(item?._id)}
+                    >
+                        <img src='/images/wish.svg' alt='' />
+                    </button>
+                 </div>
+                  )}
+
+      
                       <div className='product-image'>
 
                           <img 
@@ -393,13 +393,15 @@ const Home = () => {
                     return (
                       <SpecialProduct 
                         key={index} 
+                        id={item?._id}
                         title={item?.title} 
                         brand={item?.brand}
                         rating={item?.ratings}
                         totalrating={item?.totalrating}
                         price={item?.price}
                         sold={item?.sold}
-                        quantity={item?.quantity}  
+                        quantity={item?.quantity}
+                        images={item?.images}
                       /> 
                     )
                   }
@@ -432,15 +434,18 @@ const Home = () => {
                                 : item?._id
                             }`}
                             className='product-card position-relative'>
-
+                            
+                            {userState && (
                             <div className='wishlist-icon position-absolute'>
-                                <button 
-                                    className='border-0 bg-transparent'
-                                    onClick={(e) => addProductsToWishList(item?._id)}
-                                >
-                                    <img src='/images/wish.svg' alt='' />
-                                </button>
-                            </div>
+                              <button 
+                                  className='border-0 bg-transparent'
+                                  onClick={(e) => addProductsToWishList(item?._id)}
+                              >
+                                  <img src='/images/wish.svg' alt='' />
+                              </button>
+                          </div>
+                            )}
+
                             <div className='product-image'>
 
                                 <img 
@@ -478,18 +483,18 @@ const Home = () => {
                                 </p>
                             </div>
                             <div className='action-bar position-absolute'>
-                                <div className='d-flex flex-column gap-15'>
-                                    <button className='border-0 bg-transparent'>
-                                        <img src='/images/prodcompare.svg' alt='compare' />
-                                    </button>
-                                    <button className='border-0 bg-transparent'>
-                                        <img src='/images/view.svg' alt='view' />
-                                    </button>
-                                    <button>
-                                        <img src='/images/add-cart.svg' alt='addcart' />
-                                    </button>
-                                </div>
-                                </div>
+                              <div className='d-flex flex-column gap-15'>
+                                <button className='border-0 bg-transparent'>
+                                    <img src='/images/prodcompare.svg' alt='compare' />
+                                </button>
+                                <button className='border-0 bg-transparent'>
+                                    <img src='/images/view.svg' alt='view' />
+                                </button>
+                                <button>
+                                    <img src='/images/add-cart.svg' alt='addcart' />
+                                </button>
+                              </div>
+                            </div>
                             </Link>
                         </div>
                       )

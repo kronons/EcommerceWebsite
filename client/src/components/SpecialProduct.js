@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactStars from 'react-rating-stars-component';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { addToWishList } from '../features/products/productSlice';
 
 const SpecialProduct = (props) => {
     const { 
+        id,
         title, 
         brand, 
         rating, 
@@ -13,8 +16,29 @@ const SpecialProduct = (props) => {
         quantity 
     } = props;
 
+    const dispatch = useDispatch();
+
+    let location = useLocation();
+    const userState = useSelector((state) => state.auth.user);
+  
+    const addProductsToWishList = (id) => {
+      dispatch(addToWishList(id));
+  };
+
     return (
         <div className='col-3 mb-3'>
+        
+        <Link 
+        to={`${
+            location.pathname === "/" 
+            ? `/product/${id}` 
+            : location.pathname ===  `/product/${id}` 
+            ?  `/product/${id}` 
+            : id
+        }`}
+        className='product-card position-relative'>
+
+            
             <div className='special-product-card'>
                 <div>
                     <img src='images/watch.jpg' className='img-fluid' alt='watch' />
@@ -55,16 +79,39 @@ const SpecialProduct = (props) => {
                                 aria-valuenow={(sold / quantity) * 100} 
                                 aria-valuemin={0}
                                 aria-valuemax={quantity}>
-                            <div className='ms-auto'>
-                                {sold/quantity * 100+ "%"}
+                                <div className='ms-auto'>
+                                    {sold/quantity * 100+ "%"}
+                                </div>
                             </div>
-                            </div>
-
+                        </div>
+                    </div>
+                    {userState && (
+                        <div className='wishlist-icon position-absolute'>
+                            <button 
+                                className='border-0 bg-transparent'
+                                onClick={(e) => addProductsToWishList(id)}
+                            >
+                                <img src='/images/wish.svg' alt='' />
+                            </button>
+                        </div>
+                    )}
+                    <div className='action-bar position-absolute'>
+                        <div className='d-flex flex-column gap-15'>
+                            <button className='border-0 bg-transparent'>
+                                <img src='/images/prodcompare.svg' alt='compare' />
+                            </button>
+                            <button className='border-0 bg-transparent'>
+                                <img src='/images/view.svg' alt='view' />
+                            </button>
+                            <button>
+                                <img src='/images/add-cart.svg' alt='addcart' />
+                            </button>
                         </div>
                     </div>
                     <Link className='button'>Add to cart</Link>
                 </div>
             </div>
+        </Link>
         </div>
     );
 }
