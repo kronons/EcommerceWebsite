@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Marquee from 'react-fast-marquee';
 import BlogCard from '../components/BlogCard';
 import SpecialProduct from '../components/SpecialProduct';
@@ -15,7 +15,7 @@ import { addToWishList } from '../features/products/productSlice';
 
 const Home = () => {
   const dispatch = useDispatch();
-  let location = useLocation();
+  const navigate = useNavigate();
 
   const blogState = useSelector((state) => state.blog.blog);
   const productState = useSelector((state) => state.product.product);
@@ -240,27 +240,9 @@ const Home = () => {
                       className={'col-3'}
                   >
 
-                  <Link 
-                  to={`${
-                      location.pathname === "/" 
-                      ? `/product/${item?._id}` 
-                      : location.pathname ===  `/product/${item?._id}` 
-                      ?  `/product/${item?._id}` 
-                      : item?._id
-                  }`}
-                  className='product-card position-relative'>
-
-                  {userState && (
-                  <div className='wishlist-icon position-absolute'>
-                    <button 
-                        className='border-0 bg-transparent'
-                        onClick={(e) => addProductsToWishList(item?._id)}
-                    >
-                        <img src='/images/wish.svg' alt='' />
-                    </button>
-                 </div>
-                  )}
-
+                  <div
+                    className='product-card position-relative'
+                  >
       
                       <div className='product-image'>
 
@@ -268,18 +250,20 @@ const Home = () => {
                               src={item?.images[0].url}
                               className='img-fluid' 
                               alt='product' 
+                              onClick={() => navigate("/product/" + item?._id)}
                           />
 
                           <img 
                               src={item?.images[0].url}
                               className='img-fluid'  
                               alt='product' 
+                              onClick={() => navigate("/product/" + item?._id)}
                           />
 
                       </div>
                       <div className='product-details'>
                           <h6 className='brand mt-4'>{item.brand}</h6>
-                          <h5 className='product-title'>
+                          <h5 className='product-title' onClick={() => navigate("/product/" + item?._id)}>
                               {item?.title}
                           </h5>
                           <ReactStars
@@ -300,18 +284,25 @@ const Home = () => {
                       </div>
                       <div className='action-bar position-absolute'>
                           <div className='d-flex flex-column gap-15'>
+                              {userState && (
+                                
+                                  <button 
+                                      className='border-0 bg-transparent'
+                                      onClick={(e) => addProductsToWishList(item?._id)}
+                                  >
+                                      <img src='/images/wish.svg' alt='' />
+                                  </button>
+                              
+                              )}
                               <button className='border-0 bg-transparent'>
                                   <img src='/images/prodcompare.svg' alt='compare' />
                               </button>
                               <button className='border-0 bg-transparent'>
-                                  <img src='/images/view.svg' alt='view' />
-                              </button>
-                              <button>
                                   <img src='/images/add-cart.svg' alt='addcart' />
                               </button>
                           </div>
-                          </div>
-                      </Link>
+                        </div>
+                      </div>
                   </div>
                 )
               }
@@ -425,26 +416,9 @@ const Home = () => {
                         <div
                             key={index} 
                             className={'col-3'}>
-                            <Link 
-                            to={`${
-                                location.pathname === "/" 
-                                ? `/product/${item?._id}` 
-                                : location.pathname ===  `/product/${item?._id}` 
-                                ?  `/product/${item?._id}` 
-                                : item?._id
-                            }`}
-                            className='product-card position-relative'>
-                            
-                            {userState && (
-                            <div className='wishlist-icon position-absolute'>
-                              <button 
-                                  className='border-0 bg-transparent'
-                                  onClick={(e) => addProductsToWishList(item?._id)}
-                              >
-                                  <img src='/images/wish.svg' alt='' />
-                              </button>
-                          </div>
-                            )}
+                            <div
+                              className='product-card position-relative'
+                            >
 
                             <div className='product-image'>
 
@@ -452,18 +426,20 @@ const Home = () => {
                                     src={item?.images[0].url}
                                     className='img-fluid' 
                                     alt='product' 
+                                    onClick={() => navigate("/product/" + item?._id)}
                                 />
 
                                 <img 
                                     src={item?.images[0].url}
                                     className='img-fluid'  
                                     alt='product' 
+                                    onClick={() => navigate("/product/" + item?._id)}
                                 />
 
                             </div>
                             <div className='product-details'>
                                 <h6 className='brand mt-4'>{item.brand}</h6>
-                                <h5 className='product-title'>
+                                <h5 className='product-title' onClick={() => navigate("/product/" + item?._id)}>
                                     {item?.title}
                                 </h5>
                                 <ReactStars
@@ -481,21 +457,28 @@ const Home = () => {
                                 <p className='price'>
                                     ${item?.price}
                                 </p>
-                            </div>
-                            <div className='action-bar position-absolute'>
-                              <div className='d-flex flex-column gap-15'>
-                                <button className='border-0 bg-transparent'>
-                                    <img src='/images/prodcompare.svg' alt='compare' />
-                                </button>
-                                <button className='border-0 bg-transparent'>
-                                    <img src='/images/view.svg' alt='view' />
-                                </button>
-                                <button>
-                                    <img src='/images/add-cart.svg' alt='addcart' />
-                                </button>
+                              </div>
+                              <div className='action-bar position-absolute'>
+                                <div className='d-flex flex-column gap-15'>
+                                    {userState && (
+                                      
+                                      <button 
+                                          className='border-0 bg-transparent'
+                                          onClick={(e) => addProductsToWishList(item?._id)}
+                                      >
+                                          <img src='/images/wish.svg' alt='' />
+                                      </button>
+                                  
+                                  )}
+                                  <button className='border-0 bg-transparent'>
+                                      <img src='/images/prodcompare.svg' alt='compare' />
+                                  </button>
+                                  <button className='border-0 bg-transparent'>
+                                      <img src='/images/add-cart.svg' alt='addcart' />
+                                  </button>
+                                </div>
                               </div>
                             </div>
-                            </Link>
                         </div>
                       )
                     }

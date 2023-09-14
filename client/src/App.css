@@ -372,7 +372,8 @@ footer:not(:first-child) {
 }
 
 .product-card:hover .action-bar {
-  right: 15px;
+  right: 0px;
+  top: 10%;
 }
 
 .product-card .product-details h6 {
