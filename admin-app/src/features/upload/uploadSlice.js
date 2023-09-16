@@ -28,7 +28,7 @@ export const deleteImg = createAsyncThunk('delete/images', async (id, thunkAPI) 
     }
 });
 
-export const resetImageState = createAction("Reset_All");
+export const resetImageState = createAction("Reset_Images");
 
 const initialState = {
     images: [],
@@ -74,7 +74,9 @@ export const uploadSlice = createSlice({
             state.isSuccess = false;
             state.message = action.payload;
         })
-        .addCase(resetImageState, () => initialState);
+        .addCase(resetImageState, (state) => {
+            state.images = [];
+        });
     },
 });
 

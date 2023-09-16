@@ -18,7 +18,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   const blogState = useSelector((state) => state.blog.blog);
-  const productState = useSelector((state) => state.product.product);
+  const productState = useSelector((state) => state.product.products);
   const userState = useSelector((state) => state.auth.user);
   
   useEffect(() => {
@@ -35,6 +35,7 @@ const Home = () => {
   const addProductsToWishList = (id) => {
     dispatch(addToWishList(id));
 };
+
 
   return (
     <>
@@ -233,7 +234,7 @@ const Home = () => {
           </div>
           {
             productState && productState?.map(( item, index ) => {
-              if(item.tags === "featured") {
+              if(item.tags === "Featured") {
                 return (
                   <div
                       key={index} 
@@ -380,7 +381,7 @@ const Home = () => {
             <div className='row'>
               {
                 productState && productState?.map(( item, index ) => {
-                  if(item.tags === "special") {
+                  if(item.tags === "Special") {
                     return (
                       <SpecialProduct 
                         key={index} 
@@ -411,7 +412,7 @@ const Home = () => {
             <div className='row'>
             {
                   productState && productState?.map(( item, index ) => {
-                    if(item.tags === "popular") {
+                    if(item.tags === "Popular") {
                       return (
                         <div
                             key={index} 

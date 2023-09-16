@@ -1,6 +1,16 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import { productService } from "./productService";
 
+
+export const getAProduct = createAsyncThunk("product/get-product", async ( id, thunkAPI ) => {
+    try{
+        return await productService.getProduct(id);
+    }
+    catch(error) {
+        return thunkAPI.rejectWithValue(error);
+    }
+    
+});
 
 export const getAllProducts = createAsyncThunk("product/get-products", async ( thunkAPI ) => {
     try{
@@ -22,9 +32,12 @@ export const addToWishList = createAsyncThunk("product/wishlist", async ( prodId
     
 });
 
+export const resetState = createAction("Reset_All");
+
 
 const productState = {
     product: [],
+    products: [],
     wishList: [],
     isError: false,
     isSuccess: false,
@@ -38,6 +51,21 @@ export const productSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+        .addCase(getAProduct.pending, ( state ) => {
+            state.isLoading = true;
+        })
+        .addCase(getAProduct.fulfilled, ( state, action ) => {
+            state.isLoading = false;
+            state.isError = false;
+            state.isSuccess = true;
+            state.product = action.payload;
+        })
+        .addCase(getAProduct.rejected, ( state, action ) => {
+            state.isLoading = false;
+            state.isError = true;
+            state.isSuccess = false;
+            state.message = action.error;
+        })
         .addCase(getAllProducts.pending, ( state ) => {
             state.isLoading = true;
         })
@@ -45,7 +73,7 @@ export const productSlice = createSlice({
             state.isLoading = false;
             state.isError = false;
             state.isSuccess = true;
-            state.product = action.payload;
+            state.products = action.payload;
         })
         .addCase(getAllProducts.rejected, ( state, action ) => {
             state.isLoading = false;
@@ -69,6 +97,7 @@ export const productSlice = createSlice({
             state.isSuccess = false;
             state.message = action.error;
         })
+        .addCase(resetState, () => productState);
     }
 })
 

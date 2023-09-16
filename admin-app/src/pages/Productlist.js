@@ -56,7 +56,7 @@ const columns = [
   },
   {
     title: "Images",
-    dataIndex: "image",
+    dataIndex: "images",
     render: (imageURL) => <img src={imageURL} alt="No Product" style={{ maxWidth: '100px' }} />,
   },
   {
@@ -101,7 +101,7 @@ const Productlist= () => {
       tags: productState[i].tags,
       color: productState[i].color,
       quantity: productState[i].quantity,
-      image: productState[i].images && productState[i].images.length > 0 ? productState[i].images[0].url : null,
+      images: productState[i].images[0].url,
       action: 
       <>
         <Link 

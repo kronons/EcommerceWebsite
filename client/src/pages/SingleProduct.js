@@ -5,16 +5,44 @@ import ProductCard from '../components/ProductCard';
 import ReactStars from 'react-rating-stars-component';
 import ReactImageZoom from 'react-image-zoom';
 import Color from '../components/Color';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { TbGitCompare } from 'react-icons/tb';
 import { AiOutlineHeart } from 'react-icons/ai';
 import Container from '../components/Container';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAProduct, getAllProducts, resetState } from '../features/products/productSlice';
 
 const SingleProduct = () => {
+
+    const dispatch = useDispatch();
+    const location = useLocation();
+
+    const getProductId =location.pathname.split("/")[2];
+
+    const productState = useSelector(state => state.product.product);
+    const allProductState = useSelector(state => state.product.products);
+
+
     const [ orderedProduct , setOrdredProduct ] = useState(true);
     const [ props, setProps ]  = useState({
         img: "https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg"
-    }); 
+    });
+
+    const productImages = productState?.images || []; 
+
+    useEffect(() => {
+    if (productImages.length > 0 && productImages[0].url !== null) {
+        setProps({
+        img: productImages[0].url,
+        });
+    }
+    }, [productImages]);
+
+    useEffect(() => {
+        dispatch(resetState());
+        dispatch(getAProduct(getProductId));
+        dispatch(getAllProducts());
+    }, [dispatch, getProductId])
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text)
@@ -49,6 +77,8 @@ const SingleProduct = () => {
     };
   }, []); // Empty dependency array to run the effect only once on component mount
 
+
+
     return (
     <>
         <Meta title={'Product Name'}/>
@@ -61,18 +91,11 @@ const SingleProduct = () => {
                                 <ReactImageZoom {...props} />
                             </div>
                             <div className='other-product-images d-flex flex-wrap gap-15'>
-                                <div>
-                                    <img src='https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg' alt='' className='img-fluid' />
+                                {productState && productState.images && productState.images.map((item, index) => (
+                                <div key={index}>
+                                    <img src={item.url} alt='' className='img-fluid' />
                                 </div>
-                                <div>
-                                    <img src='https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg' alt='' className='img-fluid' />
-                                </div>
-                                <div>
-                                    <img src='https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg' alt='' className='img-fluid' />
-                                </div>
-                                <div>
-                                    <img src='https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg' alt='' className='img-fluid' />
-                                </div>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -80,20 +103,24 @@ const SingleProduct = () => {
                         <div className='main-product-details'>
                             <div className='border-bottom'>
                                 <h3 className='title'>
-                                    Kids Headphones Bulk 10 Pack Multi Colored For Students
+                                    {productState?.title}
                                 </h3>
                             </div>
                             <div className='border-bottom py-3'>
-                                <p className='price'>$ 100</p>
+                                <p className='price'>$ {productState?.price}</p>
                                 <div className='d-flex align-items-center gap-10'>
-                                    <ReactStars
+                                    {productState?.totalrating && (
+                                        <ReactStars
                                         count={5}
                                         size={24}
-                                        value={4}
-                                        edit={false}
+                                        value={parseInt(productState.totalrating)}
+                                        edit={false} 
                                         activeColor="#ffd700"
-                                    />
-                                    <p className='mb-0 t-review'>( 2 reviews )</p>
+                                        />
+                                    )}
+                                    {productState?.ratings && (
+                                        <p className='mb-0 t-review'>({productState.ratings.length} reviews )</p>
+                                    )}
                                 </div>
                                 <a className='review-btn' href='#review'>Write a Review</a>
                             </div>
@@ -104,15 +131,15 @@ const SingleProduct = () => {
                                 </div>
                                 <div className='d-flex gap-10 align-items-center my-2'>
                                     <h3 className='product-heading'>Brand :</h3> 
-                                    <p className='product-data'>Havels</p>
+                                    <p className='product-data'>{productState.brand}</p>
                                 </div>
                                 <div className='d-flex gap-10 align-items-center my-2'>
                                     <h3 className='product-heading'>Categories :</h3> 
-                                    <p className='product-data'>Watch</p>
+                                    <p className='product-data'>{productState.category}</p>
                                 </div>
                                 <div className='d-flex gap-10 align-items-center my-2'>
                                     <h3 className='product-heading'>Tags :</h3> 
-                                    <p className='product-data'>Watch</p>
+                                    <p className='product-data'>{productState.tags}</p>
                                 </div>
                                 <div className='d-flex gap-10 align-items-center my-2'>
                                     <h3 className='product-heading'>Avialability :</h3> 
@@ -170,14 +197,14 @@ const SingleProduct = () => {
                                 </div>
                                 <div className='d-flex gap-10 align-items-center my-3'>
                                     <h3 className='product-heading'>Product Link :</h3> 
-                                    <a 
-                                        href='javascript:void(0);' 
-                                        onClick={()=>{
-                                            copyToClipboard('https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg')
-                                        }}
+                                    <button
+                                    className='bg-transparent border-0'
+                                    onClick={() => {
+                                        copyToClipboard(window.location.href);
+                                    }}
                                     >
-                                       Click To Copy Product Link
-                                    </a>
+                                    Click To Copy Product Link
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -189,9 +216,7 @@ const SingleProduct = () => {
                     <div className='col-12'>
                     <h4>Description</h4>
                         <div className='bg-white p-3'>
-                            <p className=''>
-                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-                            </p>
+                            <p dangerouslySetInnerHTML={{__html: productState?.description}} />
                         </div>
                     </div>
                 </div>
@@ -205,15 +230,19 @@ const SingleProduct = () => {
                                 <div>
                                     <h4 className='mb-2'>Customer Reviews</h4>
                                     <div className='d-flex align-items-center gap-10'>
+                                    {productState?.totalrating && (
                                         <ReactStars
-                                            count={5}
-                                            size={24}
-                                            value={4}
-                                            edit={false}
-                                            activeColor="#ffd700"
+                                        count={5}
+                                        size={24}
+                                        value={parseInt(productState.totalrating)}
+                                        edit={false} 
+                                        activeColor="#ffd700"
                                         />
-                                        <p className='mb-0'>Based on 2 reviews</p>
-                                    </div>
+                                    )}
+                                    {productState?.ratings && (
+                                        <p className='mb-0 t-review'>({productState.ratings.length} reviews )</p>
+                                    )}
+                                </div>
                                 </div>
                                 {orderedProduct && (
                                 <div>
@@ -228,21 +257,21 @@ const SingleProduct = () => {
                                     <ReactStars
                                         count={5}
                                         size={24}
-                                        value={0}
+                                        value={parseInt(productState.totalrating) || 0}
                                         edit={true}
                                         activeColor="#ffd700"
                                     />
                                 </div> 
-                      <div>
-                        <textarea 
-                          name='' 
-                          id='' 
-                          className='w-100 form-control' 
-                          cols='30' 
-                          rows='4' 
-                          placeholder='Comments'
-                        />
-                      </div>
+                                <div>
+                                    <textarea 
+                                    name='' 
+                                    id='' 
+                                    className='w-100 form-control' 
+                                    cols='30' 
+                                    rows='4' 
+                                    placeholder='Comments'
+                                    />
+                                </div>
                       <div className='d-flex justify-content-end'>
                         <button className='button border-0'>Submit Review</button>
                       </div>
@@ -251,16 +280,20 @@ const SingleProduct = () => {
                             <div className='reviews mt-4'>
                                 <div className='review'>
                                     <div className='d-flex gap-10 align-items-center'>
-                                        <h6 className='mb-0'>John Doe</h6>
-                                        <ReactStars
-                                            count={5}
-                                            size={24}
-                                            value={4}
-                                            edit={false}
-                                            activeColor="#ffd700"
-                                        />
+                                    {productState?.ratings && productState.ratings.map((rating, index) => (
+                                        <div key={index}>
+                                            <h6 className='mb-0'>{rating.postedby}</h6>
+                                            <ReactStars
+                                                count={5}
+                                                size={24}
+                                                value={parseInt(rating.star)}
+                                                edit={false}
+                                                activeColor="#ffd700"
+                                            />
+                                            <p className='mt-3'>{rating.comment}</p>
+                                        </div>
+                                    ))}
                                     </div>
-                                    <p className='mt-3'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
                                 </div>
                             </div>
                         </div>
@@ -274,9 +307,13 @@ const SingleProduct = () => {
                 Our Popular Products
               </h3>
             </div>
-          <div className='row'>
-            <ProductCard />
-          </div>
+            <div className='row'>           
+            {allProductState.length > 0 ? (
+                <ProductCard data={allProductState.filter(product => product.tags.includes('Popular'))} grid={4} />
+                ) : (
+                    <p>Loading...</p>
+                )}
+            </div>
           </div>
       </Container>
     </>

@@ -12,7 +12,7 @@ import { getAllProducts } from '../features/products/productSlice';
 const OurStore = () => {
     const dispatch = useDispatch();
     const [ grid , setGrid ] = useState(4);
-    const productState = useSelector((state) => state.product.product);
+    const productState = useSelector((state) => state.product.products);
     
     useEffect(() => {
         const getProducts = () => {
