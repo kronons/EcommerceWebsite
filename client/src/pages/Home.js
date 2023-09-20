@@ -10,7 +10,7 @@ import { getAllProducts } from '../features/products/productSlice';
 import { useDispatch, useSelector } from 'react-redux'
 import moment from "moment";
 import ReactStars from 'react-rating-stars-component'
-import { addToWishList } from '../features/products/productSlice';
+import { addToWishList, getWishList } from '../features/user/userSlice';
 
 
 const Home = () => {
@@ -19,7 +19,6 @@ const Home = () => {
 
   const blogState = useSelector((state) => state.blog.blog);
   const productState = useSelector((state) => state.product.products);
-  const userState = useSelector((state) => state.auth.user);
   
   useEffect(() => {
       const getBlogs = () => {
@@ -28,8 +27,12 @@ const Home = () => {
       const getProducts = () => {
           dispatch(getAllProducts());
       };
+      const getUserWishList = () => {
+        dispatch(getWishList());
+      }
       getBlogs();
       getProducts();
+      getUserWishList();
   }, [dispatch]);
 
   const addProductsToWishList = (id) => {
@@ -285,16 +288,12 @@ const Home = () => {
                       </div>
                       <div className='action-bar position-absolute'>
                           <div className='d-flex flex-column gap-15'>
-                              {userState && (
-                                
-                                  <button 
-                                      className='border-0 bg-transparent'
-                                      onClick={(e) => addProductsToWishList(item?._id)}
-                                  >
-                                      <img src='/images/wish.svg' alt='' />
-                                  </button>
-                              
-                              )}
+                              <button 
+                                  className='border-0 bg-transparent'
+                                  onClick={(e) => addProductsToWishList(item?._id)}
+                              >
+                                  <img src='/images/wish.svg' alt='' />
+                              </button>
                               <button className='border-0 bg-transparent'>
                                   <img src='/images/prodcompare.svg' alt='compare' />
                               </button>
@@ -460,17 +459,13 @@ const Home = () => {
                                 </p>
                               </div>
                               <div className='action-bar position-absolute'>
-                                <div className='d-flex flex-column gap-15'>
-                                    {userState && (
-                                      
-                                      <button 
-                                          className='border-0 bg-transparent'
-                                          onClick={(e) => addProductsToWishList(item?._id)}
-                                      >
-                                          <img src='/images/wish.svg' alt='' />
-                                      </button>
-                                  
-                                  )}
+                                <div className='d-flex flex-column gap-15'>       
+                                  <button 
+                                      className='border-0 bg-transparent'
+                                      onClick={(e) => addProductsToWishList(item?._id)}
+                                  >
+                                      <img src='/images/wish.svg' alt='' />
+                                  </button>
                                   <button className='border-0 bg-transparent'>
                                       <img src='/images/prodcompare.svg' alt='compare' />
                                   </button>

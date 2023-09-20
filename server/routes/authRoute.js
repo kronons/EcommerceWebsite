@@ -15,6 +15,7 @@ const {
         forgotPasswordToken,
         resetPassword,
         loginAdmin,
+        addToWishList,
         getWishList,
         saveAddress,
         userCart,
@@ -54,6 +55,7 @@ router.get("/get-all-orders", authMiddleware, isAdmin, getAllOrders);
 router.post("/get-order-by-user/:id", authMiddleware, isAdmin, getOrderByUserId);
 router.get("/refresh", handleRefreshToken);
 router.get("/logout", logout);
+router.put("/wishlist", authMiddleware, addToWishList);
 router.get("/wishlist", authMiddleware, getWishList);
 router.get("/cart", authMiddleware, getUserCart);
 router.get("/:id", authMiddleware, isAdmin, getaUser);

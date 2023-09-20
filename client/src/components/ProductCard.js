@@ -1,13 +1,15 @@
 import React from 'react'
 import ReactStars from 'react-rating-stars-component'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector  } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom'
-import { addToWishList } from '../features/products/productSlice';
+import { addToWishList } from '../features/user/userSlice';
 
 
 function ProductCard(props) {
 
     const dispatch = useDispatch();
+
+    const userState = useSelector((state) => state.auth.user);
 
     const { grid, data } = props;
     let location = useLocation();
@@ -35,14 +37,6 @@ function ProductCard(props) {
                             }`}
                             className='product-card position-relative'>
 
-                            <div className='wishlist-icon position-absolute'>
-                                <button 
-                                    className='border-0 bg-transparent'
-                                    onClick={(e) => addProductsToWishList(item?._id)}
-                                >
-                                    <img src='/images/wish.svg' alt='' />
-                                </button>
-                            </div>
                             <div className='product-image'>
 
                                 <img 
@@ -81,15 +75,23 @@ function ProductCard(props) {
                             </div>
                             <div className='action-bar position-absolute'>
                                 <div className='d-flex flex-column gap-15'>
-                                    <button className='border-0 bg-transparent'>
-                                        <img src='/images/prodcompare.svg' alt='compare' />
-                                    </button>
-                                    <button className='border-0 bg-transparent'>
-                                        <img src='/images/view.svg' alt='view' />
-                                    </button>
-                                    <button>
-                                        <img src='/images/add-cart.svg' alt='addcart' />
-                                    </button>
+                                    {userState && (
+                                        <button 
+                                            className='border-0 bg-transparent'
+                                            onClick={(e) => addProductsToWishList(item?._id)}
+                                        >
+                                            <img src='/images/wish.svg' alt='' />
+                                        </button>
+                                    )}
+                                        <button className='border-0 bg-transparent'>
+                                            <img src='/images/prodcompare.svg' alt='compare' />
+                                        </button>
+                                        <button className='border-0 bg-transparent'>
+                                            <img src='/images/view.svg' alt='view' />
+                                        </button>
+                                        <button>
+                                            <img src='/images/add-cart.svg' alt='addcart' />
+                                        </button>
                                 </div>
                                 </div>
                             </Link>

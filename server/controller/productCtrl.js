@@ -47,7 +47,7 @@ const updateProduct = asyncHandler(async ( req, res ) => {
 const getaProduct = asyncHandler(async ( req, res ) => {
     const { id } = req.params;
     try {
-        const findProduct = await Product.findById(id);
+        const findProduct = await Product.findById(id).populate("color");
         res.json( findProduct );
     }
     catch (error) {
@@ -96,48 +96,11 @@ const getAllProduct = asyncHandler(async (req, res) => {
         throw new Error ("This page does not exists.");
       }
     }
-    console.log(page, limit, skip);
 
     const product = await query;
     res.json(product);
   } catch ( error ) {
     throw new Error( error );
-  }
-});
-
-const addToWishList = asyncHandler(async( req, res ) => {
-  const { _id } = req.user;
-  const { prodId } = req.body;
-
-  console.log(prodId);
-  validateMongoDbId(prodId);
-
-  try {
-    const user = await User.findById(_id);
-    const alreadyAdded = user.wishlist.find((id) => id.toString() === prodId);
-    if (alreadyAdded) {
-      let user = await User.findByIdAndUpdate( _id, {
-        $pull : { wishlist: prodId },
-      },
-      {
-        new: true,
-      }
-      );
-      res.json(user);
-    }
-    else {
-      let user = await User.findByIdAndUpdate( _id, {
-        $push : { wishlist: prodId },
-      },
-      {
-        new: true,
-      }
-      );
-      res.json(user);
-    }
-  }
-  catch (error) {
-    throw new Error(error);
   }
 });
 
@@ -199,4 +162,4 @@ const rating = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { createProduct , getaProduct , getAllProduct, updateProduct, deleteProduct, addToWishList, rating };
+module.exports = { createProduct , getaProduct , getAllProduct, updateProduct, deleteProduct, rating };

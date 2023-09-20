@@ -5,29 +5,45 @@ import ProductCard from '../components/ProductCard';
 import ReactStars from 'react-rating-stars-component';
 import ReactImageZoom from 'react-image-zoom';
 import Color from '../components/Color';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useResolvedPath } from 'react-router-dom';
 import { TbGitCompare } from 'react-icons/tb';
 import { AiOutlineHeart } from 'react-icons/ai';
 import Container from '../components/Container';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAProduct, getAllProducts, resetState } from '../features/products/productSlice';
+import { toast } from "react-toastify";
+import { addProductToCart } from '../features/user/userSlice';
+
 
 const SingleProduct = () => {
 
     const dispatch = useDispatch();
     const location = useLocation();
 
+    const [ color, setColor ] = useState(null);
+    const [ quantity, setQuantity ] = useState(1);
+
     const getProductId =location.pathname.split("/")[2];
 
     const productState = useSelector(state => state.product.product);
     const allProductState = useSelector(state => state.product.products);
-
+    const userState = useSelector(state => state.auth)
 
     const [ orderedProduct , setOrdredProduct ] = useState(true);
     const [ props, setProps ]  = useState({
         img: "https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg"
     });
 
+    const uploadCart = () => {
+        if(color === null) {
+            toast.error("Please choose a color.")
+            return false
+        }
+        else {
+            dispatch(addProductToCart({productId:productState?._id,color,quantity,price:productState?.price}))
+        }
+    }
+     
     const productImages = productState?.images || []; 
 
     useEffect(() => {
@@ -156,7 +172,7 @@ const SingleProduct = () => {
                                 </div>
                                 <div className='d-flex gap-10 flex-column mt-2 mb-3'>
                                     <h3 className='product-heading'>Color :</h3> 
-                                    <Color />
+                                    <Color setColor={setColor} colorData = {productState?.color} />
                                 </div>
                                 <div className='d-flex align-items-center gap-15 flex-row mt-2 mb-3'>
                                     <h3 className='product-heading'>Quantity :</h3> 
@@ -168,25 +184,43 @@ const SingleProduct = () => {
                                             max={10}
                                             className='form-contol'
                                             style={{ width : '70px' }} 
-                                            id='' 
+                                            id=''
+                                            onChange = {(e) => setQuantity(e.target.value)}
+                                            value = {quantity} 
                                         />
                                     </div>
-                                <div className='d-flex align-items-center gap-30 ms-4'>
-                                    <button className='button border-0' type='submit'>Add to Cart</button>
-                                    <Link to='/signup' className='button signup'>Buy it Now</Link>
+                                    <div className='d-flex align-items-center gap-30 ms-4'>
+                                        {userState.user !== null ? (
+                                            <div>
+                                            <button
+                                                className='button border-0'
+                                                type='submit'
+                                                onClick={() => uploadCart()}
+                                            >
+                                                Add to Cart
+                                            </button>
+                                            <Link to='/signup' className='button signup'>
+                                                Buy it Now
+                                            </Link>
+                                            </div>
+                                        ) : (
+                                            <span>Login To Add To Cart or Buy Now</span>
+                                        )}
+                                    </div>
                                 </div>
-                                </div>
-                                <div className='d-flex align-items-center gap-15'>
-                                    <div>
-                                        <a href=''>
+                                <div className='d-flex align-items-center gap-30'>
+                                    {userState.user !== null ? (
+                                        <>
+                                        <a href='#' className='text-dark'>
                                             <TbGitCompare className='fs-5 me-2' /> Add to Compare
                                         </a>
-                                    </div>
-                                    <div>
-                                        <a href=''>
+                                        <a href='#' className='text-dark ms-3'>
                                             <AiOutlineHeart className='fs-5 me-2' /> Add to Wishlist
                                         </a>
-                                    </div>
+                                        </>
+                                    ) : (
+                                        <span>Login to Compare or Add to Wishlist</span>
+                                    )}
                                 </div>
                                 <div className='d-flex gap-10 flex-column my-3'>
                                     <h3 className='product-heading'>Shipping & Returns :</h3> 

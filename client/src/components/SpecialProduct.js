@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactStars from 'react-rating-stars-component';
 import { useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { addToWishList } from '../features/products/productSlice';
+import { useDispatch } from 'react-redux'
+import { addToWishList } from '../features/user/userSlice';
 
 const SpecialProduct = (props) => {
     const { 
@@ -19,8 +19,6 @@ const SpecialProduct = (props) => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    const userState = useSelector((state) => state.auth.user);
   
     const addProductsToWishList = (id) => {
       dispatch(addToWishList(id));
@@ -78,14 +76,12 @@ const SpecialProduct = (props) => {
                     </div>
                     <div className='action-bar position-absolute'>
                         <div className='d-flex flex-column gap-15'>
-                            {userState && (
                             <button 
                                 className='border-0 bg-transparent'
                                 onClick={(e) => addProductsToWishList(id)}
                             >
                                 <img src='/images/wish.svg' alt='' />
                             </button>
-                            )}
                             <button className='border-0 bg-transparent'>
                                 <img src='/images/prodcompare.svg' alt='compare' />
                             </button>

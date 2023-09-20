@@ -12,6 +12,7 @@ const jwt = require("jsonwebtoken");
 const sendEmail = require("./emailCtrl");
 const crypto = require ("crypto");
 
+
 // Create a User
 const createUser = asyncHandler(
     async( req, res ) => {
@@ -363,6 +364,36 @@ const blockUser = asyncHandler(async (req, res) => {
     res.json(user);
   });
 
+  const addToWishList = asyncHandler(async (req, res) => {
+    const  _id  = req.user;
+    const { prodId } = req.body;
+
+    try {
+      const user = await User.findById(_id);
+
+      // Check if prodId is already in the wishlist
+      const alreadyAdded = user.wishlist.includes(prodId);
+
+      if (alreadyAdded) {
+        let updatedUser = await User.findByIdAndUpdate(
+          _id,
+          { $pull: { wishlist: prodId } },
+          { new: true }
+        );
+        res.json(updatedUser);
+      } else {
+        let updatedUser = await User.findByIdAndUpdate(
+          _id,
+          { $push: { wishlist: prodId } },
+          { new: true }
+        );
+        res.json(updatedUser);
+      }
+    } catch (error) {
+      throw new Error(error);
+    }
+  });
+
   const getWishList = asyncHandler(async( req, res ) => {
     const { _id } = req.user;
     validateMongoDbId(_id);
@@ -376,40 +407,32 @@ const blockUser = asyncHandler(async (req, res) => {
     }
   });
 
-  const userCart = asyncHandler(async( req, res ) => {
-    const { cart } = req.body;
-    const { _id } =  req.user;
-    validateMongoDbId(_id);
 
+
+  const userCart = asyncHandler(async (req, res) => {
+    const { cart } = req.body;
+    const { _id } = req.user;
+    validateMongoDbId(_id);
+  
     try {
-      let products = [];
-      const user = await User.findById(_id);
-      // Check if user already has products in cart
-      const alreadyExistCart = await Cart.findOne({ orderby: user._id });
-      if ( alreadyExistCart) {
-        alreadyExistCart.remove();
-      }
-      for (let i = 0; i < cart.length; i++) {
-        let object = {};
-        object.product = cart[i]._id;
-        object.count = cart[i].count;
-        object.color = cart[i].color;
-        let getPrice = await Product.findById(cart[i]._id).select("price").exec();
-        object.price = getPrice.price;
-        products.push(object);
-      };
-      let cartTotal = 0;
-      for (let i = 0; i < products.length; i++) {
-        cartTotal = cartTotal + products[i].price * products[i].count;
-      }
-      let newCart = await new Cart({
-        products,
-        cartTotal,
-        orderby: user?._id,
-      }).save();
-      res.json(newCart);
-    }
-    catch (error) {
+      const newCarts = await Promise.all(
+        cart.map(async (item) => {
+          const { productId, color, quantity, price } = item;
+  
+          const newCart = await new Cart({
+            userId: _id,
+            productId,
+            color,
+            quantity,
+            price,
+          }).save();
+  
+          return newCart;
+        })
+      );
+  
+      res.json(newCarts);
+    } catch (error) {
       throw new Error(error);
     }
   });
@@ -418,7 +441,7 @@ const blockUser = asyncHandler(async (req, res) => {
     const { _id} = req.user;
     validateMongoDbId(_id);
     try {
-      const cart = await Cart.findOne({ orderby: _id }).populate("products.product");
+      const cart = await Cart.find({ userId: _id }).populate("productId").populate("color");
       res.json(cart);
     }
     catch (error) {
@@ -591,6 +614,7 @@ module.exports = {
     forgotPasswordToken,
     resetPassword,
     loginAdmin,
+    addToWishList,
     getWishList,
     saveAddress,
     userCart,
