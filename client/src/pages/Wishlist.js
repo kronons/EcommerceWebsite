@@ -11,9 +11,6 @@ const Wishlist = () => {
 
     const user = useSelector((state) => state.auth.user);
     const wishListState = useSelector((state) => state.auth || []);
-    const productState = useSelector((state) => state.product.products);
-
-    console.log(wishListState.wishlist.wishlist);
 
     useEffect(() => {
         // Dispatch actions to get wishlist and products
