@@ -37,7 +37,7 @@ const Cart = () => {
                                         <div className='cart-col-1 gap-15 d-flex align-items-center '>
                                             <div className='w-25'>
                                                 <img 
-                                                    src={'/images/watch.jpg'}
+                                                    src={item?.productId.images[0].url}
                                                     className='img-fluid' 
                                                     alt='product' 
                                                 />
@@ -46,11 +46,11 @@ const Cart = () => {
                                                 {item.productId ? (
                                                     <>
                                                         <p>Product: {item?.productId.title}</p>
-                                                        <p className='d-flex gap-3'>Color: 
+                                                        <div className='d-flex gap-3'>Color:
                                                             <ul className='colors ps-0'>
                                                                 <li style={{backgroundColor:item?.color.title}}></li>
                                                             </ul>
-                                                        </p>
+                                                        </div>
                                                     </>
                                                 ) : (
                                                     <p>Product information not available.</p>
@@ -70,6 +70,7 @@ const Cart = () => {
                                                     max={10} 
                                                     id='' 
                                                     value={item?.quantity}
+                                                    onChange={(e) => ("")}
                                                 />
                                             </div>
                                             <div>

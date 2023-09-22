@@ -12,7 +12,7 @@ import Container from '../components/Container';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAProduct, getAllProducts, resetState } from '../features/products/productSlice';
 import { toast } from "react-toastify";
-import { addProductToCart } from '../features/user/userSlice';
+import { addProductToCart, getUserCart, updateACart } from '../features/user/userSlice';
 
 
 const SingleProduct = () => {
@@ -27,22 +27,48 @@ const SingleProduct = () => {
 
     const productState = useSelector(state => state.product.product);
     const allProductState = useSelector(state => state.product.products);
-    const userState = useSelector(state => state.auth)
+    const userState = useSelector(state => state.auth);
+    const cartState = useSelector(state => state.auth.cart);
 
-    const [ orderedProduct , setOrdredProduct ] = useState(true);
     const [ props, setProps ]  = useState({
         img: "https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg"
     });
 
+    const [newQuantity, setNewQuantity] = useState(1);
+    const [isUpdatingCart, setIsUpdatingCart] = useState(false); // Add a flag
+
     const uploadCart = () => {
-        if(color === null) {
-            toast.error("Please choose a color.")
-            return false
-        }
-        else {
-            dispatch(addProductToCart({productId:productState?._id,color,quantity,price:productState?.price}))
+        if (color === null) {
+            toast.error("Please choose a color.");
+            return false;
+        } else {
+            setIsUpdatingCart(true); // Set the flag before updating the quantity
+            cartState.map((item, index) => {
+                if (item.productId._id === productState?._id) {
+                    if (item.color._id === color) {
+                        console.log("State Q: " + item.quantity);
+                        console.log("Old Q: " + quantity);
+                        let newQuantity = parseInt(item.quantity) + parseInt(quantity);
+                        setNewQuantity(newQuantity); // Set the quantity state
+                    }
+                }
+            });
         }
     }
+
+    // Use useEffect to dispatch after quantity has been updated
+    useEffect(() => {
+    if (isUpdatingCart) {
+        dispatch(updateACart({
+            productId: productState?._id,
+            color,
+            quantity: newQuantity, // Use the updated quantity here
+            price: productState?.price
+         }));
+            setIsUpdatingCart(false); // Reset the flag
+        }
+    }, [isUpdatingCart, dispatch, productState, color, quantity]);
+
      
     const productImages = productState?.images || []; 
 
@@ -58,6 +84,7 @@ const SingleProduct = () => {
         dispatch(resetState());
         dispatch(getAProduct(getProductId));
         dispatch(getAllProducts());
+        dispatch(getUserCart());
     }, [dispatch, getProductId])
 
     const copyToClipboard = (text) => {
@@ -188,20 +215,20 @@ const SingleProduct = () => {
                                             onChange = {(e) => setQuantity(e.target.value)}
                                             value = {quantity} 
                                         />
-                                    </div>
+                                    </div>                                        
                                     <div className='d-flex align-items-center gap-30 ms-4'>
                                         {userState.user !== null ? (
                                             <div>
-                                            <button
-                                                className='button border-0'
-                                                type='submit'
-                                                onClick={() => uploadCart()}
-                                            >
-                                                Add to Cart
-                                            </button>
-                                            <Link to='/signup' className='button signup'>
-                                                Buy it Now
-                                            </Link>
+                                                <button
+                                                    className='button border-0'
+                                                    type='submit'
+                                                    onClick={() => uploadCart()}
+                                                >
+                                                    Add to Cart
+                                                </button>
+                                                <Link to='/signup' className='button signup'>
+                                                    Buy it Now
+                                                </Link>
                                             </div>
                                         ) : (
                                             <span>Login To Add To Cart or Buy Now</span>
@@ -278,11 +305,9 @@ const SingleProduct = () => {
                                     )}
                                 </div>
                                 </div>
-                                {orderedProduct && (
                                 <div>
                                     <a className='text-dark text-decoration-underline' href=''>Write a Review</a>
                                 </div>
-                                )}
                             </div>
                             <div className='review-form py-4'>
                             <h4 className='mb-2'>Write a Review</h4>

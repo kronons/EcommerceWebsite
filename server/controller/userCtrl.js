@@ -407,33 +407,65 @@ const blockUser = asyncHandler(async (req, res) => {
     }
   });
 
-
-
   const userCart = asyncHandler(async (req, res) => {
-    const { cart } = req.body;
+    const cart = req.body;
     const { _id } = req.user;
     validateMongoDbId(_id);
   
     try {
-      const newCarts = await Promise.all(
-        cart.map(async (item) => {
-          const { productId, color, quantity, price } = item;
-  
-          const newCart = await new Cart({
+          const { productId, color, quantity, price } = cart;
+
+          const newCart = await Cart.create({
             userId: _id,
             productId,
             color,
             quantity,
             price,
-          }).save();
+          });
   
-          return newCart;
-        })
-      );
+      res.json(newCart);
+  } 
+  catch (error) {
+      console.error(error); // Log the error for debugging purposes
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+  const updateCart = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    const { productId, color, quantity, price } = req.body;
+    validateMongoDbId(_id);
   
-      res.json(newCarts);
+    try {
+      const user = await User.findById(_id);
+  
+      // Find the cart item to update or create a new one
+      let cartItem = await Cart.findOne({
+        userId: _id,
+        productId,
+        color,
+      });
+  
+      if (!cartItem) {
+        // If the cart item doesn't exist, create a new one
+        cartItem = await Cart.create({
+          userId: _id,
+          productId,
+          color,
+          quantity,
+          price,
+        });
+      } else {
+        // If the cart item exists, update the quantity and price
+        cartItem.quantity = quantity;
+        cartItem.price = price;
+        await cartItem.save();
+      }
+  
+      res.json(cartItem);
     } catch (error) {
-      throw new Error(error);
+      console.error(error); // Log the error for debugging purposes
+      res.status(500).json({ error: 'Internal Server Error' });
     }
   });
 
@@ -452,6 +484,7 @@ const blockUser = asyncHandler(async (req, res) => {
   const emptyCart = asyncHandler(async( req, res ) => {
     const { _id} = req.user;
     validateMongoDbId(_id);
+    
     try {
       const user = await User.findOne({ _id });
       const cart = await Cart.findOneAndRemove({orderby: user._id});
@@ -618,6 +651,7 @@ module.exports = {
     getWishList,
     saveAddress,
     userCart,
+    updateCart,
     getUserCart,
     emptyCart,
     applyCoupon,
