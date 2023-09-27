@@ -218,9 +218,10 @@ const SingleProduct = () => {
                                         {userState.user !== null ? (
                                             <div>
                                                 <button
-                                                    className='button border-0'
+                                                    className='button border-0 login'
                                                     type='submit'
                                                     onClick={() => uploadCart()}
+                                                    style={{ marginRight: '5px' }}
                                                 >
                                                     Add to Cart
                                                 </button>
