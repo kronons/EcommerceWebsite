@@ -1,7 +1,7 @@
 import React from 'react'
 import Breadcrumb from '../components/Breadcrumb'
 import Meta from '../components/Meta'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Container from '../components/Container'
 import { CustomInput } from '../components/CustomInput'
 import { useFormik } from "formik";
@@ -19,17 +19,27 @@ const loginSchema = Yup.object({
 const Login = () => {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const formik = useFormik({
-      initialValues: {
-        email: "",
-        password: "",
-      },
-      validationSchema: loginSchema,
-      onSubmit: ( values ) => {
-        dispatch(loginUser(values));
-      },
-    });
+        initialValues: {
+          email: "",
+          password: "",
+        },
+        validationSchema: loginSchema,
+        onSubmit: async (values) => {
+          try {
+            // Dispatch the loginUser action, which should return a promise
+            await dispatch(loginUser(values));
+    
+            // If login was successful, navigate to the desired page
+            navigate("/");
+          } catch (error) {
+            // Handle login failure, you can show an error message or perform other actions here
+            console.error("Login failed:", error);
+          }
+        },
+      });
 
   return (
     <>

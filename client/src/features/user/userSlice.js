@@ -46,16 +46,6 @@ export const getWishList = createAsyncThunk("user/getWishlist", async ( thunkAPI
     
 });
 
-export const addProductToCart = createAsyncThunk("user/cart/add", async ( cartData, thunkAPI ) => {
-    try{
-        return await authService.addToCart(cartData);
-    }
-    catch(error) {
-        return thunkAPI.rejectWithValue(error);
-    }
-    
-});
-
 export const getUserCart = createAsyncThunk("user/cart/get", async ( thunkAPI ) => {
     try{
         return await authService.getCart();
@@ -66,10 +56,9 @@ export const getUserCart = createAsyncThunk("user/cart/get", async ( thunkAPI ) 
     
 });
 
-export const updateACart = createAsyncThunk("user/cart/update", async ( cartData, thunkAPI ) => {
-    console.log(cartData);
+export const addAndUpdateACart = createAsyncThunk("user/cart/update", async ( cartData, thunkAPI ) => {
     try{
-        return await authService.updateCart(cartData);
+        return await authService.addAndUpdateCart(cartData);
     }
     catch(error) {
         return thunkAPI.rejectWithValue(error);
@@ -170,19 +159,16 @@ export const authslice = createSlice({
                 toast.error(action.error);
             }
         })
-        .addCase(addProductToCart.pending, ( state ) => {
+        .addCase(addAndUpdateACart.pending, ( state ) => {
             state.isLoading = true;
         })
-        .addCase(addProductToCart.fulfilled, ( state, action ) => {
+        .addCase(addAndUpdateACart.fulfilled, ( state, action ) => {
             state.isLoading = false;
             state.isError = false;
             state.isSuccess = true;
             state.cart = action.payload;
-            if(state.isSuccess) {
-                toast.success("Product Added To Cart")
-            }
         })
-        .addCase(addProductToCart.rejected, ( state, action ) => {
+        .addCase(addAndUpdateACart.rejected, ( state, action ) => {
             state.isLoading = false;
             state.isError = true;
             state.isSuccess = false;
@@ -201,24 +187,6 @@ export const authslice = createSlice({
             state.cart = action.payload;
         })
         .addCase(getUserCart.rejected, ( state, action ) => {
-            state.isLoading = false;
-            state.isError = true;
-            state.isSuccess = false;
-            state.message = action.error;
-            if(state.isError === true) {
-                toast.error(action.error);
-            }
-        })
-        .addCase(updateACart.pending, ( state ) => {
-            state.isLoading = true;
-        })
-        .addCase(updateACart.fulfilled, ( state, action ) => {
-            state.isLoading = false;
-            state.isError = false;
-            state.isSuccess = true;
-            state.cart = action.payload;
-        })
-        .addCase(updateACart.rejected, ( state, action ) => {
             state.isLoading = false;
             state.isError = true;
             state.isSuccess = false;

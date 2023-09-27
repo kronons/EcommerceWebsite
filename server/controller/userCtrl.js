@@ -11,6 +11,7 @@ const {generateRefreshToken} = require("../config/refreshtoken");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("./emailCtrl");
 const crypto = require ("crypto");
+const { json } = require("body-parser");
 
 
 // Create a User
@@ -33,73 +34,78 @@ const createUser = asyncHandler(
 });
 
 // Login a User
-const loginUserCtrl = asyncHandler(async ( req, res ) => {
-    const { email, password } = req.body;
-
-    // check if user exists or not
-    const findUser = await User.findOne({ email });
-
-    if (findUser && await findUser.isPasswordMatched(password)) {
-      const refreshToken = await generateRefreshToken(findUser?._id);
-      const updateuser = await User.findByIdAndUpdate(findUser.id, {
-        refreshToken : refreshToken,
-      },
-      { new : true }
-      );
-
-      res.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        maxAge: 72  * 60 * 60 * 1000,
-      })
-
-      res.json({
-            _id: findUser?._id,
-            firstname: findUser?.firstname,
-            lastname: findUser?.lastname,
-            email: findUser?.email,
-            mobile: findUser?.mobile,
-            address: findUser?.address,
-            cart: findUser?.cart,
-            wishlist: findUser?.wishlist,
-            token: generateToken(findUser?.id),
-        })
-    } else {
-        throw new Error("Invalid Creentials");
-    }
-});
-
-// Admin Login
-const loginAdmin = asyncHandler(async ( req, res ) => {
+const loginUserCtrl = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   // check if user exists or not
+  const findUser = await User.findOne({ email });
+
+  if (findUser && await findUser.isPasswordMatched(password)) {
+    // Generate a refresh token
+    const refreshToken = await generateRefreshToken(findUser?._id);
+
+    // Save the refresh token in the user's document
+    findUser.refreshToken = refreshToken;
+    await findUser.save(); // Save the user document with the new refresh token
+
+    // Set the refresh token as an HTTP-only cookie
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      maxAge: 72 * 60 * 60 * 1000,
+    });
+
+    res.json({
+      _id: findUser?._id,
+      firstname: findUser?.firstname,
+      lastname: findUser?.lastname,
+      email: findUser?.email,
+      mobile: findUser?.mobile,
+      address: findUser?.address,
+      cart: findUser?.cart,
+      wishlist: findUser?.wishlist,
+      token: generateToken(findUser?.id),
+    });
+  } else {
+    throw new Error("Invalid Credentials");
+  }
+});
+
+const loginAdmin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  // Check if admin exists
   const findAdmin = await User.findOne({ email });
 
-  if (findAdmin.role !== "admin") throw new Error("Not Authorized");
+  if (!findAdmin) {
+    throw new Error("Admin not found");
+  }
 
-  if (findAdmin && await findAdmin.isPasswordMatched(password)) {
-    const refreshToken = await generateRefreshToken(findAdmin?._id);
-    const updateuser = await User.findByIdAndUpdate(findAdmin.id, {
-      refreshToken : refreshToken,
-    },
-    { new : true }
-    );
+  // Check if the user is an admin
+  if (findAdmin.role !== "admin") {
+    throw new Error("Not Authorized");
+  }
+
+  if (await findAdmin.isPasswordMatched(password)) {
+    const refreshToken = await generateRefreshToken(findAdmin._id);
+    const updatedAdmin = await User.findByIdAndUpdate(findAdmin._id, {
+      refreshToken: refreshToken,
+    }, { new: true });
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      maxAge: 72  * 60 * 60 * 1000,
-    })
+      maxAge: 72 * 60 * 60 * 1000,
+    });
 
     res.json({
-          _id: findAdmin?._id,
-          firstname: findAdmin?.firstname,
-          lastname: findAdmin?.lastname,
-          email: findAdmin?.email,
-          mobile: findAdmin?.mobile,
-          token: generateToken(findAdmin?.id),
-      })
+      _id: updatedAdmin._id,
+      firstname: updatedAdmin.firstname,
+      lastname: updatedAdmin.lastname,
+      email: updatedAdmin.email,
+      mobile: updatedAdmin.mobile,
+      token: generateToken(updatedAdmin._id),
+    });
   } else {
-      throw new Error("Invalid Creentials");
+    throw new Error("Invalid Credentials");
   }
 });
 
@@ -397,6 +403,7 @@ const blockUser = asyncHandler(async (req, res) => {
   const getWishList = asyncHandler(async( req, res ) => {
     const { _id } = req.user;
     validateMongoDbId(_id);
+    console.log("WishList: " + req.user);
 
     try {
       const findUser = await User.findById(_id).populate("wishlist");
@@ -407,31 +414,7 @@ const blockUser = asyncHandler(async (req, res) => {
     }
   });
 
-  const userCart = asyncHandler(async (req, res) => {
-    const cart = req.body;
-    const { _id } = req.user;
-    validateMongoDbId(_id);
-  
-    try {
-          const { productId, color, quantity, price } = cart;
-
-          const newCart = await Cart.create({
-            userId: _id,
-            productId,
-            color,
-            quantity,
-            price,
-          });
-  
-      res.json(newCart);
-  } 
-  catch (error) {
-      console.error(error); // Log the error for debugging purposes
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  });
-
-  const updateCart = asyncHandler(async (req, res) => {
+  const addAndUpdateCart = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     const { productId, color, quantity, price } = req.body;
     validateMongoDbId(_id);
@@ -472,6 +455,9 @@ const blockUser = asyncHandler(async (req, res) => {
   const getUserCart = asyncHandler(async ( req, res ) => {
     const { _id} = req.user;
     validateMongoDbId(_id);
+
+    console.log("User: " + req.user);
+
     try {
       const cart = await Cart.find({ userId: _id }).populate("productId").populate("color");
       res.json(cart);
@@ -480,6 +466,20 @@ const blockUser = asyncHandler(async (req, res) => {
       throw new Error(error);
     }
   });
+
+  const removeProductFromCart = asyncHandler(async(req, res) => {
+    const { _id} = req.user;
+    const { cartItemId } = req.body;
+    validateMongoDbId(_id);
+
+    try{
+      const deleteAProductFromCart = await Cart.deleteOne({userId: _id, _id: cartItemId})
+      json(deleteAProductFromCart);
+    }
+    catch(error) {
+      throw new Error(error);
+    }
+  })
 
   const emptyCart = asyncHandler(async( req, res ) => {
     const { _id} = req.user;
@@ -650,9 +650,9 @@ module.exports = {
     addToWishList,
     getWishList,
     saveAddress,
-    userCart,
-    updateCart,
+    addAndUpdateCart,
     getUserCart,
+    removeProductFromCart,
     emptyCart,
     applyCoupon,
     createOrder,

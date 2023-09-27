@@ -12,7 +12,7 @@ import Container from '../components/Container';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAProduct, getAllProducts, resetState } from '../features/products/productSlice';
 import { toast } from "react-toastify";
-import { addProductToCart, getUserCart, updateACart } from '../features/user/userSlice';
+import { getUserCart, addAndUpdateACart } from '../features/user/userSlice';
 
 
 const SingleProduct = () => {
@@ -46,8 +46,6 @@ const SingleProduct = () => {
             cartState.map((item, index) => {
                 if (item.productId._id === productState?._id) {
                     if (item.color._id === color) {
-                        console.log("State Q: " + item.quantity);
-                        console.log("Old Q: " + quantity);
                         let newQuantity = parseInt(item.quantity) + parseInt(quantity);
                         setNewQuantity(newQuantity); // Set the quantity state
                     }
@@ -59,7 +57,7 @@ const SingleProduct = () => {
     // Use useEffect to dispatch after quantity has been updated
     useEffect(() => {
     if (isUpdatingCart) {
-        dispatch(updateACart({
+        dispatch(addAndUpdateACart({
             productId: productState?._id,
             color,
             quantity: newQuantity, // Use the updated quantity here

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { base_url }  from "../../utils/base_url";
-import { config } from "../../utils/axiosconfig";
+import { config } from "../../utils/axiosConfig";
 
 
 
@@ -15,7 +15,11 @@ const register = async(userData) => {
 const login = async(userData) => {
     const response = await axios.post( `${base_url}user/login`, userData )
     if(response.data) {
-        localStorage.setItem("user", JSON.stringify(response.data));
+        // Comment Out For Now -> Save the user data to local storage
+        //localStorage.setItem("user", JSON.stringify(response.data));
+        config.headers.Authorization = `Bearer ${response.data.token}`;
+        // // Log the config object to the console
+        // console.log("Config headers:", config.headers);
         return response.data;
     } 
 };
@@ -39,13 +43,6 @@ const getUserWishList = async() => {
     }
 };
 
-const addToCart = async(cartData) => {
-    const response = await axios.post( `${base_url}user/cart`, cartData, config ) 
-    if(response.data){
-        return response.data;
-    }
-}
-
 const getCart = async() => {
     const response = await axios.get( `${base_url}user/cart`, config ) 
     if(response.data){
@@ -53,8 +50,8 @@ const getCart = async() => {
     }
 }
 
-const updateCart = async(cartData) => {
-    const response = await axios.put( `${base_url}user/cart-update`, cartData, config ) 
+const addAndUpdateCart = async(cartData) => {
+    const response = await axios.put( `${base_url}user/cart`, cartData, config ) 
     if(response.data){
         return response.data;
     }
@@ -65,7 +62,6 @@ export const authService = {
     login,
     addToWishList,
     getUserWishList,
-    addToCart,
+    addAndUpdateCart,
     getCart,
-    updateCart,
 };
