@@ -18,3 +18,7 @@ Development Completed:
 Development currently in progress:
 
 - Connecting front end and backend.
+
+Future Development Functionality:
+
+- Add Session Cart Functionality
