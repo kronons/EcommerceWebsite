@@ -20,7 +20,7 @@ const Cart = () => {
         dispatch(removeAProductFromCart(id));
         setTimeout(() => {
             dispatch(getUserCart());
-        }, 20000)
+        }, 200)
     }
 
     return (

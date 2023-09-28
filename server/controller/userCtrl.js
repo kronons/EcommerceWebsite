@@ -472,7 +472,7 @@ const blockUser = asyncHandler(async (req, res) => {
 
     try{
       const deleteAProductFromCart = await Cart.deleteOne({userId: _id, _id: cartItemId})
-      json(deleteAProductFromCart);
+      res.json(deleteAProductFromCart);
     }
     catch(error) {
       throw new Error(error);

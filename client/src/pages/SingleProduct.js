@@ -5,7 +5,7 @@ import ProductCard from '../components/ProductCard';
 import ReactStars from 'react-rating-stars-component';
 import ReactImageZoom from 'react-image-zoom';
 import Color from '../components/Color';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { TbGitCompare } from 'react-icons/tb';
 import { AiOutlineHeart } from 'react-icons/ai';
 import Container from '../components/Container';
@@ -19,6 +19,7 @@ const SingleProduct = () => {
 
     const dispatch = useDispatch();
     const location = useLocation();
+    const navigate = useNavigate();
 
     const [ color, setColor ] = useState(null);
     const [ quantity, setQuantity ] = useState(1);
@@ -65,6 +66,9 @@ const SingleProduct = () => {
             price: productState?.price
          }));
             setIsUpdatingCart(false); // Reset the flag
+            setTimeout(() => {
+                navigate("/cart");
+            }, 200)   
         }
     }, [isUpdatingCart, dispatch, productState, color, newQuantity]);
 
