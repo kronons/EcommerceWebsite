@@ -74,15 +74,7 @@ const SingleProduct = () => {
         dispatch(getAllProducts());
         dispatch(getUserCart());
 
-        const productImages = productState?.images || []; 
-
-        if (productImages.length > 0 && productImages[0].url !== null) {
-            setProps({
-                img: productImages[0].url,
-            });
-        }
-
-    }, [dispatch, getProductId, productState?.images])
+    }, [dispatch, getProductId])
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text)
@@ -224,7 +216,7 @@ const SingleProduct = () => {
                                                 >
                                                     Add to Cart
                                                 </button>
-                                                <Link to='/signup' className='button signup'>
+                                                <Link to='/login' className='button buynow'>
                                                     Buy it Now
                                                 </Link>
                                             </div>
@@ -236,10 +228,10 @@ const SingleProduct = () => {
                                 <div className='d-flex align-items-center gap-30'>
                                     {userState.user !== null ? (
                                         <>
-                                        <button className='btn btn-dark'>
+                                        <button className='p0 bg-transparent border-0'>
                                             <TbGitCompare className='fs-5 me-2' /> Add to Compare
                                         </button>
-                                        <button className='btn btn-dark ms-3'>
+                                        <button className='p0 bg-transparent border-0'>
                                             <AiOutlineHeart className='fs-5 me-2' /> Add to Wishlist
                                         </button>
                                         </>

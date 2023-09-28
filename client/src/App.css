@@ -706,6 +706,17 @@ footer:not(:first-child) {
     color: white;
   }
 
+  .buynow {
+    background-color: var(--color-febd69);
+    color: var(--color-131921);
+    border: none;
+  }
+
+  .buynow:hover {
+    background-color: var(--color-131921);
+    color: white;
+  }
+
   .login {
     background-color: var(--color-d5d52e );
     color: var(--color-131921);
