@@ -5,7 +5,7 @@ import ProductCard from '../components/ProductCard';
 import ReactStars from 'react-rating-stars-component';
 import ReactImageZoom from 'react-image-zoom';
 import Color from '../components/Color';
-import { Link, useLocation, useResolvedPath } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { TbGitCompare } from 'react-icons/tb';
 import { AiOutlineHeart } from 'react-icons/ai';
 import Container from '../components/Container';
@@ -50,6 +50,7 @@ const SingleProduct = () => {
                         setNewQuantity(newQuantity); // Set the quantity state
                     }
                 }
+                return null;
             });
         }
     }
@@ -65,25 +66,23 @@ const SingleProduct = () => {
          }));
             setIsUpdatingCart(false); // Reset the flag
         }
-    }, [isUpdatingCart, dispatch, productState, color, quantity]);
-
-     
-    const productImages = productState?.images || []; 
-
-    useEffect(() => {
-    if (productImages.length > 0 && productImages[0].url !== null) {
-        setProps({
-        img: productImages[0].url,
-        });
-    }
-    }, [productImages]);
+    }, [isUpdatingCart, dispatch, productState, color, newQuantity]);
 
     useEffect(() => {
         dispatch(resetState());
         dispatch(getAProduct(getProductId));
         dispatch(getAllProducts());
         dispatch(getUserCart());
-    }, [dispatch, getProductId])
+
+        const productImages = productState?.images || []; 
+
+        if (productImages.length > 0 && productImages[0].url !== null) {
+            setProps({
+                img: productImages[0].url,
+            });
+        }
+
+    }, [dispatch, getProductId, productState?.images])
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text)
@@ -237,12 +236,12 @@ const SingleProduct = () => {
                                 <div className='d-flex align-items-center gap-30'>
                                     {userState.user !== null ? (
                                         <>
-                                        <a href='#' className='text-dark'>
+                                        <button className='btn btn-dark'>
                                             <TbGitCompare className='fs-5 me-2' /> Add to Compare
-                                        </a>
-                                        <a href='#' className='text-dark ms-3'>
+                                        </button>
+                                        <button className='btn btn-dark ms-3'>
                                             <AiOutlineHeart className='fs-5 me-2' /> Add to Wishlist
-                                        </a>
+                                        </button>
                                         </>
                                     ) : (
                                         <span>Login to Compare or Add to Wishlist</span>
@@ -305,7 +304,7 @@ const SingleProduct = () => {
                                 </div>
                                 </div>
                                 <div>
-                                    <a className='text-dark text-decoration-underline' href=''>Write a Review</a>
+                                    <button className='text-dark text-decoration-underline' href=''>Write a Review</button>
                                 </div>
                             </div>
                             <div className='review-form py-4'>

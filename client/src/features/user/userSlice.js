@@ -66,6 +66,17 @@ export const addAndUpdateACart = createAsyncThunk("user/cart/update", async ( ca
     
 });
 
+export const removeAProductFromCart  = createAsyncThunk("user/cart/remove", async ( id, thunkAPI ) => {
+
+    try{
+        return await authService.removeProductFromCart(id);
+    }
+    catch(error) {
+        return thunkAPI.rejectWithValue(error);
+    }
+    
+});
+
 const initialState = {
     user: getCustomerFromLocalStorage,
     isError: false,
@@ -167,6 +178,9 @@ export const authslice = createSlice({
             state.isError = false;
             state.isSuccess = true;
             state.cart = action.payload;
+            if(state.isSuccess) {
+                toast.success("Product Added To Cart Successfully")
+            }
         })
         .addCase(addAndUpdateACart.rejected, ( state, action ) => {
             state.isLoading = false;
@@ -187,6 +201,27 @@ export const authslice = createSlice({
             state.cart = action.payload;
         })
         .addCase(getUserCart.rejected, ( state, action ) => {
+            state.isLoading = false;
+            state.isError = true;
+            state.isSuccess = false;
+            state.message = action.error;
+            if(state.isError === true) {
+                toast.error(action.error);
+            }
+        })
+        .addCase(removeAProductFromCart.pending, ( state ) => {
+            state.isLoading = true;
+        })
+        .addCase(removeAProductFromCart.fulfilled, ( state, action ) => {
+            state.isLoading = false;
+            state.isError = false;
+            state.isSuccess = true;
+            state.cart = action.payload;
+            if (state.isSuccess) {
+                toast.success("Product Removed From Cart Successfully")
+            }
+        })
+        .addCase(removeAProductFromCart.rejected, ( state, action ) => {
             state.isLoading = false;
             state.isError = true;
             state.isSuccess = false;

@@ -57,18 +57,18 @@ const Footer = () => {
                   test@test.com
                 </a>
                 <div className='social_icons d-flex align-items-center gap-30 mt-4'>
-                  <a className='text-white fs-5' href='#'>
+                  <button className='text-white fs-5' href='#'>
                     <BsLinkedin />
-                  </a>
-                  <a className='text-white fs-5' href='#'>
+                  </button>
+                  <button className='text-white fs-5' href='#'>
                     <BsInstagram />
-                  </a>
-                  <a className='text-white fs-5'  href='#'>
+                  </button>
+                  <button className='text-white fs-5'  href='#'>
                     <BsGithub />
-                  </a>
-                  <a className='text-white fs-5'  href='#'>
+                  </button>
+                  <button className='text-white fs-5'  href='#'>
                     <BsYoutube />
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>

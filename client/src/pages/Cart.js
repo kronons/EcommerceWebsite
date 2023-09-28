@@ -5,7 +5,7 @@ import { AiFillDelete } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import Container from '../components/Container';
 import { useDispatch, useSelector } from "react-redux";
-import { getUserCart } from '../features/user/userSlice';
+import { getUserCart, removeAProductFromCart } from '../features/user/userSlice';
 
 const Cart = () => {
     const dispatch = useDispatch();
@@ -15,6 +15,13 @@ const Cart = () => {
     useEffect(() => {
         dispatch(getUserCart());
     }, [dispatch]);
+
+    const removeACartProduct = (id) => {
+        dispatch(removeAProductFromCart(id));
+        setTimeout(() => {
+            dispatch(getUserCart());
+        }, 20000)
+    }
 
     return (
         <>
@@ -74,7 +81,10 @@ const Cart = () => {
                                                 />
                                             </div>
                                             <div>
-                                                <AiFillDelete className='text-danger'/>
+                                                <AiFillDelete 
+                                                    className='text-danger'
+                                                    onClick={() => removeACartProduct(item?._id)} 
+                                                />
                                             </div>
                                         </div>
                                         <div className='cart-col-4'>

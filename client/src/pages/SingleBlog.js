@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Breadcrumb from '../components/Breadcrumb'
 import Meta from '../components/Meta'
 import { Link, useLocation } from 'react-router-dom'
@@ -21,7 +21,7 @@ const SingleBlog = () => {
             dispatch(getABlog(getBlogId));
         };
         getBlog();
-    }, [dispatch]);
+    }, [dispatch, getBlogId]);
 
   return (
     <>

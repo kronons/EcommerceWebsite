@@ -10,7 +10,7 @@ import { getAllProducts } from '../features/products/productSlice';
 import { useDispatch, useSelector } from 'react-redux'
 import moment from "moment";
 import ReactStars from 'react-rating-stars-component'
-import { addToWishList, getUserCart, getWishList, resetCart, resetWishlist } from '../features/user/userSlice';
+import { addToWishList, getUserCart, getWishList } from '../features/user/userSlice';
 
 
 const Home = () => {

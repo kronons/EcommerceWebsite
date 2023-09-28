@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Breadcrumb from '../components/Breadcrumb'
 import Meta from '../components/Meta'
 import BlogCard from '../components/BlogCard'
@@ -49,7 +49,7 @@ function Blog() {
                                                 title = {item?.title}
                                                 description = {item?.description}
                                                 date = {moment(item?.createdAt).format("MM-DD-YYYY, h:MM:A")}
-                                                image = {item?.images[0].url && item?.images[0].url || ""}
+                                                image={(item?.images[0].url && item?.images[0].url) || ""}
                                             />
                                         </div>
                                     )

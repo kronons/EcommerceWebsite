@@ -456,8 +456,6 @@ const blockUser = asyncHandler(async (req, res) => {
     const { _id} = req.user;
     validateMongoDbId(_id);
 
-    console.log("User: " + req.user);
-
     try {
       const cart = await Cart.find({ userId: _id }).populate("productId").populate("color");
       res.json(cart);
@@ -469,7 +467,7 @@ const blockUser = asyncHandler(async (req, res) => {
 
   const removeProductFromCart = asyncHandler(async(req, res) => {
     const { _id} = req.user;
-    const { cartItemId } = req.body;
+    const { cartItemId } = req.params;
     validateMongoDbId(_id);
 
     try{

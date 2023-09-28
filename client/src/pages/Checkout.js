@@ -99,7 +99,7 @@ const Checkout = () => {
                         className='badge bg-secondary text-white rounded-circle p-2 position-absolute'>
                         1
                       </span>
-                      <img className='img-fluid' src='/images/watch.jpg' alt='product image' />
+                      <img className='img-fluid' src='/images/watch.jpg' alt='product' />
                     </div>
                     <div>
                       <h5 className='total-price'>Watch</h5>

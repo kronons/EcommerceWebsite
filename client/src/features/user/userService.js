@@ -43,6 +43,13 @@ const getUserWishList = async() => {
     }
 };
 
+const addAndUpdateCart = async(cartData) => {
+    const response = await axios.put( `${base_url}user/cart`, cartData, config ) 
+    if(response.data){
+        return response.data;
+    }
+}
+
 const getCart = async() => {
     const response = await axios.get( `${base_url}user/cart`, config ) 
     if(response.data){
@@ -50,11 +57,12 @@ const getCart = async() => {
     }
 }
 
-const addAndUpdateCart = async(cartData) => {
-    const response = await axios.put( `${base_url}user/cart`, cartData, config ) 
-    if(response.data){
-        return response.data;
-    }
+const removeProductFromCart = async (id) => {
+    
+    const response = await axios.delete(`${base_url}user/remove-product/${id}`, config);
+        if (response.data) {
+            return response.data;
+        }
 }
 
 export const authService = {
@@ -64,4 +72,5 @@ export const authService = {
     getUserWishList,
     addAndUpdateCart,
     getCart,
+    removeProductFromCart,
 };
