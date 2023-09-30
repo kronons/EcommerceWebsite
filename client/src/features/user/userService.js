@@ -65,6 +65,15 @@ const removeProductFromCart = async (id) => {
         }
 }
 
+const updateProductQuantityFromCart = async (cartItemId, quantity) => {
+    try {
+        const response = await axios.delete(`${base_url}user/cart-update-quantity/${cartItemId}/${quantity}`, config);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const authService = {
     register,
     login,
@@ -73,4 +82,5 @@ export const authService = {
     addAndUpdateCart,
     getCart,
     removeProductFromCart,
+    updateProductQuantityFromCart,
 };

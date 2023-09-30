@@ -28,6 +28,7 @@ const {
         getAllOrders,
         getOrderByUserId,
         removeProductFromCart,
+        updateProductQuantityFromCart,
      } 
 = require("../controller/userCtrl");
 const { authMiddleware, isAdmin } = require("../middlewares/AuthMiddlewares");
@@ -42,6 +43,7 @@ router.put("/block-user/:id", authMiddleware, isAdmin, blockUser);
 router.put("/unblock-user/:id", authMiddleware, isAdmin, unblockUser);
 router.put("/cart", authMiddleware, addAndUpdateCart);
 router.put("/wishlist", authMiddleware, addToWishList);
+
 
 router.post("/cart/cash-order", authMiddleware, createOrder);
 router.post("/register", createUser);
@@ -60,7 +62,8 @@ router.get("/wishlist", authMiddleware, getWishList);
 router.get("/cart", authMiddleware, getUserCart);
 router.get("/:id", authMiddleware, isAdmin, getaUser);
 
-router.delete("/remove-product/:cartItemId", authMiddleware, removeProductFromCart);
+router.delete("/cart-update-quantity/:cartItemId/:newQuantity", authMiddleware, updateProductQuantityFromCart);
+router.delete("/cart-remove-product/:cartItemId", authMiddleware, removeProductFromCart);
 router.delete("/empty-cart", authMiddleware, emptyCart);
 router.delete("/:id", deleteaUser);
 

@@ -34,7 +34,7 @@ const createUser = asyncHandler(
 });
 
 // Login a User
-const loginUserCtrl = asyncHandler(async (req, res) => {
+const loginUserCtrl = asyncHandler(async ( req, res ) => {
   const { email, password } = req.body;
 
   // check if user exists or not
@@ -70,7 +70,7 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
   }
 });
 
-const loginAdmin = asyncHandler(async (req, res) => {
+const loginAdmin = asyncHandler(async ( req, res ) => {
   const { email, password } = req.body;
 
   // Check if admin exists
@@ -151,7 +151,7 @@ const logout = asyncHandler(async ( req, res ) => {
 });
 
 // Update a user
-const updatedUser = asyncHandler(async(req,res) => {
+const updatedUser = asyncHandler(async( req, res ) => {
     const { _id } = req.user
     validateMongoDbId(_id);
 
@@ -199,7 +199,7 @@ const saveAddress = asyncHandler(async( req, res, next ) =>{
 });
 
 // Get all users
-const getallUser = asyncHandler(async(req,res) => {
+const getallUser = asyncHandler(async( req, res ) => {
     try{
         const getUsers =  await User.find();
         res.json(getUsers);
@@ -210,7 +210,7 @@ const getallUser = asyncHandler(async(req,res) => {
 })
 
 // Get a single user
-const getaUser = asyncHandler(async(req, res) => {
+const getaUser = asyncHandler(async( req, res ) => {
     const { id } = req.params;
     validateMongoDbId(id);
 
@@ -226,7 +226,7 @@ const getaUser = asyncHandler(async(req, res) => {
 })
 
 // Delete a single user
-const deleteaUser = asyncHandler(async(req, res) => {
+const deleteaUser = asyncHandler(async( req, res ) => {
     const { id } = req.params;
     validateMongoDbId(id);
 
@@ -241,7 +241,7 @@ const deleteaUser = asyncHandler(async(req, res) => {
     }
 })
 
-const blockUser = asyncHandler(async (req, res) => {
+const blockUser = asyncHandler(async ( req, res ) => {
     const { id } = req.params;
     validateMongoDbId(id);
 
@@ -275,7 +275,7 @@ const blockUser = asyncHandler(async (req, res) => {
     }
   });
 
-  const unblockUser = asyncHandler(async (req, res) => {
+  const unblockUser = asyncHandler(async ( req, res ) => {
     const { id } = req.params;
     validateMongoDbId(id);
 
@@ -370,7 +370,7 @@ const blockUser = asyncHandler(async (req, res) => {
     res.json(user);
   });
 
-  const addToWishList = asyncHandler(async (req, res) => {
+  const addToWishList = asyncHandler(async ( req, res ) => {
     const  _id  = req.user;
     const { prodId } = req.body;
 
@@ -403,7 +403,6 @@ const blockUser = asyncHandler(async (req, res) => {
   const getWishList = asyncHandler(async( req, res ) => {
     const { _id } = req.user;
     validateMongoDbId(_id);
-    console.log("WishList: " + req.user);
 
     try {
       const findUser = await User.findById(_id).populate("wishlist");
@@ -414,7 +413,7 @@ const blockUser = asyncHandler(async (req, res) => {
     }
   });
 
-  const addAndUpdateCart = asyncHandler(async (req, res) => {
+  const addAndUpdateCart = asyncHandler(async ( req, res ) => {
     const { _id } = req.user;
     const { productId, color, quantity, price } = req.body;
     validateMongoDbId(_id);
@@ -465,7 +464,7 @@ const blockUser = asyncHandler(async (req, res) => {
     }
   });
 
-  const removeProductFromCart = asyncHandler(async(req, res) => {
+  const removeProductFromCart = asyncHandler(async( req, res ) => {
     const { _id} = req.user;
     const { cartItemId } = req.params;
     validateMongoDbId(_id);
@@ -473,6 +472,28 @@ const blockUser = asyncHandler(async (req, res) => {
     try{
       const deleteAProductFromCart = await Cart.deleteOne({userId: _id, _id: cartItemId})
       res.json(deleteAProductFromCart);
+    }
+    catch(error) {
+      throw new Error(error);
+    }
+  })
+
+  const updateProductQuantityFromCart = asyncHandler(async( req, res ) => {
+    const { _id} = req.user;
+    const { cartItemId, newQuantity } = req.params;
+    validateMongoDbId(_id);
+
+       // Log the user ID, cart item ID, and new quantity
+        console.log("User ID:", _id);
+        console.log("Cart Item ID:", cartItemId);
+        console.log("New Quantity:", newQuantity);
+
+
+    try{
+      const cartItem = await Cart.findOne({userId: _id, _id: cartItemId})
+      cartItem.quantity = newQuantity;
+      await cartItem.save();
+      res.json(cartItem);
     }
     catch(error) {
       throw new Error(error);
@@ -652,6 +673,7 @@ module.exports = {
     getUserCart,
     removeProductFromCart,
     emptyCart,
+    updateProductQuantityFromCart,
     applyCoupon,
     createOrder,
     getOrders,

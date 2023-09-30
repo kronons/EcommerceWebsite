@@ -28,18 +28,24 @@ const Login = () => {
         },
         validationSchema: loginSchema,
         onSubmit: async (values) => {
-          try {
-            // Dispatch the loginUser action, which should return a promise
-            await dispatch(loginUser(values));
-    
-            // If login was successful, navigate to the desired page
-            navigate("/");
-          } catch (error) {
-            // Handle login failure, you can show an error message or perform other actions here
-            console.error("Login failed:", error);
-          }
-        },
-      });
+            try {
+              // Dispatch the loginUser action, which should return a promise
+              const response = await dispatch(loginUser(values));
+      
+              // Check if the login was successful based on the presence of user data in the response
+              if (response.payload && response.payload._id) {
+                // If login was successful, navigate to the desired page
+                navigate("/");
+              } else {
+                // Handle login failure, show an error message or perform other actions here
+                //console.error("Login failed:", response.payload); // Log the response payload for debugging
+              }
+            } catch (error) {
+              // Handle login failure, show an error message or perform other actions here
+              //console.error("Login failed:", error);
+            }
+          },
+        });
 
   return (
     <>

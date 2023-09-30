@@ -1,20 +1,63 @@
-import { React, useEffect } from 'react';
+import { React, useEffect, useState } from 'react';
 import Breadcrumb from '../components/Breadcrumb';
 import Meta from '../components/Meta';
 import { AiFillDelete } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import Container from '../components/Container';
 import { useDispatch, useSelector } from "react-redux";
-import { getUserCart, removeAProductFromCart } from '../features/user/userSlice';
+import { getUserCart, removeAProductFromCart, updateAProductQuantityFromCart } from '../features/user/userSlice';
 
 const Cart = () => {
     const dispatch = useDispatch();
 
     const userCartState = useSelector(state => state.auth.cart);
+
+    // Create an array to store quantity for each product
+    const [quantities, setQuantities] = useState([]);
+
+    // Initialize quantities array with default values from userCartState
+    useEffect(() => {
+        if (userCartState) {
+            const timer = setTimeout(() => {
+                const initialQuantities = userCartState.map(item => item.quantity);
+                setQuantities(initialQuantities);
+            }, 1000); // 1000 milliseconds delay (1 second)
+    
+            // Clear the timeout if the component unmounts or userCartState changes before the timeout is executed
+            return () => clearTimeout(timer);
+        }
+    }, [userCartState]);
+
+    let total = 0;
+    let subTotal = 0;
     
     useEffect(() => {
         dispatch(getUserCart());
     }, [dispatch]);
+
+    const updateQuantityCartProduct = (productUpdateDetail) => {
+        dispatch(updateAProductQuantityFromCart(productUpdateDetail));
+        setTimeout(() => {
+            dispatch(getUserCart());
+        }, 100);
+    }
+
+    const handleQuantityChange = (index, value) => {     
+        
+        // Update the quantity for the specified index
+        const newQuantities = [...quantities];
+        newQuantities[index] = value;
+        setQuantities(newQuantities);
+
+        // Set the productUpdateDetail state with the updated details
+        const productUpdateDetail = {
+            cartItemId: userCartState[index]._id,
+            quantity: value
+        };
+
+        // Call the updateQuantityCartProduct function with the updated details as an object
+        updateQuantityCartProduct(productUpdateDetail);
+    }
 
     const removeACartProduct = (id) => {
         dispatch(removeAProductFromCart(id));
@@ -39,6 +82,8 @@ const Cart = () => {
                         </div>
                         {userCartState && userCartState.length > 0 ? (
                             userCartState.map((item, index) => {
+                                total = item?.price * quantities[index];
+                                subTotal += total;
                                 return (
                                     <div key={index} className='cart-data py-3 mb-2 d-flex justify-content-between align-items-center'>
                                         <div className='cart-col-1 gap-15 d-flex align-items-center '>
@@ -76,8 +121,8 @@ const Cart = () => {
                                                     min={1}
                                                     max={10} 
                                                     id='' 
-                                                    value={item?.quantity}
-                                                    onChange={(e) => ("")}
+                                                    value={quantities[index]}
+                                                    onChange={(e) => handleQuantityChange(index, e.target.value)}
                                                 />
                                             </div>
                                             <div>
@@ -88,7 +133,7 @@ const Cart = () => {
                                             </div>
                                         </div>
                                         <div className='cart-col-4'>
-                                            <h5 className='price'>$ {item?.price * item.quantity}</h5>
+                                            <h5 className='price'>$ {total}</h5>
                                         </div>
                                     </div>
                                 );
@@ -99,11 +144,15 @@ const Cart = () => {
                     </div>
                     <div className='col-12 py-2 mt-4'>
                         <div className='d-flex justify-content-between align-items-baseline'>
-                            <Link to='/product' className='button'>Continue To Shop</Link>
+                            <Link to='/product' className='button'>
+                                Continue To Shop
+                            </Link>
                             <div className='d-flex flex-column align-items-end'>
-                                <h4>Subtotal: $1000</h4>
-                                <p>Taxes & shipping calculated at checkout</p>
-                                <Link to='/checkout' className='button'>Checkout</Link>
+                            <h4>Subtotal: $ {subTotal}</h4>
+                            <p>Taxes & shipping calculated at checkout</p>
+                            <Link to='/checkout' className='button'>
+                                Checkout
+                            </Link>
                             </div>
                         </div>
                     </div>
