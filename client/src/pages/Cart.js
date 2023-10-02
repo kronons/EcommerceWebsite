@@ -21,7 +21,7 @@ const Cart = () => {
             const timer = setTimeout(() => {
                 const initialQuantities = userCartState.map(item => item.quantity);
                 setQuantities(initialQuantities);
-            }, 1000); // 1000 milliseconds delay (1 second)
+            }, 100); // 1000 milliseconds delay (1 second)
     
             // Clear the timeout if the component unmounts or userCartState changes before the timeout is executed
             return () => clearTimeout(timer);
@@ -63,7 +63,7 @@ const Cart = () => {
         dispatch(removeAProductFromCart(id));
         setTimeout(() => {
             dispatch(getUserCart());
-        }, 200)
+        }, 100)
     }
 
     return (

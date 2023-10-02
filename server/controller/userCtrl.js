@@ -469,6 +469,9 @@ const blockUser = asyncHandler(async ( req, res ) => {
     const { cartItemId } = req.params;
     validateMongoDbId(_id);
 
+    console.log("User: " + req.user);
+    console.log("CartItemId: " + cartItemId);
+
     try{
       const deleteAProductFromCart = await Cart.deleteOne({userId: _id, _id: cartItemId})
       res.json(deleteAProductFromCart);
@@ -482,12 +485,6 @@ const blockUser = asyncHandler(async ( req, res ) => {
     const { _id} = req.user;
     const { cartItemId, newQuantity } = req.params;
     validateMongoDbId(_id);
-
-       // Log the user ID, cart item ID, and new quantity
-        console.log("User ID:", _id);
-        console.log("Cart Item ID:", cartItemId);
-        console.log("New Quantity:", newQuantity);
-
 
     try{
       const cartItem = await Cart.findOne({userId: _id, _id: cartItemId})

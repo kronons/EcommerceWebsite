@@ -1,9 +1,17 @@
 import React from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import {BsSearch} from 'react-icons/bs'
+import { useSelector } from 'react-redux'
+
 
 
 const Header = () => {
+
+  const userCartState = useSelector(state => state.auth.cart);
+
+  let total = 0;
+  let subTotal = 0;
+  let totalItems = 0;
 
   return (
     <>
@@ -86,12 +94,18 @@ const Header = () => {
                 <div>
                   <Link 
                     to='/cart' 
-                    className='d-flex align-items-center gap10 text-white'
+                    className='d-flex align-items-center text-white'
                   >
-                      <img src="/images/cart.svg" alt="cart" />
-                      <div className='d-flex flex-column gap-10'>
-                        <span className='badge bg-white text-dark'>0</span>
-                        <p className='mb-0'>$ 500</p>
+                      <img src="/images/cart.svg" alt="cart" className='pe-3' />
+                      {userCartState && userCartState.length > 0 && userCartState.map((item, index) => {
+                          total = item?.price * item.quantity;
+                          subTotal += total;
+                          totalItems += item.quantity;
+                          return null;
+                      })}
+                      <div className='d-flex flex-column gap-20'>
+                        <span className='badge bg-white text-dark'>{totalItems} items</span>
+                        <p className='mb-0'>$ {subTotal}</p>
                       </div>
                   </Link>
                 </div>
