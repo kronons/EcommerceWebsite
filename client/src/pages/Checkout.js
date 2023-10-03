@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { Link, json } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { BiArrowBack } from 'react-icons/bi'
 import Container from '../components/Container'
 import GooglePayButton from "@google-pay/button-react"
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 
@@ -21,14 +21,13 @@ const shippingSchema = Yup.object({
 
 const Checkout = () => {
 
-  const dispatch = useDispatch();
   const cartState = useSelector(state => state.auth.cart);
 
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [shippingInfo, setShippingInfo] = useState(null);
 
   let subTotal = 0;
-  let shipping = 100;
+  let shipping = 1;
   let total = 0;
 
   const states = [
@@ -54,7 +53,6 @@ const Checkout = () => {
     onSubmit: async (values, { setSubmitting }) => {
       setShippingInfo(values);
       setTimeout(() => {
-        console.log(values);
         setIsFormSubmitted(true); 
         setSubmitting(false); 
       }, 1000); 
@@ -324,7 +322,7 @@ const Checkout = () => {
                             callbackIntents: ['PAYMENT_AUTHORIZATION'],
                           }}
                           onLoadPaymentData={paymentRequest => {
-                            console.log('Sucess', paymentRequest());
+                            console.log('Sucess', paymentRequest);
                           }}
                           onPaymentAuthorized={paymentData => {
                             console.log('Payment Authorized Success', paymentData);
