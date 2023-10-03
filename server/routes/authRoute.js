@@ -45,7 +45,7 @@ router.put("/cart", authMiddleware, addAndUpdateCart);
 router.put("/wishlist", authMiddleware, addToWishList);
 
 
-router.post("/cart/cash-order", authMiddleware, createOrder);
+router.post("/cart/create-order", authMiddleware, createOrder);
 router.post("/register", createUser);
 router.post("/forgot-password-token", forgotPasswordToken);
 router.post("/login", loginUserCtrl);

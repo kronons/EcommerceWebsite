@@ -70,7 +70,7 @@ const SingleProduct = () => {
                 navigate("/cart");
             }, 200)   
         }
-    }, [isUpdatingCart, dispatch, productState, color, newQuantity]);
+    }, [isUpdatingCart, dispatch, productState, color, newQuantity, navigate]);
 
     useEffect(() => {
         dispatch(resetState());
