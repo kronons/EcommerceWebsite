@@ -72,6 +72,8 @@ const Addproduct = () => {
   }));
 
 
+  
+
   useEffect(() => {
     dispatch(resetState());
     dispatch(getBrands());
@@ -140,7 +142,8 @@ const Addproduct = () => {
       .then(() => {
         // Clear the error message for the "images" field
         formik.setFieldError('images', '');
-        formik.values.images = dispatch(uploadImg(acceptedFiles));
+        formik.values.images = acceptedFiles;
+        dispatch(uploadImg(acceptedFiles));
       })
       .catch((error) => {
         // Handle the error if the file upload fails
@@ -317,7 +320,7 @@ const Addproduct = () => {
 
                 <div className='showimages d-flex flex-wrap gap-3 mt-3'>
                   {getProductId === undefined ? (
-                    // For creating a product blog
+                    // For creating a product
                     imgState?.map((i, j) => (
                       <div className='position-relative' key={j}>
                         {i.isDeleted ? (

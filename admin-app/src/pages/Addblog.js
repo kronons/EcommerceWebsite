@@ -48,11 +48,6 @@ const Addblog = () => {
     dispatch(getBlogCategories());
   }, [dispatch]);
 
-  const img = imgState.map((i) => ({
-    public_id: i.public_id,
-    url: i.url,
-  }));
-
   useEffect(() => {
     if(getBlogId !== undefined) {
       dispatch(getABlog(getBlogId));
