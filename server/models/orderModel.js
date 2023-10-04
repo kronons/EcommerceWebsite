@@ -31,7 +31,6 @@ const orderSchema = new mongoose.Schema(
             },
             other: {
                 type: String,
-                required: true,
             },
             zipCode: {
                 type: Number,

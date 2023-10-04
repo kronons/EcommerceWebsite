@@ -64,7 +64,7 @@ router.get("/:id", authMiddleware, isAdmin, getaUser);
 
 router.delete("/cart-update-quantity/:cartItemId/:newQuantity", authMiddleware, updateProductQuantityFromCart);
 router.delete("/cart-remove-product/:cartItemId", authMiddleware, removeProductFromCart);
-router.delete("/empty-cart", authMiddleware, emptyCart);
+router.delete("/cart-empty/:cartId", authMiddleware, emptyCart);
 router.delete("/:id", deleteaUser);
 
 module.exports = router;

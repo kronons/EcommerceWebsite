@@ -1,34 +1,74 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { BiArrowBack } from 'react-icons/bi'
 import Container from '../components/Container'
 import GooglePayButton from "@google-pay/button-react"
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import { useFormik } from "formik"
 import * as Yup from "yup"
+import { createAOrder, emptyCart } from '../features/user/userSlice'
+
 
 
 const shippingSchema = Yup.object({
   country: Yup.string().required("A Country is Required"),
-  firstname: Yup.string().required('First Name is Required'),
-  lastname: Yup.string().required('Last Name is Required'),
+  firstName: Yup.string().required('First Name is Required'),
+  lastName: Yup.string().required('Last Name is Required'),
   address: Yup.string().required("Address Details is Required"),
   city: Yup.string().required('City is Required'),
   state: Yup.string().required("State is required"),
-  zipcode: Yup.number().required("Zip Code is required")
+  zipCode: Yup.number().required("Zip Code is required")
 })
 
 
 const Checkout = () => {
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const cartState = useSelector(state => state.auth.cart);
 
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [shippingInfo, setShippingInfo] = useState(null);
+  const [ isFormSubmitted, setIsFormSubmitted ] = useState(false);
+  const [ shippingInfo, setShippingInfo ] = useState(null);
+  const [ paymentInfo, setPaymentInfo ] = useState(null);
+  const [ items, setItems ] = useState(null);
+  const [ cartId, setCartId ] = useState(null);
 
   let subTotal = 0;
   let shipping = 1;
   let total = 0;
+  let timer = 0; 
+ 
+
+  useEffect(() => {
+    const updatedItems = cartState.map((item) => ({
+      product: item.productId._id,
+      color: item.color._id,
+      quantity: item.quantity,
+      price: item.price,
+    }));
+    
+    setItems(updatedItems);
+  }, [cartState]);
+
+  const sendOrder = async () => {
+    if (isFormSubmitted && paymentInfo && shippingInfo) {
+
+      try {
+        await dispatch(createAOrder({ shippingInfo, orderItems: items, totalPrice: subTotal, totalPriceAfterDiscount: total, paymentInfo }));
+      } 
+      catch (error) {
+        // Handle dispatch error
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (paymentInfo) {
+      clearTimeout(timer);
+      sendOrder();
+    }
+  }, [paymentInfo]);
 
   const states = [
     'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
@@ -38,20 +78,34 @@ const Checkout = () => {
     'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
   ];
 
+  const emptyCartAndNavigate = async() => {
+    const timer = setTimeout(() => {
+      navigate("/");
+      dispatch(emptyCart(cartId));
+      return new Promise((resolve, reject) => {
+        clearTimeout(timer);
+        resolve();
+      });
+    }, 1000); // 1000 milliseconds delay (1 second)
+  }
+
   const formik = useFormik({
     initialValues: {
       country: "",
-      firstname: "",
-      lastname: "",
+      firstName: "",
+      lastName: "",
       address: "",
       city: "",
       state: "",
-      zipcode: "",
+      zipCode: "",
       other:"",
     },
     validationSchema: shippingSchema,
     onSubmit: async (values, { setSubmitting }) => {
-      setShippingInfo(values);
+      setShippingInfo({ ...values, other: values.other || "" });
+      if (cartState && cartState.length > 0) {
+        setCartId(cartState[0]._id); 
+      }
       setTimeout(() => {
         setIsFormSubmitted(true); 
         setSubmitting(false); 
@@ -61,29 +115,29 @@ const Checkout = () => {
 
   return (
     <>
-      <Container class1='checkout-wrapper py-5 home-wrapper-2'>
+      <Container className='checkout-wrapper py-5 home-wrapper-2'>
           <div className='row'>
             <div className='col-7'>
-              <div className='checkout-left-data'>
+              <div className='checkout-left-data mt-4 my-4'>
                 <h3 className='webisite-name'>Dev Corner</h3>
                 <nav 
                   style={{"--bs-breadcrumb-divider": '>' }}
                   aria-label="breadcrumb"
                 >
-                  <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
+                  <ol className="breadcrumb">
+                    <li className="breadcrumb-item">
                       <Link className='text-dark total-price' to='/cart'>Cart</Link>
                     </li>
                     &nbsp; /
-                    <li class="breadcrumb-item active total-price" aria-current="page">
+                    <li className="breadcrumb-item active total-price" aria-current="page">
                       Information
                     </li>
                     &nbsp; /
-                    <li class="breadcrumb-item active total-price">
+                    <li className="breadcrumb-item active total-price">
                       Shipping
                     </li>
                     &nbsp; /
-                    <li class="breadcrumb-item active total-price" aria-current="page">
+                    <li className="breadcrumb-item active total-price" aria-current="page">
                       Payment
                     </li>
                   </ol>
@@ -105,7 +159,7 @@ const Checkout = () => {
                         onBlur={formik.handleBlur("country")}
                         value={formik.values.country}
                       >
-                        <option value='' selected dis>
+                        <option value='' disabled>
                           Select Country
                         </option>
                         <option value='USA'>
@@ -123,13 +177,13 @@ const Checkout = () => {
                         type='text' 
                         placeholder='First Name' 
                         className='form-control'
-                        onChange={formik.handleChange("firstname")}
-                        onBlur={formik.handleBlur("firstname")}
-                        value={formik.values.firstname} 
+                        onChange={formik.handleChange("firstName")}
+                        onBlur={formik.handleBlur("firstName")}
+                        value={formik.values.firstName} 
                       />
                       <div className='ms-2 my-1 alert-danger'>
                         {
-                          formik.touched.firstname && formik.errors.firstname
+                          formik.touched.firstName && formik.errors.firstName
                         }
                       </div>
                     </div>
@@ -138,13 +192,13 @@ const Checkout = () => {
                         type='text' 
                         placeholder='Last Name' 
                         className='form-control'
-                        onChange={formik.handleChange("lastname")}
-                        onBlur={formik.handleBlur("lastname")}
-                        value={formik.values.lastname}  
+                        onChange={formik.handleChange("lastName")}
+                        onBlur={formik.handleBlur("lastName")}
+                        value={formik.values.lastName}  
                       />
                       <div className='ms-2 my-1 alert-danger'>
                         {
-                          formik.touched.lastname && formik.errors.lastname
+                          formik.touched.lastName && formik.errors.lastName
                         }
                       </div>
                     </div>
@@ -197,7 +251,7 @@ const Checkout = () => {
                       onBlur={formik.handleBlur("state")}
                       value={formik.values.state}
                     >
-                      <option value='' selected disabled>
+                      <option value='' disabled>
                         Select State
                       </option>
                       {states.map((state, index) => (
@@ -217,13 +271,13 @@ const Checkout = () => {
                         type='text' 
                         placeholder='Zip Code' 
                         className='form-control'
-                        onChange={formik.handleChange("zipcode")}
-                        onBlur={formik.handleBlur("zipcode")}
-                        value={formik.values.zipcode}  
+                        onChange={formik.handleChange("zipCode")}
+                        onBlur={formik.handleBlur("zipCode")}
+                        value={formik.values.zipCode}  
                       />
                       <div className='ms-2 my-1 alert-danger'>
                         {
-                          formik.touched.zipcode && formik.errors.zipcode
+                          formik.touched.zipCode && formik.errors.zipCode
                         }
                       </div>
                     </div>
@@ -240,7 +294,7 @@ const Checkout = () => {
               </div>
             </div>
             <div className='col-5'>
-              <div className='border-bottom py-4'>
+              <div className='border-bottom py-4 mt-4 my-4'>
                 {
                   cartState && cartState?.map((item, index) => {
                     subTotal += item?.price * item?.quantity;
@@ -286,52 +340,55 @@ const Checkout = () => {
               </div>
                 <div className='d-flex justify-content-end mt-3'>
                   {isFormSubmitted && (
-                <GooglePayButton 
-                          environment='TEST'
-                          paymentRequest={{
-                            apiVersion: 2,
-                            apiVersionMinor: 0,
-                            allowedPaymentMethods: [
-                              {
-                                type: 'CARD',
-                                parameters: {
-                                  allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
-                                  allowedCardNetworks: ['MASTERCARD', 'VISA'],
-                                },
-                                tokenizationSpecification: {
-                                  type: 'PAYMENT_GATEWAY',
-                                  parameters: {
-                                    gateway: 'example',
-                                    getwayMerchantId: 'exampleGateWayMechantId',
+                    <GooglePayButton 
+                              environment='TEST'
+                              paymentRequest={{
+                                apiVersion: 2,
+                                apiVersionMinor: 0,
+                                allowedPaymentMethods: [
+                                  {
+                                    type: 'CARD',
+                                    parameters: {
+                                      allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+                                      allowedCardNetworks: ['MASTERCARD', 'VISA'],
+                                    },
+                                    tokenizationSpecification: {
+                                      type: 'PAYMENT_GATEWAY',
+                                      parameters: {
+                                        gateway: 'example',
+                                        getwayMerchantId: '12345678901234567890',
+                                      },
                                   },
-                               },
-                              }
-                            ],
-                            merchantInfo: {
-                              merchantId: '1234567890',
-                              merchantName: 'Demo Merchant'
-                            },
-                            transactionInfo: {
-                              totalPriceStatus: 'FINAL',
-                              totalPriceLabel: 'Total',
-                              totalPrice: `${total}`,
-                              currencyCode: 'USD',
-                              countryCode: 'US',
-                            },
-                            shippingAddressRequired: true,
-                            callbackIntents: ['PAYMENT_AUTHORIZATION'],
-                          }}
-                          onLoadPaymentData={paymentRequest => {
-                            console.log('Sucess', paymentRequest);
-                          }}
-                          onPaymentAuthorized={paymentData => {
-                            console.log('Payment Authorized Success', paymentData);
-                            return { transactionState: 'SUCCESS'}
-                          }}
-                          existingPaymentMethodRequired = 'false'
-                          buttonColor='white'
-                          buttonType='Buy'
-                  />
+                                  }
+                                ],
+                                merchantInfo: {
+                                  merchantId: '1234567890',
+                                  merchantName: 'Demo Merchant'
+                                },
+                                transactionInfo: {
+                                  totalPriceStatus: 'FINAL',
+                                  totalPriceLabel: 'Total',
+                                  totalPrice: `${total}`,
+                                  currencyCode: 'USD',
+                                  countryCode: 'US',
+                                },
+                                shippingAddressRequired: true,
+                                callbackIntents: ['PAYMENT_AUTHORIZATION'],
+                              }}
+                              onLoadPaymentData={paymentRequest => {
+                                console.log('Sucess', paymentRequest);
+                              }}
+                              onPaymentAuthorized={paymentData => {
+                                const transactionId = paymentData.paymentMethodData.tokenizationData.token;
+                                setPaymentInfo({paymentId: transactionId, orderId: transactionId});
+                                console.log('Payment Authorized Success', paymentData);
+                                emptyCartAndNavigate();
+                                return { transactionState: 'SUCCESS'}
+                              }}
+                              existingPaymentMethodRequired = 'false'
+                              buttonColor='white'
+                              buttonType='Buy'
+                      />
                   )}
                 </div>
             </div>

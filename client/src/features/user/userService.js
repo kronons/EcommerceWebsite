@@ -5,6 +5,7 @@ import { config } from "../../utils/axiosConfig";
 
 
 const register = async(userData) => {
+
     const response = await axios.post( `${base_url}user/register`, userData )
     if(response.data) {
         localStorage.setItem("user", JSON.stringify(response.data));
@@ -13,6 +14,7 @@ const register = async(userData) => {
 };
 
 const login = async(userData) => {
+
     const response = await axios.post( `${base_url}user/login`, userData )
     if(response.data) {
         // Comment Out For Now -> Save the user data to local storage
@@ -25,6 +27,7 @@ const login = async(userData) => {
 };
 
 const addToWishList = async (prodId) => {
+
     try {
         const response = await axios.put(`${base_url}user/wishlist`, {prodId}, config);
         if (response.data) {
@@ -37,6 +40,7 @@ const addToWishList = async (prodId) => {
 };
 
 const getUserWishList = async() => {
+
     const response = await axios.get( `${base_url}user/wishlist`, config ) 
     if(response.data){
         return response.data;
@@ -44,6 +48,7 @@ const getUserWishList = async() => {
 };
 
 const addAndUpdateCart = async(cartData) => {
+
     const response = await axios.put( `${base_url}user/cart`, cartData, config ) 
     if(response.data){
         return response.data;
@@ -51,6 +56,7 @@ const addAndUpdateCart = async(cartData) => {
 }
 
 const getCart = async() => {
+
     const response = await axios.get( `${base_url}user/cart`, config ) 
     if(response.data){
         return response.data;
@@ -65,13 +71,31 @@ const removeProductFromCart = async (id) => {
         }
 }
 
+const emptyCart = async (cartId) => {
+    
+    const response = await axios.delete(`${base_url}user/cart-empty/${cartId}`, config);
+        if (response.data) {
+            return response.data;
+        }
+}
+
 const updateProductQuantityFromCart = async (cartItemId, quantity) => {
+
     try {
         const response = await axios.delete(`${base_url}user/cart-update-quantity/${cartItemId}/${quantity}`, config);
         return response.data;
     } catch (error) {
         throw error;
     }
+}
+
+const createOrder = async(orderDetail) => {
+
+    const response = await axios.post(`${base_url}user/cart/create-order`, orderDetail ,config);
+    if (response.data) {
+        return response.data;
+    }
+
 }
 
 export const authService = {
@@ -82,5 +106,7 @@ export const authService = {
     addAndUpdateCart,
     getCart,
     removeProductFromCart,
+    emptyCart,
     updateProductQuantityFromCart,
+    createOrder,
 };

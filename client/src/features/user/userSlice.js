@@ -70,10 +70,30 @@ export const removeAProductFromCart  = createAsyncThunk("user/cart/remove", asyn
     }
 });
 
+export const emptyCart  = createAsyncThunk("user/cart/empty", async ( cartId, thunkAPI ) => {
+
+    try{
+        return await authService.emptyCart(cartId);
+    }
+    catch(error) {
+        return thunkAPI.rejectWithValue(error);
+    }
+});
+
 export const updateAProductQuantityFromCart  = createAsyncThunk("user/cart/update/quantity", async ({ cartItemId, quantity }, thunkAPI ) => {
     console.log("UserSlice quantity for cart item:", cartItemId, "to quantity:", quantity);
     try{
         return await authService.updateProductQuantityFromCart(cartItemId, quantity);
+    }
+    catch(error) {
+        return thunkAPI.rejectWithValue(error);
+    }
+});
+
+export const createAOrder  = createAsyncThunk("user/cart/create-order", async ( orderDetail, thunkAPI ) => {
+
+    try{
+        return await authService.createOrder(orderDetail);
     }
     catch(error) {
         return thunkAPI.rejectWithValue(error);
@@ -233,6 +253,27 @@ export const authslice = createSlice({
                 toast.error(action.error);
             }
         })
+        .addCase(emptyCart.pending, ( state ) => {
+            state.isLoading = true;
+        })
+        .addCase(emptyCart.fulfilled, ( state, action ) => {
+            state.isLoading = false;
+            state.isError = false;
+            state.isSuccess = true;
+            state.cart = action.payload;
+            if (state.isSuccess) {
+                toast.success("Cart Emptied Successfully")
+            }
+        })
+        .addCase(emptyCart.rejected, ( state, action ) => {
+            state.isLoading = false;
+            state.isError = true;
+            state.isSuccess = false;
+            state.message = action.error;
+            if(state.isError === true) {
+                toast.error(action.error);
+            }
+        })
         .addCase(updateAProductQuantityFromCart.pending, ( state ) => {
             state.isLoading = true;
         })
@@ -246,6 +287,27 @@ export const authslice = createSlice({
             }
         })
         .addCase(updateAProductQuantityFromCart.rejected, ( state, action ) => {
+            state.isLoading = false;
+            state.isError = true;
+            state.isSuccess = false;
+            state.message = action.error;
+            if(state.isError === true) {
+                toast.error(action.error);
+            }
+        })
+        .addCase(createAOrder.pending, ( state ) => {
+            state.isLoading = true;
+        })
+        .addCase(createAOrder.fulfilled, ( state, action ) => {
+            state.isLoading = false;
+            state.isError = false;
+            state.isSuccess = true;
+            state.orderedProduct = action.payload;
+            if (state.isSuccess) {
+                toast.success("Ordered Successfully")
+            }
+        })
+        .addCase(createAOrder.rejected, ( state, action ) => {
             state.isLoading = false;
             state.isError = true;
             state.isSuccess = false;

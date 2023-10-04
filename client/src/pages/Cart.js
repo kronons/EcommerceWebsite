@@ -11,22 +11,22 @@ const Cart = () => {
     const dispatch = useDispatch();
 
     const userCartState = useSelector(state => state.auth.cart);
-
-    // Create an array to store quantity for each product
+    
     const [quantities, setQuantities] = useState([]);
 
     // Initialize quantities array with default values from userCartState
     useEffect(() => {
-        if (userCartState) {
+        if (Array.isArray(userCartState) && userCartState.length > 0) {
             const timer = setTimeout(() => {
                 const initialQuantities = userCartState.map(item => item.quantity);
                 setQuantities(initialQuantities);
-            }, 200); // 1000 milliseconds delay (1 second)
+            }, 100); // 1000 milliseconds delay (1 second)
     
             // Clear the timeout if the component unmounts or userCartState changes before the timeout is executed
             return () => clearTimeout(timer);
         }
     }, [userCartState]);
+
 
     let total = 0;
     let subTotal = 0;
@@ -121,7 +121,7 @@ const Cart = () => {
                                                     min={1}
                                                     max={10} 
                                                     id='' 
-                                                    value={quantities[index]}
+                                                    value={quantities[index] || ''}
                                                     onChange={(e) => handleQuantityChange(index, e.target.value)}
                                                 />
                                             </div>
