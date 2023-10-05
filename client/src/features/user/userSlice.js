@@ -24,6 +24,15 @@ export const loginUser = createAsyncThunk("user/login", async ( userData, thunkA
     }
 });
 
+export const logoutUser = createAsyncThunk("user/logout", async ( thunkAPI ) => {
+    try{
+        return await authService.logout();
+    }
+    catch(error) {
+        return thunkAPI.rejectWithValue(error);
+    }
+});
+
 export const addToWishList = createAsyncThunk("auth/addWishlist", async ( prodId, thunkAPI ) => {
     try{
         return await authService.addToWishList(prodId);
@@ -155,6 +164,27 @@ export const authslice = createSlice({
             state.message = action.error;
             if(state.isError === true) {
                 toast.error("Error Logging In. Try Again");
+            }
+        })
+        .addCase(logoutUser.pending, ( state ) => {
+            state.isLoading = true;
+        })
+        .addCase(logoutUser.fulfilled, ( state, action ) => {
+            state.isLoading = false;
+            state.isError = false;
+            state.isSuccess = true;
+            state.user = null;
+            if(state.isSuccess === true) {
+                toast.info("User Logged Out Successfully");
+            }
+        })
+        .addCase(logoutUser.rejected, ( state, action ) => {
+            state.isLoading = false;
+            state.isError = true;
+            state.isSuccess = false;
+            state.message = action.error;
+            if(state.isError === true) {
+                toast.error("Error Logging Out. Try Again");
             }
         })
         .addCase(addToWishList.pending, ( state ) => {

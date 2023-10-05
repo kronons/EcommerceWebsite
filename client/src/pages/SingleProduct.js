@@ -42,14 +42,16 @@ const SingleProduct = () => {
         if (color === null) {
             toast.error("Please choose a color.");
             return false;
-        } else {
-            setIsUpdatingCart(true); // Set the flag before updating the quantity
+        }
+    
+        setIsUpdatingCart(true); // Set the flag before updating the quantity
+    
+        // Check if cartState is not null before mapping through it
+        if (cartState !== undefined) {
             cartState.map((item, index) => {
-                if (item.productId._id === productState?._id) {
-                    if (item.color._id === color) {
-                        let newQuantity = parseInt(item.quantity) + parseInt(quantity);
-                        setNewQuantity(newQuantity); // Set the quantity state
-                    }
+                if (item.productId._id === productState?._id && item.color._id === color) {
+                    let newQuantity = parseInt(item.quantity) + parseInt(quantity);
+                    setNewQuantity(newQuantity); // Set the quantity state
                 }
                 return null;
             });
@@ -210,23 +212,19 @@ const SingleProduct = () => {
                                         />
                                     </div>                                        
                                     <div className='d-flex align-items-center gap-30 ms-4'>
-                                        {userState.user !== null ? (
-                                            <div>
-                                                <button
-                                                    className='button border-0 login'
-                                                    type='submit'
-                                                    onClick={() => uploadCart()}
-                                                    style={{ marginRight: '5px' }}
-                                                >
-                                                    Add to Cart
-                                                </button>
-                                                <Link to='/login' className='button buynow'>
-                                                    Buy it Now
-                                                </Link>
-                                            </div>
-                                        ) : (
-                                            <span>Login To Add To Cart or Buy Now</span>
-                                        )}
+                                        <div>
+                                            <button
+                                                className='button border-0 login'
+                                                type='submit'
+                                                onClick={() => uploadCart()}
+                                                style={{ marginRight: '5px' }}
+                                            >
+                                                Add to Cart
+                                            </button>
+                                            <Link to='/login' className='button buynow'>
+                                                Buy it Now
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className='d-flex align-items-center gap-30'>

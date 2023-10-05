@@ -45,11 +45,9 @@ const Wishlist = () => {
             <Meta title={'Wishlist'} />
             <Breadcrumb title='Wishlist' />
             <Container class1='wishlist-wrapper home-wrapper-2 py-5'>
-                {user ? (
                     <div className='row'>
                         {wishListState.wishlist.wishlist.length > 0 ? (
                             wishListState.wishlist.wishlist.map((wishListItem, index) => {
-                                
                                 return (
                                     <div className='col-3' key={index}>
                                         <div className='wishlist-card'>
@@ -86,9 +84,6 @@ const Wishlist = () => {
                             <p>No items in your wishlist.</p>
                         )}
                     </div>
-                ) : (
-                    <p>Log in to view your wishlist.</p>
-                )}
             </Container>
         </>
     );

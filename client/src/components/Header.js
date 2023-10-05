@@ -1,17 +1,25 @@
 import React from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import {BsSearch} from 'react-icons/bs'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { logoutUser } from '../features/user/userSlice'
 
 
 
 const Header = () => {
 
+  const dispatch = useDispatch();
+
   const userCartState = useSelector(state => state.auth.cart);
+  const userState = useSelector(state => state.auth);
 
   let total = 0;
   let subTotal = 0;
   let totalItems = 0;
+
+  const logAUserOut = () => {
+    dispatch(logoutUser());
+  }
 
   return (
     <>
@@ -78,18 +86,28 @@ const Header = () => {
                   </Link>
                 </div>
                 
-
                 <div>
-                  <Link 
-                    to='/login' 
-                    className='d-flex align-items-center gap10 text-white'
-                  >
-                      <img src="/images/user.svg" alt="user" />
-                      <p className='mb-0'>
+                <div to='/login' className='d-flex align-items-center gap10 text-white'>
+                  <img src="/images/user.svg" alt="user" />
+                  {userState !== null && userState.user !== null ? (
+                    <div className='mb-0'>
+                      <div className="dropdown">
+                        <button className="dropbtn text-white bg-transparent border-0">Welcome, {userState.user.firstname.charAt(0).toUpperCase() + userState.user.firstname.slice(1)} <br /></button>
+                        <div className="dropdown-content">
+                          <span onClick={logAUserOut}>Logout</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  ) : (
+                    <Link to="/login">
+                      <p className='mb-0 text-white'>  
                         Login <br /> My Account
                       </p>
                     </Link>
+                  )}
                 </div>
+              </div>
 
                 <div>
                   <Link 

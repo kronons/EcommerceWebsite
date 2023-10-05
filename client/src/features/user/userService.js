@@ -8,7 +8,7 @@ const register = async(userData) => {
 
     const response = await axios.post( `${base_url}user/register`, userData )
     if(response.data) {
-        localStorage.setItem("user", JSON.stringify(response.data));
+        localStorage.setItem("customer", JSON.stringify(response.data));
         return response.data;
     } 
 };
@@ -17,14 +17,28 @@ const login = async(userData) => {
 
     const response = await axios.post( `${base_url}user/login`, userData )
     if(response.data) {
-        // Comment Out For Now -> Save the user data to local storage
-        //localStorage.setItem("user", JSON.stringify(response.data));
+        localStorage.setItem("customer", JSON.stringify(response.data));
         config.headers.Authorization = `Bearer ${response.data.token}`;
         // // Log the config object to the console
         // console.log("Config headers:", config.headers);
         return response.data;
     } 
 };
+
+const logout = async () => {
+    try {
+      const response = await axios.get(`${base_url}user/logout`, config);
+      if(response.data){
+        return response.data;
+      }
+  
+    } 
+    catch (error) {
+      // Handle errors, if any
+      console.error(error);
+      throw error; // Re-throw the error to be caught by the caller, if necessary
+    }
+  };
 
 const addToWishList = async (prodId) => {
 
@@ -101,6 +115,7 @@ const createOrder = async(orderDetail) => {
 export const authService = {
     register,
     login,
+    logout,
     addToWishList,
     getUserWishList,
     addAndUpdateCart,

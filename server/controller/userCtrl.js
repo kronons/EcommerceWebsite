@@ -51,7 +51,10 @@ const loginUserCtrl = asyncHandler(async ( req, res ) => {
     // Set the refresh token as an HTTP-only cookie
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
+      secure: false,
       maxAge: 72 * 60 * 60 * 1000,
+      path: "/",
+      domain: "localhost",
     });
 
     res.json({
@@ -93,7 +96,10 @@ const loginAdmin = asyncHandler(async ( req, res ) => {
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
+      secure: false,
       maxAge: 72 * 60 * 60 * 1000,
+      path: "/",
+      domain: "localhost",
     });
 
     res.json({
@@ -130,23 +136,28 @@ const handleRefreshToken = asyncHandler(async ( req, res ) => {
 const logout = asyncHandler(async ( req, res ) => {
   const cookie = req.cookies;
 
+  console.log("Cookies: " + JSON.stringify(cookie));
+
   if(!cookie?.refreshToken) throw new Error("No Refresh Token in Cookies");
   const refreshToken = cookie.refreshToken;
   const user = await User.findOne({ refreshToken });
   if(!user) {
+    console.log("User not found");
     res.clearCookie('refreshToken', {
       httpOnly: true,
-      secure: true,
+      secure: false,
     });
     return res.sendStatus(204); //Forbidden
   }
   await User.findOneAndUpdate({ refreshToken: refreshToken }, {
     refreshToken: "",
   });
+  console.log("Logout Successful");
   res.clearCookie('refreshToken', {
     httpOnly: true,
-    secure: true,
+    secure: false,
   });
+  console.log("Refresh Token Cleared");
   res.sendStatus(204); //Forbidden
 });
 
