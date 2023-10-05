@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import {BsSearch} from 'react-icons/bs'
 import { useDispatch, useSelector } from 'react-redux'
@@ -9,6 +9,8 @@ import { logoutUser } from '../features/user/userSlice'
 const Header = () => {
 
   const dispatch = useDispatch();
+
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
   const userCartState = useSelector(state => state.auth.cart);
   const userState = useSelector(state => state.auth);
@@ -63,7 +65,7 @@ const Header = () => {
           </div>
             </div>
             <div className='col-5'>
-              <div className='header-upper-links d-flex align-items-center justify-content-between'>
+              <div className='header-upper-links d-flex align-items-center gap-3'>
                 
                 <div>
                   <Link 
@@ -71,33 +73,39 @@ const Header = () => {
                     className='d-flex align-items-center gap10 text-white'
                   >
                     <img src="/images/compare.svg" alt="compare" />
-                    <p className='mb-0'>
+                    <p className='mb-0 ms-2'>
                       Compare <br /> Products
                     </p>
                   </Link>
                 </div>
 
-                <div>
+                <div className='ms-3'>
                   <Link to='/wishlist' className='d-flex align-items-center gap10 text-white'>
                     <img src="/images/wishlist.svg" alt="wishlist" />
-                    <p className='mb-0'>
+                    <p className='mb-0 ms-2'>
                       Favorite <br /> WishList
                     </p>
                   </Link>
                 </div>
                 
-                <div>
-                <div to='/login' className='d-flex align-items-center gap10 text-white'>
+                <div className='ms-3 dropdown'>
+                <Link to='/login' className='d-flex align-items-center gap10 text-white'>
                   <img src="/images/user.svg" alt="user" />
                   {userState !== null && userState.user !== null ? (
-                    <div className='mb-0'>
-                      <div className="dropdown">
-                        <button className="dropbtn text-white bg-transparent border-0">Welcome, {userState.user.firstname.charAt(0).toUpperCase() + userState.user.firstname.slice(1)} <br /></button>
-                        <div className="dropdown-content">
-                          <span onClick={logAUserOut}>Logout</span>
-                        </div>
-                      </div>
-                    </div>
+                    <div className='dropdown' onMouseEnter={() => setIsDropdownVisible(true)} onMouseLeave={() => setIsDropdownVisible(false)}>
+                            <button className='btn btn-secondary dropdown-toggle bg-transparent border-0 gap-15 d-flex align-items-center' type='button' id='dropdownMenuButton1'>
+                              Welcome, {userState.user.firstname.charAt(0).toUpperCase() + userState.user.firstname.slice(1)} <br />
+                            </button>
+                            <ul className={`dropdown-menu ${isDropdownVisible ? 'show' : ''}`} aria-labelledby='dropdownMenuButton1'>
+                              {/* Dropdown content */}
+                              <li>
+                                <span className='dropdown-item' onClick={logAUserOut}>
+                                  Logout
+                                </span>
+                              </li>
+                            </ul>
+                          </div>
+
                     
                   ) : (
                     <Link to="/login">
@@ -106,7 +114,7 @@ const Header = () => {
                       </p>
                     </Link>
                   )}
-                </div>
+                </Link>
               </div>
 
                 <div>
@@ -114,7 +122,7 @@ const Header = () => {
                     to='/cart' 
                     className='d-flex align-items-center text-white'
                   >
-                      <img src="/images/cart.svg" alt="cart" className='pe-3' />
+                      <img src="/images/cart.svg" alt="cart" className='' />
                       {userCartState && userCartState.length > 0 && userCartState.map((item, index) => {
                           total = item?.price * item.quantity;
                           subTotal += total;

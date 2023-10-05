@@ -943,43 +943,40 @@ footer:not(:first-child) {
 
 /* Dropdown button Starts Here */
 
-.dropbtn {
-  background-color: #3498db;
-  color: white;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
+.dropdown {
+  position: relative;
+  display: inline-block;
 }
 
-/* Dropdown content (hidden by default) */
-.dropdown-content {
+.dropdown .dropdown-menu {
   display: none;
   position: absolute;
-  background-color: #f9f9f9;
-  min-width: 100%;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  top: 100%;
+  left: 10px;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 0px;
   z-index: 1;
-  
 }
 
-/* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {
+/* Show the dropdown menu when the parent dropdown is hovered */
+.dropdown:hover .dropdown-menu {
   display: block;
 }
 
-/* Style the dropdown links */
-.dropdown-content span {
-  color: black;
-  padding: 12px 16px;
+/* Dropdown menu item styles */
+.dropdown-menu li {
+  list-style: none;
+}
+
+.dropdown-menu li span {
   text-decoration: none;
+  color: #333;
+  padding: 8px 16px;
   display: block;
 }
 
-/* Change color of dropdown links on hover */
-.dropdown-content span:hover {
-  background-color: #3498db;
-  color: white;
-  cursor: pointer;
+.dropdown-menu li a:hover {
+  background-color: #f1f1f1;
 }
-
 /* Dropdown button Ends Here */
