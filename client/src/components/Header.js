@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import { NavLink, Link, useNavigate } from 'react-router-dom'
 import {BsSearch} from 'react-icons/bs'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUser } from '../features/user/userSlice'
@@ -9,6 +9,7 @@ import { logoutUser } from '../features/user/userSlice'
 const Header = () => {
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
@@ -22,6 +23,11 @@ const Header = () => {
   const logAUserOut = () => {
     dispatch(logoutUser());
   }
+
+  const redirectToProfile = () => {
+    navigate('/my-profile');
+  };
+
 
   return (
     <>
@@ -47,7 +53,7 @@ const Header = () => {
           <div className='row align-items-center'>
             <div className='col-2'>
               <h2>
-                <Link className='text-white'>DevCorner</Link>
+                <Link className='text-white'>KMX Store</Link>
               </h2>
             </div>
             <div className='col-5'>
@@ -89,33 +95,47 @@ const Header = () => {
                 </div>
                 
                 <div className='ms-3 dropdown'>
-                <Link to='/login' className='d-flex align-items-center gap10 text-white'>
-                  <img src="/images/user.svg" alt="user" />
-                  {userState !== null && userState.user !== null ? (
-                    <div className='dropdown' onMouseEnter={() => setIsDropdownVisible(true)} onMouseLeave={() => setIsDropdownVisible(false)}>
-                            <button className='btn btn-secondary dropdown-toggle bg-transparent border-0 gap-15 d-flex align-items-center' type='button' id='dropdownMenuButton1'>
-                              Welcome, {userState.user.firstname.charAt(0).toUpperCase() + userState.user.firstname.slice(1)} <br />
-                            </button>
-                            <ul className={`dropdown-menu ${isDropdownVisible ? 'show' : ''}`} aria-labelledby='dropdownMenuButton1'>
-                              {/* Dropdown content */}
-                              <li>
-                                <span className='dropdown-item' onClick={logAUserOut}>
-                                  Logout
-                                </span>
-                              </li>
-                            </ul>
-                          </div>
+                  <div 
+                    className={`d-flex align-items-center gap10 text-white dropdown ${isDropdownVisible ? 'show' : ''}`} 
+                    onMouseEnter={() => setIsDropdownVisible(true)} 
+                    onMouseLeave={() => setIsDropdownVisible(false)}
+                  >
+                    <img src="/images/user.svg" alt="user" />
+                    <div className="dropdown-content">
+                      {userState !== null && userState.user !== null ? (
+                        <>
+                          <button 
+                            className='btn btn-secondary dropdown-toggle bg-transparent border-0 gap-15 d-flex align-items-center' 
+                            type='button' 
+                            id='dropdownMenuButton1'
+                            onClick={redirectToProfile}
+                          >
+                            Welcome, {userState.user.firstname.charAt(0).toUpperCase() + userState.user.firstname.slice(1)} <br />
+                          </button>
+                          <ul className='dropdown-menu' aria-labelledby='dropdownMenuButton1'>
+                            {/* Dropdown content */}
+                            <li>
+                              <NavLink to='/my-orders' className='dropdown-item'>My Orders</NavLink>
+                            </li>
+                            <li>
+                              <NavLink to='/my-profile' className='dropdown-item'>My Profile</NavLink>
+                            </li>
+                            <li>
+                              <span className='dropdown-item' onClick={logAUserOut}>
+                                Logout
+                              </span>
+                            </li>
+                          </ul>
+                        </>
+                      ) : (
+                        <div className='d-flex align-items-center gap10 text-white'>
+                          <p className='mb-0'>Login <br /> My Account</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
 
-                    
-                  ) : (
-                    <Link to="/login">
-                      <p className='mb-0 text-white'>  
-                        Login <br /> My Account
-                      </p>
-                    </Link>
-                  )}
-                </Link>
-              </div>
 
                 <div>
                   <Link 

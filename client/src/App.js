@@ -21,8 +21,10 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import SingleProduct from './pages/SingleProduct';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import Orders from './pages/Orders';
 import { PrivateRoutes } from './routing/PrivateRoutes';
 import { OpenRoutes } from './routing/OpenRoutes';
+import Profile from './pages/Profile';
 
 
 
@@ -40,6 +42,8 @@ function App() {
               <Route path="blogs" element = {<Blog />} />
               <Route path="blog/:id" element = {<SingleBlog />} />
               <Route path="cart" element = {<PrivateRoutes> <Cart /> </PrivateRoutes>} />
+              <Route path="my-orders" element = {<PrivateRoutes> <Orders /> </PrivateRoutes>} />
+              <Route path="my-profile" element = {<PrivateRoutes> <Profile /> </PrivateRoutes>} />
               <Route path="checkout" element = {<PrivateRoutes> <Checkout /> </PrivateRoutes>} />
               <Route path="compare-product" element = {<CompareProduct />} />
               <Route path="wishlist" element = {<PrivateRoutes> <Wishlist /> </PrivateRoutes>} />

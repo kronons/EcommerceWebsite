@@ -629,6 +629,20 @@ const blockUser = asyncHandler(async ( req, res ) => {
     }
   });
 
+  const getMyOrders = asyncHandler(async( req, res ) => {
+    const { _id } = req.user;
+    
+    try {
+      const orders = await Order.find({ user: _id}).populate("user").populate("orderItems.product").populate("orderItems.color");
+      res.json({
+        orders
+      })
+    }
+    catch (error) {
+
+    }
+  })
+
 module.exports = { 
     createUser, 
     loginUserCtrl, 
@@ -658,4 +672,5 @@ module.exports = {
     updateOrderStatus,
     getAllOrders,
     getOrderByUserId,
+    getMyOrders,
 };
