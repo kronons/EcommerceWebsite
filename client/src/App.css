@@ -951,8 +951,8 @@ footer:not(:first-child) {
 .dropdown .dropdown-menu {
   display: none;
   position: absolute;
-  top: 100%;
-  left: 10px;
+  width: 75%;
+  margin-left: 6%;
   background-color: white;
   border: 1px solid #ccc;
   padding: 0px;
