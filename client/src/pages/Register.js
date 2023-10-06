@@ -7,6 +7,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from 'react-redux'
 import { registerUser } from "../features/user/userSlice";
+import { Link } from 'react-router-dom'
 
 
 const registerSchema = Yup.object({
@@ -126,6 +127,7 @@ const Register = () => {
                                 <div className=' mt-3 d-flex justify-content-center gap-15 align-items-center'>
                                   <button className='button border-0'>Register</button>
                                 </div>
+                                <Link to='/Login' className='d-flex justify-content-center alight-items mt-2'>Cancel</Link>
                               </div>
                           </form>
                       </div>

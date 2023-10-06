@@ -344,7 +344,7 @@ const blockUser = asyncHandler(async ( req, res ) => {
     try{
       const token = await user.createPasswordResetToken();
       await user.save();
-      const resetURL = `Hi, please click the following link to reset your password. The link will be valid for only 10 minutes. <a href="http://localhost:5000/api/user/reset-password/${token}">Click Here</a>`
+      const resetURL = `Hi, please click the following link to reset your password. The link will be valid for only 10 minutes. <a href="http://localhost:3000/reset-password/${token}">Click Here</a>`
       const data = {
         to: email,
         text: "Hey User",

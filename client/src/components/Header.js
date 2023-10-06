@@ -21,7 +21,9 @@ const Header = () => {
   let totalItems = 0;
 
   const logAUserOut = () => {
-    dispatch(logoutUser());
+    //dispatch(logoutUser());
+    localStorage.clear();
+    window.location.reload();
   }
 
   const redirectToProfile = () => {
@@ -129,7 +131,9 @@ const Header = () => {
                         </>
                       ) : (
                         <div className='d-flex align-items-center gap10 text-white'>
-                          <p className='mb-0'>Login <br /> My Account</p>
+                          <NavLink to="/login">
+                            <p className='mb-0 ms-2  text-white'>Login <br /> My Account</p>
+                          </NavLink>
                         </div>
                       )}
                     </div>

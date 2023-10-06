@@ -36,7 +36,7 @@ const { authMiddleware, isAdmin } = require("../middlewares/AuthMiddlewares");
 const router = express.Router();
 
 router.put("/password", authMiddleware, updatePassword);
-router.put("/reset-password/:token", authMiddleware, resetPassword);
+router.put("/reset-password/:token", resetPassword);
 router.put("/order/update-order/:id", authMiddleware, isAdmin, updateOrderStatus);
 router.put("/edit-user", authMiddleware, updatedUser);
 router.put("/save-address", authMiddleware, saveAddress);
