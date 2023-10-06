@@ -105,14 +105,18 @@ const getAllProduct = asyncHandler(async (req, res) => {
 });
 
 const rating = asyncHandler(async (req, res) => {
-  const { _id } = req.user;
+  const { _id, firstname, lastname } = req.user;
   const { star, prodId, comment } = req.body;
+
+  console.log(_id, firstname, lastname);
+  console.log(star, prodId, comment);
 
   try {
     const product = await Product.findById(prodId);
     let alreadyRated = product.ratings.find(
-      (userId) => userId.postedby.toString() === _id.toString()
+      (userId) => userId.postedbyId.toString() === _id.toString()
     );
+
     if (alreadyRated) {
       // Handle case when the user has already rated the product
       const updateRating = await Product.updateOne(
@@ -135,7 +139,8 @@ const rating = asyncHandler(async (req, res) => {
             ratings: {
               star: star,
               comment: comment,
-              postedby: _id,
+              postedbyId: _id,
+              postedby: firstname + " " +  lastname,
             },
           },
         },

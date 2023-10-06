@@ -748,6 +748,13 @@ footer:not(:first-child) {
 
 /* Main Product Pages Starts Here */
 
+.review-item {
+  margin-bottom: 20px; /* Adjust the spacing between comments */
+  padding: 10px;
+  overflow-wrap: break-word; /* Handles long words and URLs */
+  word-wrap: break-word; /* Handles unbreakable words */
+}
+
 .description-wrapper h4,
 .reviews-wrapper h3 {
   font-size: 26px;
