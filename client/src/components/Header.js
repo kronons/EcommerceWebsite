@@ -1,27 +1,29 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink, Link, useNavigate } from 'react-router-dom'
 import {BsSearch} from 'react-icons/bs'
-import { useDispatch, useSelector } from 'react-redux'
-import { logoutUser } from '../features/user/userSlice'
+import { useSelector } from 'react-redux'
+import { Typeahead } from 'react-bootstrap-typeahead'; 
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 
 
 const Header = () => {
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [productOptions, setProductOptions] = useState([]);
+  const [paginate, setPaginate] = useState(true);
 
   const userCartState = useSelector(state => state.auth.cart);
   const userState = useSelector(state => state.auth);
+  const productState = useSelector(state => state?.product?.products)
 
   let total = 0;
   let subTotal = 0;
   let totalItems = 0;
 
   const logAUserOut = () => {
-    //dispatch(logoutUser());
     localStorage.clear();
     window.location.reload();
   }
@@ -30,6 +32,14 @@ const Header = () => {
     navigate('/my-profile');
   };
 
+  useEffect(() => {
+    let data = [];
+    for(let index = 0; index < productState.length; index++) {
+      const element = productState[index];
+      data.push({id:index,prod:element?._id,name:element?.title})
+    }
+    setProductOptions(data);
+  }, [productState]); 
 
   return (
     <>
@@ -55,18 +65,26 @@ const Header = () => {
           <div className='row align-items-center'>
             <div className='col-2'>
               <h2>
-                <Link className='text-white'>KMX Store</Link>
+                <Link to="/" className='text-white'>KMX Store</Link>
               </h2>
             </div>
             <div className='col-5'>
             <div className="input-group">
-              <input 
-                type="text" 
-                className="form-control py-2" 
-                placeholder="Search Product Name" 
-                aria-label="Search Product Name" 
-                aria-describedby="basic-addon2"
-              />
+            <Typeahead
+              id="pagination-example"
+              onPaginate={() => console.log('Results paginated')}
+              onChange={(selected) => {
+                if(selected[0] !== undefined) {
+                  navigate(`/product/${selected[0].prod}`)
+                }
+                
+              }}
+              options={productOptions}
+              paginate={paginate}
+              labelKey={"name"}
+              minLength={2}
+              placeholder="Search Products..."
+            />
               <span className="input-group-text py-3" id="basic-addon2">
                 <BsSearch className='fs-6'/>
               </span>

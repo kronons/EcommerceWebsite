@@ -92,16 +92,27 @@ const SingleProduct = () => {
           });
       };
 
+    useEffect(() => {
+    // Check if productState.images exists and has at least one image
+    if (productState.images && productState.images.length > 0) {
+        setProps({
+            img: productState.images[0].url // Set the main image to the first image in the productState
+        });
+    }
+}, [productState]);
+
   useEffect(() => {
+
     const handleResize = () => {
       // Update props based on screen size
       if (window.innerWidth < 768) {
         setProps({
-          img: "https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg"
+          img: productState?.images[0]?.url
         });
+
       } else {
         setProps({
-          img: "https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg"
+          img: productState?.images[0]?.url
         });
       }
     };

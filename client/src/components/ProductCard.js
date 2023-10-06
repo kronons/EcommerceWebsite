@@ -29,10 +29,8 @@ function ProductCard(props) {
                             className={` ${location.pathname === '/product' ? `gr-${grid}` : 'col-3'} `}>
                             <Link 
                             to={`${
-                                location.pathname === "/" 
-                                ? `/product/${item?._id}` 
-                                : location.pathname ===  `/product/${item?._id}` 
-                                ?  `/product/${item?._id}` 
+                                location.pathname.startsWith('/product/')
+                                ? `/product/${item?._id}`
                                 : item?._id
                             }`}
                             className='product-card position-relative'>

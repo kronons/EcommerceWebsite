@@ -68,7 +68,7 @@ const Checkout = () => {
       clearTimeout(timer);
       sendOrder();
     }
-  }, [paymentInfo]);
+  }, [paymentInfo, sendOrder]);
 
   const states = [
     'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
