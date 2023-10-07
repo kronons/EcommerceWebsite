@@ -462,8 +462,9 @@ footer:not(:first-child) {
 /* Our Store Starts Here */
 
 .filter-card{
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.044);
   border-radius: 10px;
+  box-shadow: 1px 1px 1px 1px rgb(224, 224, 224);
   padding: 15px 15px 25px;
 }
 
