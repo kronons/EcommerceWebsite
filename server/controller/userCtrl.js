@@ -559,11 +559,11 @@ const blockUser = asyncHandler(async ( req, res ) => {
   const getOrders = asyncHandler(async ( req, res ) => {
     const { _id } = req.user;
     validateMongoDbId(_id);
+
     try {
-      const userOrders = await Order.findOne({ orderby: _id })
-      .populate("products.product")
-      .populate("orderby")
-      .exec();
+      const userOrders = await Order.findOne({ user: _id })
+      
+
       
       res.json(userOrders);
     }
@@ -576,8 +576,8 @@ const blockUser = asyncHandler(async ( req, res ) => {
 
     try {
       const allUserOrders = await Order.find()
-      .populate("products.product")
-      .populate("orderby")
+      
+      .populate("orderItems")
       .exec();
       
       res.json(allUserOrders);
@@ -587,16 +587,14 @@ const blockUser = asyncHandler(async ( req, res ) => {
     }
   });
 
-  const getOrderByUserId = asyncHandler(async ( req, res ) => {
+  const getOrderByOrderId = asyncHandler(async ( req, res ) => {
     const { id } = req.params;
-    validateMongoDbId(id);
 
     try {
-      const userOrders = await Order.findOne({ orderby: id })
-      .populate("products.product")
-      .populate("orderby")
+      const userOrders = await Order.findOne({ _id: id })
+      .populate("orderItems")
       .exec();
-      
+
       res.json(userOrders);
     }
     catch (error) {
@@ -643,6 +641,36 @@ const blockUser = asyncHandler(async ( req, res ) => {
     }
   })
 
+  const getMonthWiseOrderIncome = asyncHandler(async( req, res) => {
+    let monthNames = ["January", "Febuary", "March", "Apirl", "May", "June", "July", "August", "September", "October", "November", "Devember" ]
+    let date = new Date();
+    let endDate = "";
+    date.setDate(1);
+    for (let index = 0; index < monthNames.length; index++) {
+      date.setMonth(date.getMonth() - 1)      
+      endDate = monthNames[date.getMonth()] + " " + date.getFullYear()
+    }
+    const data = await Order.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $lte: new Date(),
+            $gte: new Date(endDate)
+          }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            month: "$month"
+          },
+          amount:{$sum:"totalPriceAfterDiscount"}
+        }
+      }
+    ])
+    res.json(data)
+  })
+
 module.exports = { 
     createUser, 
     loginUserCtrl, 
@@ -671,6 +699,7 @@ module.exports = {
     getOrders,
     updateOrderStatus,
     getAllOrders,
-    getOrderByUserId,
+    getOrderByOrderId,
     getMyOrders,
+    getMonthWiseOrderIncome,
 };

@@ -26,7 +26,7 @@ export const login = createAsyncThunk('auth/admin-login', async ( user, thunkAPI
     }
 });
 
-export const getOrderByUser = createAsyncThunk('user/get-Order-By-User', async ( id, thunkAPI ) => {
+export const getOrderByOrderId = createAsyncThunk('user/get-Order-By-Order-Id', async ( id, thunkAPI ) => {
     try{
         return await authService.getOrder(id);
     }
@@ -87,17 +87,17 @@ export const authSlice = createSlice({
             state.isSuccess = false;
             state.message = action.payload.message;
         })
-        .addCase(getOrderByUser.pending, ( state ) => {
+        .addCase(getOrderByOrderId.pending, ( state ) => {
             state.isLoading = true;
         })
-        .addCase(getOrderByUser.fulfilled, ( state, action ) => {
+        .addCase(getOrderByOrderId.fulfilled, ( state, action ) => {
             state.isError = true;
             state.isLoading = false;
             state.isSuccess = true;
-            state.orderbyuser = action.payload;
+            state.orderbyorderid = action.payload;
             state.message = "success";
         })
-        .addCase(getOrderByUser.rejected, ( state, action ) => {
+        .addCase(getOrderByOrderId.rejected, ( state, action ) => {
             state.isLoading = false;
             state.isError = true;
             state.isSuccess = false;

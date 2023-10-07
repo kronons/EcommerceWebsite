@@ -2,12 +2,13 @@ import React, { useEffect } from 'react';
 import { Table } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { getOrderByUser, resetState } from '../features/auth/authSlice';
+import { getOrderByOrderId, resetState } from '../features/auth/authSlice';
 import { BiArrowBack } from 'react-icons/bi';
+import { getProducts } from '../features/product/productSlice';
 
 const columns = [
   {
-    title: "ID Number",
+    title: "Product ID",
     dataIndex: "key",
   },
   {
@@ -37,31 +38,30 @@ const ViewOrder = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const userId = location.pathname.split("/")[3];
+  const orderId = location.pathname.split("/")[3];
 
   useEffect(() => {
     dispatch(resetState());
-    dispatch(getOrderByUser(userId));
-  }, [dispatch, userId]);
+    dispatch(getOrderByOrderId(orderId));
+    dispatch(getProducts());
+  }, [dispatch, orderId]);
 
-  const orderState = useSelector((state) => state.auth.orderbyuser);
+  const orderState = useSelector((state) => state.auth.orderbyorderid);
+  const productState = useSelector((state) => state.product.products);
 
-  const data = [];
+  const data = orderState?.orderItems?.map(product => {
 
-  if (orderState && orderState.products) {
-    const productsArray = orderState.products;
+    const selectedProduct = productState?.find(p => p._id === product?.product);
 
-    for (const product of productsArray) {
-      data.push({
-        key: product.product._id,
-        productName: product.product.title,
-        productDescription: product.product.description,
-        amount: product.product.price * product.count,
-        date: new Date(orderState.createdAt).toLocaleString(),
-        status: orderState.orderStatus,
-      });
-    }
-  }
+    return {
+      key: product.product,
+      productName: selectedProduct ? selectedProduct.title : "Product Not Found",
+      productDescription: selectedProduct ? selectedProduct.description : "Description Not Found",
+      amount: product.quantity,
+      date: new Date(orderState.createdAt).toLocaleString(), 
+      status: orderState.orderStatus, 
+    };
+  });
 
   const goBack = () => {
     navigate(-1);

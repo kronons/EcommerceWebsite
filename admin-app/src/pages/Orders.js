@@ -6,8 +6,12 @@ import { getOrders } from '../features/auth/authSlice';
 
 const columns = [
   {
-    title: "ID Number",
+    title: "Order Number",
     dataIndex: "key",
+  },
+  {
+    title: "UserId",
+    dataIndex: "userId",
   },
   {
     title: "Name",
@@ -40,11 +44,12 @@ const Orders = () => {
   for (let i = 0; i < orderState.length; i++) {
     data1.push({
       key: orderState[i]._id,
-      name: orderState[i].orderby.firstname,
+      userId: orderState[i].user,
+      name: orderState[i].shippingInfo.firstName + orderState[i].shippingInfo.lastName,
       product: (
-        <Link to={`/admin/order/${orderState[i].orderby._id}`}>View Order</Link>
+        <Link to={`/admin/order/${orderState[i]._id}`}>View Order</Link>
       ),
-      amount: orderState[i].paymentIntent.amount,
+      amount: orderState[i].totalPriceAfterDiscount,
       date: new Date(orderState[i].createdAt).toLocaleString(),
     });
   }

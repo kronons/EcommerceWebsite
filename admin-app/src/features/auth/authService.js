@@ -12,7 +12,7 @@ const login = async(user) => {
 };
 
 const getOrder = async(id) => {
-    const response = await axios.post(`${base_url}user/get-order-by-user/${id}`, "", config);
+    const response = await axios.post(`${base_url}user/get-order-by-order-id/${id}`, "", config);
 
     return response.data;
 };
