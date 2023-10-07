@@ -10,9 +10,36 @@ import { getAllProducts } from '../features/products/productSlice';
 
 
 const OurStore = () => {
+
     const dispatch = useDispatch();
+
     const [ grid , setGrid ] = useState(4);
+    const [ brands, setBrands] = useState([]);
+    const [ categories, setCategories] = useState([]);
+    const [ tags, setTags] = useState([]);
+    const [ tag, setTag] = useState([]);
+
     const productState = useSelector((state) => state.product.products);
+
+    useEffect(() => {
+        let newBrands = [];
+        let newCategories = [];
+        let newTags = [];
+        for (let index = 0; index < productState.length; index++) {
+            const element = productState[index];
+            newBrands.push(element.brand);
+            newCategories.push(element.category);
+            newTags.push(element.tags)
+        };
+    
+        setBrands(newBrands);
+        setCategories(newCategories);
+        setTags(newTags);
+    }, [productState]); 
+    
+    console.log(...new Set(brands),[...new Set(categories)],[...new Set(tags)]);
+
+  
     
     useEffect(() => {
         const getProducts = () => {
@@ -30,14 +57,13 @@ const OurStore = () => {
                     <div className='col-3'>
                         <div className='filter-card mb-3'>
                             <h3 className='filter-title'>Shop By Categories</h3>
-                            <div className='ps-0'>
-                                <ul>
-                                    <li>Watch</li>
-                                    <li>TV</li>
-                                    <li>Camera</li>
-                                    <li>Laptop</li>
-                                </ul>
-                            </div>
+                            <ul className='ps-0'>
+                                {
+                                    categories && [...new Set(categories)].map(( item, index) => {
+                                        return <li key={index} onClick={() => setTag(item)}>{item}</li>
+                                    })
+                                }
+                            </ul>
                         </div>
                         <div className='filter-card mb-3'>
                             <h3 className='filter-title'>Filter By</h3>

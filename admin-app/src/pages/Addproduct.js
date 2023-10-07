@@ -116,7 +116,7 @@ const Addproduct = () => {
       tags: productTags || "",
       color: productColor || "",
       quantity: productQuantity || null,
-      images: productImages || [],
+      images: productImages || null,
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -125,6 +125,7 @@ const Addproduct = () => {
         dispatch(updateProduct(data))
         dispatch(resetState());
         dispatch(resetImageState());
+        navigate('/');
       } 
       else {
         dispatch(createProducts(values));
@@ -137,19 +138,30 @@ const Addproduct = () => {
     },
   });
 
-  function handleDrop(acceptedFiles) {
-    dispatch(uploadImg(acceptedFiles))
-      .then(() => {
-        // Clear the error message for the "images" field
-        formik.setFieldError('images', '');
-        formik.values.images = acceptedFiles;
-        dispatch(uploadImg(acceptedFiles));
-      })
-      .catch((error) => {
-        // Handle the error if the file upload fails
-        // You can display an error message here if needed
-        console.error('File upload failed:', error);
-      });
+  async function handleDrop(acceptedFiles) {
+    try {
+      // Dispatch the action and get the action object
+      const action = await dispatch(uploadImg(acceptedFiles));
+  
+      // Extract the payload from the action object
+      const response = action.payload;
+  
+      // Check the response structure and update formik.values.images
+      if (Array.isArray(response)) {
+        const images = response.map((image) => ({
+          public_id: image.public_id,
+          url: image.url,
+          isDeleted: false, // You can set any additional properties if needed
+        }));
+  
+        // Update formik.values.images with the uploaded images
+        formik.setFieldValue('images', images);
+      } else {
+        console.error('Invalid response structure from server:', response);
+      }
+    } catch (error) {
+      console.error('File upload failed:', error);
+    }
   }
 
 

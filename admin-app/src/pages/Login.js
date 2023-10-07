@@ -1,10 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 import CustomInput from "../components/CustomInput";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { login } from "../features/auth/authSlice";
+
+
+//TODO: Fix login issue with error not displaying when login is incorrect.
 
 const Login = () => {
 
@@ -28,21 +31,22 @@ const Login = () => {
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      dispatch(login(values));
+      const response = dispatch(login(values));
+      response.then((result) => {
+        // Check if the login was fulfilled
+        if (result && result.type === "auth/admin-login/fulfilled") {
+          // Login was successful, navigate to 'admin' page
+          navigate('admin');
+        } else {
+          // Handle login failure, show an error message or perform other actions here
+          console.error("Login failed:", result.payload); // Log the response payload for debugging
+        }
+      }).catch((error) => {
+        // Handle errors if the promise is rejected
+        console.error("Error occurred during login:", error);
+      });
     },
   });
-
-  const authState = useSelector((state) => state);
-  const{ user, isLoading, isError, isSuccess, message } = authState.auth;
-
-  useEffect(() => {
-    if(isSuccess) {
-      navigate('admin');
-    }
-    else {
-      navigate("")
-    }
-  },[user, isLoading, isError, isSuccess, message, navigate ]);
 
   return (
     <div className="py-5" style={{ background: "#ffd333", minHeight: "100vh"}}>
@@ -55,7 +59,6 @@ const Login = () => {
         <h3 className="text-center title">Login</h3>
         <p className="text-center">Login to your account to continue.</p>
         <div className="error text-center">
-          {message.message === "Rejected" ? "You are not an Admin" : ""}
         </div>
         <form action="" onSubmit={formik.handleSubmit}>
           <CustomInput 
