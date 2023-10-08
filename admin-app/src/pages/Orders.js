@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Table } from "antd";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { getOrders } from '../features/auth/authSlice';
+import { getOrders, updateAOrder } from '../features/auth/authSlice';
 
 const columns = [
   {
@@ -29,6 +29,10 @@ const columns = [
     title: "Date",
     dataIndex: "date",
   },
+  {
+    title: "Status",
+    dataIndex: "action",
+  },
 ];
 
 const Orders = () => {
@@ -51,7 +55,27 @@ const Orders = () => {
       ),
       amount: orderState[i].totalPriceAfterDiscount,
       date: new Date(orderState[i].createdAt).toLocaleString(),
+      action: (
+        <>
+          <select 
+            className='form-control form-select'
+            defaultValue={orderState[i]?.orderStatus}
+            onChange={(e) => updateOrderStatus(orderState[i]._id, e.target.value)}
+          >
+              <option value="Ordered" disabled>Ordered</option>
+
+              <option value="Processed">Processed</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Out For Delivery">Out For Delivery</option>
+              <option value="Delivered">Delivered</option>
+          </select>
+        </>
+        ),
     });
+  }
+
+  const updateOrderStatus = (id, status) => {
+    dispatch(updateAOrder({id: id, status: status}))
   }
 
   return (

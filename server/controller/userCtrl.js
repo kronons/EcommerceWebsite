@@ -575,7 +575,7 @@ const blockUser = asyncHandler(async ( req, res ) => {
   const getAllOrders = asyncHandler(async ( req, res ) => {
 
     try {
-      const allUserOrders = await Order.find()
+      const allUserOrders = await Order.find().populate("user")
       
       .populate("orderItems")
       .exec();
@@ -606,6 +606,9 @@ const blockUser = asyncHandler(async ( req, res ) => {
     const { status } = req.body;
     const { id } = req.params;
     validateMongoDbId(id);
+
+    console.log(status)
+    console.log(id)
 
     try {
       const updateOrderStatus = await Order.findByIdAndUpdate(
@@ -640,6 +643,7 @@ const blockUser = asyncHandler(async ( req, res ) => {
 
     }
   })
+
 
   const getMonthlyStatistics = asyncHandler(async( req, res) => {
     let monthNames = ["January", "Febuary", "March", "Apirl", "May", "June", "July", "August", "September", "October", "November", "December" ]
@@ -694,9 +698,6 @@ const blockUser = asyncHandler(async ( req, res ) => {
       date.setMonth(date.getMonth() - 1)      
       endDate = monthNames[date.getMonth()] + " " + date.getFullYear()
     }
-
-
-    console.log(endDate);
 
     const data = await Order.aggregate([
       {

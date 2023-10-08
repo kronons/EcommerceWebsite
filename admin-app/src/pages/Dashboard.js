@@ -3,22 +3,26 @@ import { AiOutlineArrowRight } from "react-icons/ai"
 import { Column } from "@ant-design/plots";
 import { Table } from "antd";
 import { useDispatch, useSelector } from "react-redux"
-import { getAMonthlyStats, getAYearlyStats } from "../features/auth/authSlice";
+import { getAMonthlyStats, getAYearlyStats, getOrders } from "../features/auth/authSlice";
 
 
 
 const columns = [
   {
-    title: "Serical Number",
-    dataIndex: "key",
+    title: "Order Id",
+    dataIndex: "orderId",
   },
   {
     title: "Name",
     dataIndex: "name",
   },
   {
-    title: "Product",
+    title: "Number Of Products",
     dataIndex: "product",
+  },
+  {
+    title: "Total Price",
+    dataIndex: "price",
   },
   {
     title: "Status",
@@ -41,13 +45,16 @@ const Dashboard = () => {
 
   const monthlyDataState = useSelector(state => state?.auth?.monthlyData);
   const yearlyDataState = useSelector(state => state?.auth?.yearlyData);
+  const orderState = useSelector(state => state?.auth?.orders);
 
   const [ totalIncome, setTotalIncome ] = useState([]);
   const [ totalSales, setTotalSales ] = useState([]);
+  const [ orderData, setOrderData ] = useState([]);
 
   useEffect(() => {
     dispatch(getAMonthlyStats());
     dispatch(getAYearlyStats());
+    dispatch(getOrders())
   },[])
 
   useEffect(() => {
@@ -74,6 +81,19 @@ const Dashboard = () => {
 
         setTotalIncome(holdIncome);
         setTotalSales(holdSales);
+    }
+
+    let holdOrder = [];
+    for (let index = 0; index < orderState.length; index++) {
+      holdOrder.push({
+        orderId: orderState[index]._id,
+        name: orderState[index].user.firstname + " " + orderState[index].user.lastname,
+        product: orderState[index].orderItems?.length,
+        price: orderState[index]?.totalPrice,
+        dprice: orderState[index]?.totalPriceAfterDiscount,
+        status: orderState[index]?.orderStatus,
+      });
+      setOrderData(holdOrder);
     }
 
 }, [monthlyDataState]);
@@ -151,7 +171,11 @@ const Dashboard = () => {
       <div className="d-flex justify-content-between align-items-center gap-3">
         <div className="d-flex justify-content-between align-items-end flex-grow-1 bg-white p-3 rounded-3">
           <div>
-            <p className="desc">Total Income</p> <h4 className="mb-0 sub-title">$ {yearlyDataState[0].amount}</h4> 
+            { yearlyDataState !== null && yearlyDataState !== undefined &&
+              <div>
+                <p className="desc">Total Income</p> <h4 className="mb-0 sub-title">$ {yearlyDataState[0]?.amount}</h4> 
+              </div>
+            }
        </div> 
           <div className="d-flex flex-column align-items-end">
             <p className="mb-0 desc">Income Last Year <AiOutlineArrowRight /> Today</p>
@@ -159,7 +183,11 @@ const Dashboard = () => {
         </div>
         <div className="d-flex justify-content-between align-items-end flex-grow-1 bg-white p-3 rounded-3">
           <div>
-            <p className="desc">Total Sales</p> <h4 className="mb-0 sub-title">{yearlyDataState[0].count}</h4> 
+            { yearlyDataState !== null && yearlyDataState !== undefined &&
+              <div>
+                <p className="desc">Total Income</p> <h4 className="mb-0 sub-title">$ {yearlyDataState[0]?.count}</h4> 
+              </div>
+            }
           </div> 
           <div className="d-flex flex-column align-items-end">
             <p className="mb-0 desc">Sales Last Year <AiOutlineArrowRight /> Today</p>
@@ -185,7 +213,7 @@ const Dashboard = () => {
         <div>
           <Table 
               columns={columns} 
-              dataSource={data1} 
+              dataSource={orderData} 
             />
         </div>
       </div>
