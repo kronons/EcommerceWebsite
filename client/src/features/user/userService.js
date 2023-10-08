@@ -26,6 +26,7 @@ const login = async(userData) => {
 };
 
 const logout = async () => {
+
     try {
       const response = await axios.get(`${base_url}user/logout`, config);
       if(response.data){
@@ -113,20 +114,24 @@ const createOrder = async(orderDetail) => {
 }
 
 const getUserOrders = async () => {
+
     const response = await axios.get(`${base_url}user/get-my-orders`, config);
     if(response.data) {
         return response.data;
     }
 }
 
-const updateUser = async(data) => {
-    const response = await axios.put(`${base_url}user/edit-user`, data, config);
+const updateUser = async(userData) => {
+    console.log(config);
+    const response = await axios.put(`${base_url}user/edit-user`, userData,  config);
     if(response.data) {
+
         return response.data;
     }
 }
 
 const forgotPasswordToken = async(data) => {
+
     const response = await axios.post(`${base_url}user/forgot-password-token`, data);
     if(response.data) {
         return response.data;

@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Breadcrumb from '../components/Breadcrumb'
 import Meta from '../components/Meta'
 import Container from '../components/Container'
 import { CustomInput } from '../components/CustomInput'
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { registerUser } from "../features/user/userSlice";
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 
 const registerSchema = Yup.object({
@@ -22,6 +22,9 @@ const registerSchema = Yup.object({
 const Register = () => {
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const authState = useSelector(state => state.auth);
 
   const formik = useFormik({
     initialValues: {
@@ -36,6 +39,14 @@ const Register = () => {
       dispatch(registerUser(values));
     },
   });
+
+  useEffect(() => {
+    if(authState.createdUser !== undefined && authState.isError === false ){
+      navigate("/login");
+    }
+  }, [authState, navigate])
+
+
 
   return (
     <>

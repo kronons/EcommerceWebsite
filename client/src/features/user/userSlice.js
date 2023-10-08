@@ -119,10 +119,10 @@ export const getOrders  = createAsyncThunk("user/order/get", async ( thunkAPI ) 
     }
 });
 
-export const updateAUser  = createAsyncThunk("user/profile/update", async ( data, thunkAPI ) => {
+export const updateAUser  = createAsyncThunk("user/profile/update", async ( userData, thunkAPI ) => {
 
     try{
-        return await authService.updateUser(data);
+        return await authService.updateUser(userData);
     }
     catch(error) {
         return thunkAPI.rejectWithValue(error);
@@ -171,7 +171,7 @@ export const authslice = createSlice({
             state.isError = false;
             state.isSuccess = true;
             state.createdUser = action.payload;
-            if(state.isSuccess === true) {
+            if(state.isSuccess) {
                 toast.info("User Created Successfully");
             }
         })
@@ -180,8 +180,8 @@ export const authslice = createSlice({
             state.isError = true;
             state.isSuccess = false;
             state.message = action.error;
-            if(state.isError === true) {
-                toast.error(action.error);
+            if(state.isError) {
+                toast.error("Cannot Register Account, Please Try Again.");
             }
         })
         .addCase(loginUser.pending, ( state ) => {
@@ -192,7 +192,7 @@ export const authslice = createSlice({
             state.isError = false;
             state.isSuccess = true;
             state.user = action.payload;
-            if(state.isSuccess === true) {
+            if(state.isSuccess) {
                 localStorage.setItem("token", action.payload.token);
                 toast.info("User Logged In Successfully");
             }
@@ -201,9 +201,9 @@ export const authslice = createSlice({
             state.isLoading = false;
             state.isError = true;
             state.isSuccess = false;
-            state.message = action.error;
-            if(state.isError === true) {
-                toast.error("Error Logging In. Try Again");
+            state.message = action.payload.message;
+            if(state.isError) {
+                toast.error("Incorrect Login, Try again");
             }
         })
         .addCase(logoutUser.pending, ( state ) => {
@@ -214,7 +214,7 @@ export const authslice = createSlice({
             state.isError = false;
             state.isSuccess = true;
             state.user = null;
-            if(state.isSuccess === true) {
+            if(state.isSuccess) {
                 toast.info("User Logged Out Successfully");
             }
         })
@@ -223,7 +223,7 @@ export const authslice = createSlice({
             state.isError = true;
             state.isSuccess = false;
             state.message = action.error;
-            if(state.isError === true) {
+            if(state.isError) {
                 toast.error("Error Logging Out. Try Again");
             }
         })
@@ -241,7 +241,7 @@ export const authslice = createSlice({
             state.isError = true;
             state.isSuccess = false;
             state.message = action.error;
-            if(state.isError === true) {
+            if(state.isError) {
                 toast.error(action.error);
             }
         })
@@ -259,7 +259,7 @@ export const authslice = createSlice({
             state.isError = true;
             state.isSuccess = false;
             state.message = action.error;
-            if(state.isError === true) {
+            if(state.isError) {
                 toast.error(action.error);
             }
         })
@@ -280,7 +280,7 @@ export const authslice = createSlice({
             state.isError = true;
             state.isSuccess = false;
             state.message = action.error;
-            if(state.isError === true) {
+            if(state.isError) {
                 toast.error(action.error);
             }
         })
@@ -298,7 +298,7 @@ export const authslice = createSlice({
             state.isError = true;
             state.isSuccess = false;
             state.message = action.error;
-            if(state.isError === true) {
+            if(state.isError) {
                 toast.error(action.error);
             }
         })
@@ -319,7 +319,7 @@ export const authslice = createSlice({
             state.isError = true;
             state.isSuccess = false;
             state.message = action.error;
-            if(state.isError === true) {
+            if(state.isError) {
                 toast.error(action.error);
             }
         })
@@ -340,7 +340,7 @@ export const authslice = createSlice({
             state.isError = true;
             state.isSuccess = false;
             state.message = action.error;
-            if(state.isError === true) {
+            if(state.isError) {
                 toast.error(action.error);
             }
         })
@@ -361,7 +361,7 @@ export const authslice = createSlice({
             state.isError = true;
             state.isSuccess = false;
             state.message = action.error;
-            if(state.isError === true) {
+            if(state.isError) {
                 toast.error(action.error);
             }
         })
@@ -382,7 +382,7 @@ export const authslice = createSlice({
             state.isError = true;
             state.isSuccess = false;
             state.message = action.error;
-            if(state.isError === true) {
+            if(state.isError) {
                 toast.error(action.error);
             }
         })
@@ -409,7 +409,8 @@ export const authslice = createSlice({
             state.isError = false;
             state.isSuccess = true;
             state.updatedUser = action.payload;
-            if(state.isSuccess === true) {
+            if(state.isSuccess) {
+                localStorage.setItem("customer", JSON.stringify(state.updatedUser));
                 toast.success("Profile Updated Successfully");
             }
         })
@@ -418,7 +419,7 @@ export const authslice = createSlice({
             state.isError = true;
             state.isSuccess = false;
             state.message = action.error;
-            if(state.isError === true) {
+            if(state.isError) {
                 toast.error("Error Updating Profile. Try Again");
             }
         })
@@ -430,7 +431,7 @@ export const authslice = createSlice({
             state.isError = false;
             state.isSuccess = true;
             state.passwordToken = action.payload;
-            if(state.isSuccess === true) {
+            if(state.isSuccess) {
                 toast.success("Forgot Password Email Sent Successfully");
             }
         })
@@ -439,7 +440,7 @@ export const authslice = createSlice({
             state.isError = true;
             state.isSuccess = false;
             state.message = action.error;
-            if(state.isError === true) {
+            if(state.isError) {
                 toast.error("Forgot Password Sent Unsuccessfully. Try Again");
             }
         })
@@ -451,7 +452,7 @@ export const authslice = createSlice({
             state.isError = false;
             state.isSuccess = true;
             state.pass = action.payload;
-            if(state.isSuccess === true) {
+            if(state.isSuccess) {
                 toast.success("Reset Password Successfull");
             }
         })
@@ -460,7 +461,7 @@ export const authslice = createSlice({
             state.isError = true;
             state.isSuccess = false;
             state.message = action.error;
-            if(state.isError === true) {
+            if(state.isError) {
                 toast.error("Forgot Password Reset Unsuccessfull. Try Again");
             }
         })
