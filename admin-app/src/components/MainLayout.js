@@ -27,14 +27,21 @@ const MainLayout = () => {
 
   const navigate = useNavigate();
 
+  const logAUserOut = () => {
+    navigate("/");
+    localStorage.clear();
+    window.location.reload();
+    
+  }
+
   return (
     // Commented out code is to disable right click on website
     <Layout /* onContextMenu={(e) => e.preventDefault()} */>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo">
           <h2 className="text-white fs-5 text-center py-3 mb-0">
-            <span className="sm-logo">DC</span>
-            <span className="lg-logo">Dev Corner</span>
+            <span className="sm-logo">KMX</span>
+            <span className="lg-logo">KMX Admin Panel</span>
           </h2>
         </div>
         
@@ -206,8 +213,8 @@ const MainLayout = () => {
                 <p className="mb-0">kongmengxiong479@gmail.com</p>
               </div>
                 <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                  <li><Link className="dropdown-item py-1 mb-1" style={{height: "auto", lineHeight: "20px"}} to="/">View Profile</Link></li>
-                  <li><Link className="dropdown-item py-1 mb-1" style={{height: "auto", lineHeight: "20px"}} to="/">Log Out</Link></li>
+                  <li><Link className="dropdown-item py-1 mb-1" style={{height: "auto", lineHeight: "20px"}} to="/">View Profile (WIP)</Link></li>
+                  <li><p className="dropdown-item py-1 mb-1" style={{height: "auto", lineHeight: "20px"}} onClick={logAUserOut}>Log Out</p></li>
               </div>
             </div>
           </div>

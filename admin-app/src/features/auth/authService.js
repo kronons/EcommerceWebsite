@@ -27,8 +27,7 @@ const getOrders = async() => {
 };
 
 const updateOrder = async(id, status) => {
-    console.log(id);
-    console.log(status);
+
     const response = await axios.put(`${base_url}user/order/update-order/${id}`, {status: status}, config);
 
     return response.data;

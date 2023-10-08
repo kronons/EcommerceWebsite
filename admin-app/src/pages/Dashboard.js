@@ -55,7 +55,7 @@ const Dashboard = () => {
     dispatch(getAMonthlyStats());
     dispatch(getAYearlyStats());
     dispatch(getOrders())
-  },[])
+  },[dispatch])
 
   useEffect(() => {
     let monthNames = [
@@ -96,7 +96,7 @@ const Dashboard = () => {
       setOrderData(holdOrder);
     }
 
-}, [monthlyDataState]);
+}, [monthlyDataState, orderState]);
 
   
   const income = {

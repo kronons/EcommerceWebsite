@@ -47,8 +47,7 @@ export const getOrders = createAsyncThunk('user/get-all-orders', async ( thunkAP
 });
 
 export const updateAOrder = createAsyncThunk('user/update-orders', async ( {id, status}, thunkAPI ) => {
-    console.log(id);
-    console.log(status);
+
     try{
         return await authService.updateOrder(id, status);
     }
@@ -92,17 +91,18 @@ export const authSlice = createSlice({
             state.isSuccess = true;
             state.user = action.payload;
             if(state.isSuccess) {
-                toast.success("Logged In Successfully")
+                setTimeout(() => {
+                    window.location.reload();
+                  }, 1); // 2000 milliseconds = 2 seconds
             }
         })
-        .addCase(login.rejected, ( state, action ) => {
+        .addCase(login.rejected, (state, action) => {
             state.isLoading = false;
             state.isError = true;
             state.isSuccess = false;
             state.user = null;
-            if(!state.isSuccess) {
-                toast.success("Unable To Login. Try Again.")
-            }
+            state.message = action.payload ? action.payload.message : "Unknown error occurred";
+            toast.error("Unable To Login. Try Again."); 
         })
         .addCase(getOrders.pending, ( state ) => {
             state.isLoading = true;
