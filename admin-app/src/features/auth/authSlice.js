@@ -44,6 +44,24 @@ export const getOrders = createAsyncThunk('user/get-all-orders', async ( thunkAP
     }
 });
 
+export const getAMonthlyStats = createAsyncThunk('user/get-monthly-stats', async ( thunkAPI ) => {
+    try{
+        return await authService.getMonthlyStats();
+    }
+    catch (error) {
+        return thunkAPI.rejectWithValue(error);
+    }
+});
+
+export const getAYearlyStats = createAsyncThunk('user/get-yearly-stats', async ( thunkAPI ) => {
+    try{
+        return await authService.getYearlyStats();
+    }
+    catch (error) {
+        return thunkAPI.rejectWithValue(error);
+    }
+});
+
 export const resetState = createAction("Reset_All");
 
 export const authSlice = createSlice({
@@ -98,6 +116,38 @@ export const authSlice = createSlice({
             state.message = "success";
         })
         .addCase(getOrderByOrderId.rejected, ( state, action ) => {
+            state.isLoading = false;
+            state.isError = true;
+            state.isSuccess = false;
+            state.message = action.error;
+        })
+        .addCase(getAMonthlyStats.pending, ( state ) => {
+            state.isLoading = true;
+        })
+        .addCase(getAMonthlyStats.fulfilled, ( state, action ) => {
+            state.isError = true;
+            state.isLoading = false;
+            state.isSuccess = true;
+            state.monthlyData = action.payload;
+            state.message = "success";
+        })
+        .addCase(getAMonthlyStats.rejected, ( state, action ) => {
+            state.isLoading = false;
+            state.isError = true;
+            state.isSuccess = false;
+            state.message = action.error;
+        })
+        .addCase(getAYearlyStats.pending, ( state ) => {
+            state.isLoading = true;
+        })
+        .addCase(getAYearlyStats.fulfilled, ( state, action ) => {
+            state.isError = true;
+            state.isLoading = false;
+            state.isSuccess = true;
+            state.yearlyData = action.payload;
+            state.message = "success";
+        })
+        .addCase(getAYearlyStats.rejected, ( state, action ) => {
             state.isLoading = false;
             state.isError = true;
             state.isSuccess = false;

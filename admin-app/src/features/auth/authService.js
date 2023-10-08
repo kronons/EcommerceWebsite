@@ -23,11 +23,24 @@ const getOrders = async() => {
     return response.data;
 };
 
+const getMonthlyStats = async() => {
+    const response = await axios.get(`${base_url}user/get-monthly-statistics`, config);
+
+    return response.data;
+};
+
+const getYearlyStats = async() => {
+    const response = await axios.get(`${base_url}user/get-yearly-statistics`, config);
+
+    return response.data;
+};
 
 const authService = {
     login,
     getOrder,
     getOrders,
+    getMonthlyStats,
+    getYearlyStats,
 };
 
 export default authService;

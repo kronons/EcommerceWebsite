@@ -641,8 +641,8 @@ const blockUser = asyncHandler(async ( req, res ) => {
     }
   })
 
-  const getMonthWiseOrderIncome = asyncHandler(async( req, res) => {
-    let monthNames = ["January", "Febuary", "March", "Apirl", "May", "June", "July", "August", "September", "October", "November", "Devember" ]
+  const getMonthlyStatistics = asyncHandler(async( req, res) => {
+    let monthNames = ["January", "Febuary", "March", "Apirl", "May", "June", "July", "August", "September", "October", "November", "December" ]
     let date = new Date();
     let endDate = "";
     date.setDate(1);
@@ -650,6 +650,54 @@ const blockUser = asyncHandler(async ( req, res ) => {
       date.setMonth(date.getMonth() - 1)      
       endDate = monthNames[date.getMonth()] + " " + date.getFullYear()
     }
+
+
+    const data = await Order.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $lte: new Date(),
+            $gte: new Date(endDate)
+          }
+        }
+      },
+      {
+        $project: {
+          month: { $month: "$createdAt" }, // Extract month from createdAt field
+          year: { $year: "$createdAt" }, // Extract month from createdAt field
+          totalPriceAfterDiscount: 1 // Include the field you want to sum
+        }
+      },
+      {
+        $group: {
+          _id: {
+            month: "$month",
+            year: "$year"
+          },
+          amount: { $sum: "$totalPriceAfterDiscount" },
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+    res.json(data)
+  })
+
+
+  const getYearlyStatistics = asyncHandler(async( req, res) => {
+    let monthNames = ["January", "Febuary", "March", "Apirl", "May", "June", "July", "August", "September", "October", "November", "December" ]
+    let date = new Date();
+    let endDate = "";
+
+    date.setDate(1);
+    
+    for (let index = 0; index <= 11; index++) {
+      date.setMonth(date.getMonth() - 1)      
+      endDate = monthNames[date.getMonth()] + " " + date.getFullYear()
+    }
+
+
+    console.log(endDate);
+
     const data = await Order.aggregate([
       {
         $match: {
@@ -661,13 +709,12 @@ const blockUser = asyncHandler(async ( req, res ) => {
       },
       {
         $group: {
-          _id: {
-            month: "$month"
-          },
-          amount:{$sum:"totalPriceAfterDiscount"}
+          _id: null,
+          count: { $sum: 1 },
+          amount: {$sum : "$totalPriceAfterDiscount"}
         }
       }
-    ])
+    ]);
     res.json(data)
   })
 
@@ -701,5 +748,6 @@ module.exports = {
     getAllOrders,
     getOrderByOrderId,
     getMyOrders,
-    getMonthWiseOrderIncome,
+    getMonthlyStatistics,
+    getYearlyStatistics,
 };
