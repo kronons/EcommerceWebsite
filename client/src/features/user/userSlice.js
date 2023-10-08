@@ -331,9 +331,9 @@ export const authslice = createSlice({
             state.isError = false;
             state.isSuccess = true;
             state.cart = action.payload;
-            if (state.isSuccess) {
-                toast.success("Cart Emptied Successfully")
-            }
+            // if (state.isSuccess) {
+            //     toast.success("Cart Emptied Successfully")
+            // }
         })
         .addCase(emptyCart.rejected, ( state, action ) => {
             state.isLoading = false;
