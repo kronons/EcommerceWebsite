@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink, Link, useNavigate } from 'react-router-dom'
-import {BsSearch} from 'react-icons/bs'
+import { BsSearch } from 'react-icons/bs'
+import { BiCategoryAlt} from 'react-icons/bi'
 import { useSelector } from 'react-redux'
 import { Typeahead } from 'react-bootstrap-typeahead'; 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
@@ -11,13 +12,33 @@ const Header = () => {
 
   const navigate = useNavigate();
 
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const [productOptions, setProductOptions] = useState([]);
-  const [paginate, setPaginate] = useState(true);
-
+  // States
   const userCartState = useSelector(state => state.auth.cart);
   const userState = useSelector(state => state.auth);
   const productState = useSelector(state => state?.product?.products)
+
+  // State Variables
+  const [isUserMenuVisible, setIsUserMenuVisible] = useState(false);
+  const [productOptions, setProductOptions] = useState([]);
+  const [paginate, setPaginate] = useState(true);
+  const [categories, setCategories] = useState([]);
+
+  const [isCustomDropdownVisible, setIsCustomDropdownVisible] = useState(false);
+
+
+
+  useEffect(() => {
+
+    let newCategories = [];
+
+    for (let index = 0; index < productState.length; index++) {
+        const element = productState[index];
+        newCategories.push(element.category);
+    };
+    const uniqueCategories = Array.from(new Set(newCategories));
+    setCategories(uniqueCategories);
+}, [productState]); 
+
 
   let total = 0;
   let subTotal = 0;
@@ -75,6 +96,7 @@ const Header = () => {
               onPaginate={() => console.log('Results paginated')}
               onChange={(selected) => {
                 if(selected[0] !== undefined) {
+                  setPaginate(selected[0]);
                   navigate(`/product/${selected[0].prod}`)
                 }
                 
@@ -116,9 +138,9 @@ const Header = () => {
                 
                 <div className='ms-3 dropdown'>
                   <div 
-                    className={`d-flex align-items-center gap10 text-white dropdown ${isDropdownVisible ? 'show' : ''}`} 
-                    onMouseEnter={() => setIsDropdownVisible(true)} 
-                    onMouseLeave={() => setIsDropdownVisible(false)}
+                    className={`d-flex align-items-center gap10 text-white dropdown ${isUserMenuVisible ? 'show' : ''}`} 
+                    onMouseEnter={() => setIsUserMenuVisible(true)} 
+                    onMouseLeave={() => setIsUserMenuVisible(false)}
                   >
                     <img src="/images/user.svg" alt="user" />
                     <div className="dropdown-content">
@@ -184,40 +206,39 @@ const Header = () => {
       </div>
     </header>
     <header className='header-bottom py-3'>
-      <div className='container-xxl'>
-        <div className='row'>
-          <div className='col-12'>
-            <div className='menu-bottom d-flex align-items-center gap-30'>
-              <div>
-                <div className="dropdown">
-                  <button 
-                    className="btn btn-secondary dropdown-toggle bg-transparent border-0 gap-15 d-flex align-items-center" 
-                    type="button" id="dropdownMenuButton1" 
-                    data-bs-toggle="dropdown" 
-                    aria-expanded="false"
-                  >
-                    <img src='images/menu.svg' alt='' />
-                    <span className='me-5 d-inline-block'>Shop Categories</span>
-                  </button>
-                  <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li>
-                      <Link className="dropdown-item text-white" to="#">
-                        Action 
-                      </Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item text-white" to="#">
-                        Another action
-                      </Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item text-white" to="#">
-                        Something else here
-                      </Link>
-                    </li>
+        <div className='container-xxl'>
+          <div className='row'>
+            <div className='col-12'>
+              <div className="menu-bottom d-flex align-items-center gap-30">
+                <div className='ms-3 custom-dropdown'> {/* Renamed the class here */}
+                  <div className={`d-flex align-items-center gap10 text-white custom-dropdown ${isCustomDropdownVisible ? 'show' : ''}`}>
+                    <button className="btn btn-secondary bg-transparent border-0 gap-15 d-flex align-items-center" 
+                      type="button" 
+                      onClick={() => setIsCustomDropdownVisible(!isCustomDropdownVisible)}
+                    >
+                      <img src="images/menu.svg" alt="" />
+                      <span className="me-5 d-inline-flex align-items-center">
+                        <BiCategoryAlt size={25} style={{ marginRight: '5px' }} />
+                        Shop Categories
+                      </span>
+                    </button>
+                    {isCustomDropdownVisible && (
+                      <ul className="dropdown-menu2" aria-labelledby="dropdownMenuButton1">
+                      {categories.map((category, index) => (
+                          <li className="dropdown-item2 " key={index}>
+                              <Link 
+                                to={`/product/${category}`} 
+                                className='text-dark'
+                                onClick={() => setIsCustomDropdownVisible(!isCustomDropdownVisible)}
+                              >
+                                {category}
+                              </Link>
+                          </li>
+                      ))}
                   </ul>
+                    )}
+                  </div>
                 </div>
-              </div>
               <div className='menu-links'>
                 <div className='d-flex align-items-center gap 15'>
                   <NavLink to='/'>Home</NavLink>

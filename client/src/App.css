@@ -101,8 +101,35 @@ a{
   height: 35px;
 }
 
+  /* Categories Menu and Links   */
+
+  .custom-dropdown {
+    position: relative;
+  }
+  
+  .custom-dropdown .dropdown-menu2 {
+    position: absolute;
+    margin-top: 100%;
+    width: 100%;
+    background-color: #fff; /* Background color of the dropdown */
+    border: 1px solid #ccc; /* Border color */
+    padding: 10px;
+    z-index: 1000; /* Ensure the dropdown appears above other elements */
+  }
+  
+  .custom-dropdown .dropdown-item2 {
+    color: #000000; /* Text color of dropdown items */
+    padding: 8px 12px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .custom-dropdown .dropdown-item2:hover {
+    background-color: #bdbbbb; /* Background color on hover */
+  }
+
 .header-bottom .menu-links a,
-.header-bottom .dropdown button
+.header-bottom .dropdown2 button
 {
   color: white;
   font-size: 14px;
@@ -112,32 +139,67 @@ a{
   padding-right: 1em;
 }
 
-.header-bottom .dropdown button:focus {
+.header-bottom .dropdown2 button:focus {
   box-shadow: none;
 }
 
-.header-bottom .dropdown-menu {
-  background-color: var(--color-131921);
-  width: 100%;
+.header-bottom .dropdown-menu2 {
+  border-radius: 10px;
+  background-color: white;
+  cursor: pointer;
   transform: translate3d(0px, 57px, 0px) !important;
 }
 
-.header-bottom .dropdown-item {
+.header-bottom .dropdown-item2 {
   padding: 20px;
-  margin-bottom: 3px;
-  border-bottom: 1px solid var(--color-3b4149);
+  border-radius: 10px;
 }
 
-.header-bottom .dropdown-item:hover {
-  background-color: transparent;
-  color: var(--color-febd69) !important;
+/** User Menu **/
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown .dropdown-menu {
+  display: none;
+  position: absolute;
+  width: 75%;
+  margin-left: 6%;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 0px;
+  z-index: 1;
+  cursor: pointer;
+}
+
+/* Show the dropdown menu when the parent dropdown is hovered */
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+/* Dropdown menu item styles */
+.dropdown-menu li {
+  list-style: none;
+}
+
+.dropdown-menu li span {
+  text-decoration: none;
+  color: #333;
+  padding: 8px 16px;
+  display: block;
+}
+
+.dropdown-menu li a:hover {
+  background-color: #f1f1f1;
 }
 
 /* Header Part Ends Here */
 
 
 
-/* Footer Part Starts Here*/
+/*** Footer Part Starts Here ***/
 
 footer{
   background-color: var(--color-232f3e);
@@ -343,6 +405,10 @@ footer:not(:first-child) {
 
 
 /* Product Card Part Starts Here */
+
+.pbuttons {
+  cursor: pointer;
+}
 
 .product-card{
   padding: 15px;
@@ -948,47 +1014,6 @@ footer:not(:first-child) {
 }
 
 /* Shipping Page Ends Here */
-
-/* Dropdown button Starts Here */
-
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown .dropdown-menu {
-  display: none;
-  position: absolute;
-  width: 75%;
-  margin-left: 6%;
-  background-color: white;
-  border: 1px solid #ccc;
-  padding: 0px;
-  z-index: 1;
-  cursor: pointer;
-}
-
-/* Show the dropdown menu when the parent dropdown is hovered */
-.dropdown:hover .dropdown-menu {
-  display: block;
-}
-
-/* Dropdown menu item styles */
-.dropdown-menu li {
-  list-style: none;
-}
-
-.dropdown-menu li span {
-  text-decoration: none;
-  color: #333;
-  padding: 8px 16px;
-  display: block;
-}
-
-.dropdown-menu li a:hover {
-  background-color: #f1f1f1;
-}
-/* Dropdown button Ends Here */
 
 /* Orders Start Here */
 

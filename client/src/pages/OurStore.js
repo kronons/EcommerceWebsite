@@ -7,6 +7,7 @@ import Color from '../components/Color';
 import Container from '../components/Container';
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllProducts } from '../features/products/productSlice';
+import { useParams } from 'react-router-dom';
 
 
 const OurStore = () => {
@@ -20,6 +21,8 @@ const OurStore = () => {
     const [ categories, setCategories] = useState([]);
     const [ tags, setTags] = useState([]);
     const [ color, setColor] = useState([]);
+
+    const { categoryHome } = useParams();
     
     // Filter States
     const [ tag, setTag] = useState(null);
@@ -51,6 +54,7 @@ const OurStore = () => {
     
     
     useEffect(() => {
+        setCategory(categoryHome);
         getProducts();
     }, [sort,tag,brand,category,minPrice,maxPrice]);
 
@@ -137,7 +141,7 @@ const OurStore = () => {
                                         <div className='product-tags d-flex flex-wrap align-items-center gap-10'>
                                         {
                                             tags && [...new Set(tags)].map(( item, index) => {
-                                                return (<span onClick={() => setTag(item)} key={index} className='text-capitalize badge bg-light text-secondary rounded-3 py-2 px-3'>{item}</span>)
+                                                return (<span onClick={() => setTag(item)} key={index} className='pbuttons text-capitalize badge bg-light text-secondary rounded-3 py-2 px-3'>{item}</span>)
                                             })
                                         }
                                         </div>
@@ -151,7 +155,7 @@ const OurStore = () => {
                                         <div className='product-tags d-flex flex-wrap align-items-center gap-10'>
                                         {
                                             brands && [...new Set(brands)].map(( item, index) => {
-                                                return (<span onClick={() => setBrand(item)} key={index} className='text-capitalize badge bg-light text-secondary rounded-3 py-2 px-3'>{item}</span>)
+                                                return (<span onClick={() => setBrand(item)} key={index} className='pbuttons text-capitalize badge bg-light text-secondary rounded-3 py-2 px-3'>{item}</span>)
                                             })
                                         }
                                         </div>

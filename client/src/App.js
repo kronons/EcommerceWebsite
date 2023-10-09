@@ -38,6 +38,7 @@ function App() {
               <Route path="about" element = {<About />} />
               <Route path="contact" element = {<Contact />} />
               <Route path="product" element = {<OurStore />} />
+              <Route path="product/:categoryHome" element={<OurStore />} />
               <Route path="product/:id" element = {<SingleProduct />} />
               <Route path="blogs" element = {<Blog />} />
               <Route path="blog/:id" element = {<SingleBlog />} />
@@ -55,7 +56,6 @@ function App() {
               <Route path="refund-policy" element = {<RefundPolicy />} />
               <Route path="shipping-policy" element = {<ShippingPolicy />} />
               <Route path="terms-and-conditions" element = {<TermsAndConditions />} />
-
           </Route>
         </Routes>
       </BrowserRouter>
