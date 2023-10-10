@@ -128,6 +128,7 @@ a{
     background-color: #bdbbbb; /* Background color on hover */
   }
 
+  
 .header-bottom .menu-links a,
 .header-bottom .dropdown2 button
 {
@@ -153,6 +154,11 @@ a{
 .header-bottom .dropdown-item2 {
   padding: 20px;
   border-radius: 10px;
+}
+
+.header-bottom .dropdown-item2-category {
+  width: 100%;
+  display: block;
 }
 
 /** User Menu **/

@@ -5,12 +5,14 @@ import { BiCategoryAlt} from 'react-icons/bi'
 import { useSelector } from 'react-redux'
 import { Typeahead } from 'react-bootstrap-typeahead'; 
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+import { useCategory } from '../context'
 
 
 
 const Header = () => {
 
   const navigate = useNavigate();
+  const { setSelectedCategory } = useCategory();
 
   // States
   const userCartState = useSelector(state => state.auth.cart);
@@ -224,18 +226,19 @@ const Header = () => {
                     </button>
                     {isCustomDropdownVisible && (
                       <ul className="dropdown-menu2" aria-labelledby="dropdownMenuButton1">
-                      {categories.map((category, index) => (
-                          <li className="dropdown-item2 " key={index}>
-                              <Link 
-                                to={`/product/${category}`} 
-                                className='text-dark'
-                                onClick={() => setIsCustomDropdownVisible(!isCustomDropdownVisible)}
+                        {categories.map((category, index) => (
+                              <NavLink 
+                                  to={`/product`} 
+                                  className='text-dark dropdown-item2'
+                                  onClick={() => {setIsCustomDropdownVisible(!isCustomDropdownVisible); setSelectedCategory(category) } }
+                                  key={index}
                               >
-                                {category}
-                              </Link>
-                          </li>
-                      ))}
-                  </ul>
+                                  <li className="dropdown-item2-category">
+                                      {category}
+                                  </li>
+                              </NavLink>
+                          ))}
+                      </ul>
                     )}
                   </div>
                 </div>

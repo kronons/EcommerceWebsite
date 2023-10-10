@@ -29,15 +29,6 @@ const columns = [
     dataIndex: "status",
   },
 ];
-const data1 = [];
-for (let i = 0; i < 46; i++) {
-  data1.push({
-    key: i,
-    name: `Edward King ${i}`,
-    product: 32,
-    status: `London, Park Lane no. ${i}`,
-  });
-}
 
 const Dashboard = () => {
 
@@ -47,23 +38,27 @@ const Dashboard = () => {
   const yearlyDataState = useSelector(state => state?.auth?.yearlyData);
   const orderState = useSelector(state => state?.auth?.orders);
 
+  console.log("Month State: " + monthlyDataState);
+  console.log("Year State: " + yearlyDataState);
+  console.log("Order State: " + orderState);
+
   const [ totalIncome, setTotalIncome ] = useState([]);
   const [ totalSales, setTotalSales ] = useState([]);
   const [ orderData, setOrderData ] = useState([]);
 
   useEffect(() => {
-    dispatch(getAMonthlyStats());
-    dispatch(getAYearlyStats());
-    dispatch(getOrders())
-  },[dispatch])
+
+  dispatch(getAMonthlyStats());
+  dispatch(getAYearlyStats());
+  dispatch(getOrders());
+
+  }, [dispatch]);
 
   useEffect(() => {
-    let monthNames = [
-        "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
-    ];
 
-    if (monthlyDataState !== undefined) {
+    if (monthlyDataState !==  null) {
 
+        let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         let holdIncome = [];
         let holdSales = [];
 
@@ -83,17 +78,22 @@ const Dashboard = () => {
         setTotalSales(holdSales);
     }
 
-    let holdOrder = [];
-    for (let index = 0; index < orderState.length; index++) {
-      holdOrder.push({
-        orderId: orderState[index]._id,
-        name: orderState[index].user.firstname + " " + orderState[index].user.lastname,
-        product: orderState[index].orderItems?.length,
-        price: orderState[index]?.totalPrice,
-        dprice: orderState[index]?.totalPriceAfterDiscount,
-        status: orderState[index]?.orderStatus,
-      });
-      setOrderData(holdOrder);
+    
+
+    if(orderState !== null){
+      let holdOrder = [];
+      for (let index = 0; index < orderState.length; index++) {
+        holdOrder.push({
+          key: index, // Add a unique key prop here
+          orderId: orderState[index]._id,
+          name: orderState[index].user.firstname + " " + orderState[index].user.lastname,
+          product: orderState[index].orderItems?.length,
+          price: orderState[index]?.totalPrice,
+          dprice: orderState[index]?.totalPriceAfterDiscount,
+          status: orderState[index]?.orderStatus,
+        });
+        setOrderData(holdOrder);
+      }
     }
 
 }, [monthlyDataState, orderState]);

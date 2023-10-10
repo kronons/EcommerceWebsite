@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import Breadcrumb from '../components/Breadcrumb'
 import Meta from '../components/Meta'
-import ReactStars from 'react-rating-stars-component'
+//import ReactStars from 'react-rating-stars-component'
 import ProductCard from '../components/ProductCard';
-import Color from '../components/Color';
+//import Color from '../components/Color';
 import Container from '../components/Container';
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllProducts } from '../features/products/productSlice';
-import { useParams } from 'react-router-dom';
+import { useCategory } from '../context';
 
 
 const OurStore = () => {
 
     const dispatch = useDispatch();
+    const { selectedCategory } = useCategory();
 
     const productState = useSelector((state) => state.product.products);
 
@@ -20,9 +21,7 @@ const OurStore = () => {
     const [ brands, setBrands] = useState([]);
     const [ categories, setCategories] = useState([]);
     const [ tags, setTags] = useState([]);
-    const [ color, setColor] = useState([]);
-
-    const { categoryHome } = useParams();
+    //const [ color, setColor] = useState([]);
     
     // Filter States
     const [ tag, setTag] = useState(null);
@@ -37,30 +36,34 @@ const OurStore = () => {
         let newBrands = [];
         let newCategories = [];
         let newTags = [];
-        let newColors = [];
+        //let newColors = [];
         for (let index = 0; index < productState.length; index++) {
             const element = productState[index];
             newBrands.push(element.brand);
             newCategories.push(element.category);
             newTags.push(element.tags)
-            newColors.push(element.color)
+            //newColors.push(element.color)
         };
     
         setBrands(newBrands);
         setCategories(newCategories);
         setTags(newTags);
-        setColor(newColors);
+        //setColor(newColors);
     }, [productState]); 
-    
-    
-    useEffect(() => {
-        setCategory(categoryHome);
-        getProducts();
-    }, [sort,tag,brand,category,minPrice,maxPrice]);
 
-    const getProducts = () => {
-        dispatch(getAllProducts({sort,tag,brand,category,minPrice,maxPrice}));
-    };
+    useEffect(() => {
+        const getProducts = () => {
+            dispatch(getAllProducts({ sort, tag, brand, category, minPrice, maxPrice }));
+        };
+
+        if(category === null && selectedCategory !== null) {
+            setCategory(selectedCategory);
+        }
+
+        getProducts();
+    }, [sort, tag, brand, category, minPrice, maxPrice, dispatch,selectedCategory]);
+
+
 
 
   return (

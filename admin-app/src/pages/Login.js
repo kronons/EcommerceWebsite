@@ -17,8 +17,6 @@ let schema = Yup.object({
 });
 
 
-//TODO: Fix login issue with error not displaying when login is incorrect.
-
 const Login = () => {
 
   const dispatch = useDispatch();

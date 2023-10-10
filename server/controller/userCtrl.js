@@ -578,6 +578,8 @@ const blockUser = asyncHandler(async ( req, res ) => {
 
   const getAllOrders = asyncHandler(async ( req, res ) => {
 
+    console.log("All Orders.")
+
     try {
       const allUserOrders = await Order.find().populate("user")
       
@@ -587,7 +589,8 @@ const blockUser = asyncHandler(async ( req, res ) => {
       res.json(allUserOrders);
     }
     catch (error) {
-      throw new Error(error);
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
   });
 
@@ -611,9 +614,6 @@ const blockUser = asyncHandler(async ( req, res ) => {
     const { id } = req.params;
     validateMongoDbId(id);
 
-    console.log(status)
-    console.log(id)
-
     try {
       const updateOrderStatus = await Order.findByIdAndUpdate(
         id, 
@@ -636,7 +636,7 @@ const blockUser = asyncHandler(async ( req, res ) => {
 
   const getMyOrders = asyncHandler(async( req, res ) => {
     const { _id } = req.user;
-    
+
     try {
       const orders = await Order.find({ user: _id}).populate("user").populate("orderItems.product").populate("orderItems.color");
       res.json({
@@ -650,15 +650,17 @@ const blockUser = asyncHandler(async ( req, res ) => {
 
 
   const getMonthlyStatistics = asyncHandler(async( req, res) => {
-    let monthNames = ["January", "Febuary", "March", "Apirl", "May", "June", "July", "August", "September", "October", "November", "December" ]
+    let monthNames = ["January", "February", "March", "Apirl", "May", "June", "July", "August", "September", "October", "November", "December" ]
     let date = new Date();
-    let endDate = "";
+    let endDate = new Date(date.getFullYear(), date.getMonth() - 1, 1, 23, 59, 59);
+
     date.setDate(1);
-    for (let index = 0; index < monthNames.length; index++) {
-      date.setMonth(date.getMonth() - 1)      
-      endDate = monthNames[date.getMonth()] + " " + date.getFullYear()
+    for (let index = 0; index <= 11; index++) {
+      endDate = monthNames[date.getMonth()] + " " + date.getFullYear();
+      date.setMonth(date.getMonth() - 1);
     }
 
+    console.log("Month");
 
     const data = await Order.aggregate([
       {
@@ -692,16 +694,18 @@ const blockUser = asyncHandler(async ( req, res ) => {
 
 
   const getYearlyStatistics = asyncHandler(async( req, res) => {
-    let monthNames = ["January", "Febuary", "March", "Apirl", "May", "June", "July", "August", "September", "October", "November", "December" ]
+    let monthNames = ["January", "February", "March", "Apirl", "May", "June", "July", "August", "September", "October", "November", "December" ]
     let date = new Date();
-    let endDate = "";
+    let endDate = new Date(date.getFullYear(), date.getMonth() - 1, 1, 23, 59, 59);
 
     date.setDate(1);
     
     for (let index = 0; index <= 11; index++) {
-      date.setMonth(date.getMonth() - 1)      
-      endDate = monthNames[date.getMonth()] + " " + date.getFullYear()
+      endDate = monthNames[date.getMonth()] + " " + date.getFullYear();
+      date.setMonth(date.getMonth() - 1);
     }
+
+    console.log("Year");
 
     const data = await Order.aggregate([
       {

@@ -71,16 +71,45 @@ const Addproduct = () => {
     url: i.url,
   }));
 
-
-  
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      title: productName || "",
+      description: productDescription || "",
+      price: productPrice || null,
+      brand: productBrand || "",
+      category: productCategory || "",
+      tags: productTags || "",
+      color: productColor || "",
+      quantity: productQuantity || null,
+      images: productImages || img,
+    },
+    validationSchema: schema,
+    onSubmit: (values) => {
+      if(getProductId !== undefined) {
+        const data = {id: getProductId, productData: values};
+        dispatch(updateProduct(data))
+        dispatch(resetState());
+        dispatch(resetImageState());
+        navigate('/');
+      } 
+      else {
+        dispatch(createProducts(values));
+        formik.resetForm();
+        setTimeout(() => {
+          dispatch(resetState());
+          dispatch(resetImageState());
+        }, 300);
+      }
+    },
+  });
 
   useEffect(() => {
     dispatch(resetState());
     dispatch(getBrands());
     dispatch(getProductCategories());
     dispatch(getColors());
-    formik.setFieldValue('images', img);
-  }, [dispatch])
+  },[dispatch])
 
   useEffect(() => {
     if(getProductId !== undefined) {
@@ -103,40 +132,6 @@ const Addproduct = () => {
       toast.error('Something went wrong. Product Added Unsuccessfull!');
     }
   }, [isSuccess, isError, isLoading, createdProduct, navigate, updatedProduct]);
-
-
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      title: productName || "",
-      description: productDescription || "",
-      price: productPrice || null,
-      brand: productBrand || "",
-      category: productCategory || "",
-      tags: productTags || "",
-      color: productColor || "",
-      quantity: productQuantity || null,
-      images: productImages || null,
-    },
-    validationSchema: schema,
-    onSubmit: (values) => {
-      if(getProductId !== undefined) {
-        const data = {id: getProductId, productData: values};
-        dispatch(updateProduct(data))
-        dispatch(resetState());
-        dispatch(resetImageState());
-        navigate('/');
-      } 
-      else {
-        dispatch(createProducts(values));
-        formik.resetForm();
-        setTimeout(() => {
-          dispatch(resetState());
-          dispatch(resetImageState());
-        }, 300);
-      }
-    },
-  });
 
   async function handleDrop(acceptedFiles) {
     try {

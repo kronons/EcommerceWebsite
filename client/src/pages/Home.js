@@ -19,7 +19,7 @@ const Home = () => {
 
   const blogState = useSelector((state) => state.blog.blog);
   const productState = useSelector((state) => state.product.products);
-  
+
   useEffect(() => {
       const getBlogs = () => {
           dispatch(getAllBlogs());
@@ -241,6 +241,7 @@ const Home = () => {
           </div>
           {
             productState && productState?.map(( item, index ) => {
+  
               if(item.tags === "Featured") {
                 return (
                   <div

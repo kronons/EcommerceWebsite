@@ -126,7 +126,7 @@ const SingleProduct = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []); // Empty dependency array to run the effect only once on component mount
+  }, [productState?.images]); // Empty dependency array to run the effect only once on component mount
 
 
   const addRatingToProduct = () => {

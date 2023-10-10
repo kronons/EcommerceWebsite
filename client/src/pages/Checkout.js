@@ -51,7 +51,10 @@ const Checkout = () => {
     setItems(updatedItems);
   }, [cartState]);
 
-  const sendOrder = async () => {
+
+
+  useEffect(() => {
+      const sendOrder = async () => {
     if (isFormSubmitted && paymentInfo && shippingInfo) {
 
       try {
@@ -62,13 +65,11 @@ const Checkout = () => {
       }
     }
   };
-
-  useEffect(() => {
     if (paymentInfo) {
       clearTimeout(timer);
       sendOrder();
     }
-  }, [paymentInfo, sendOrder]);
+  }, [paymentInfo, timer, dispatch, isFormSubmitted, items, shippingInfo, subTotal, total]);
 
   const states = [
     'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',

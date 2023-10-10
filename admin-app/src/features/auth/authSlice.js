@@ -7,15 +7,6 @@ const getUserFromLocalStorage = localStorage.getItem('user')
     ? JSON.parse(localStorage.getItem('user')) 
     : null
 
-const initialState = {
-    user: getUserFromLocalStorage,
-    orders: [],
-    isError: false,
-    isLoading: false,
-    isSuccess: false,
-    message: "",
-}
-
 export const login = createAsyncThunk('auth/admin-login', async ( user, thunkAPI ) => {
 
     try{
@@ -26,7 +17,7 @@ export const login = createAsyncThunk('auth/admin-login', async ( user, thunkAPI
     }
 });
 
-export const getOrderByOrderId = createAsyncThunk('user/get-Order-By-Order-Id', async ( id, thunkAPI ) => {
+export const getOrderByOrderId = createAsyncThunk('auth/get-Order-By-Order-Id', async ( id, thunkAPI ) => {
 
     try{
         return await authService.getOrder(id);
@@ -36,7 +27,7 @@ export const getOrderByOrderId = createAsyncThunk('user/get-Order-By-Order-Id', 
     }
 });
 
-export const getOrders = createAsyncThunk('user/get-all-orders', async ( thunkAPI ) => {
+export const getOrders = createAsyncThunk('auth/get-all-orders', async ( thunkAPI ) => {
 
     try{
         return await authService.getOrders();
@@ -46,7 +37,7 @@ export const getOrders = createAsyncThunk('user/get-all-orders', async ( thunkAP
     }
 });
 
-export const updateAOrder = createAsyncThunk('user/update-orders', async ( {id, status}, thunkAPI ) => {
+export const updateAOrder = createAsyncThunk('auth/update-orders', async ( {id, status}, thunkAPI ) => {
 
     try{
         return await authService.updateOrder(id, status);
@@ -56,7 +47,7 @@ export const updateAOrder = createAsyncThunk('user/update-orders', async ( {id, 
     }
 });
 
-export const getAMonthlyStats = createAsyncThunk('user/get-monthly-stats', async ( thunkAPI ) => {
+export const getAMonthlyStats = createAsyncThunk('auth/get-monthly-stats', async ( thunkAPI ) => {
 
     try{
         return await authService.getMonthlyStats();
@@ -66,7 +57,7 @@ export const getAMonthlyStats = createAsyncThunk('user/get-monthly-stats', async
     }
 });
 
-export const getAYearlyStats = createAsyncThunk('user/get-yearly-stats', async ( thunkAPI ) => {
+export const getAYearlyStats = createAsyncThunk('auth/get-yearly-stats', async ( thunkAPI ) => {
 
     try{
         return await authService.getYearlyStats();
@@ -78,6 +69,18 @@ export const getAYearlyStats = createAsyncThunk('user/get-yearly-stats', async (
 
 export const resetState = createAction("Reset_All");
 
+
+const initialState = {
+    user: getUserFromLocalStorage,
+    monthlyData: null,
+    yearlyData: null,
+    orders: null,
+    isError: false,
+    isLoading: false,
+    isSuccess: false,
+    message: "",
+}
+
 export const authSlice = createSlice({
     name: "auth",
     initialState: initialState,
@@ -88,19 +91,14 @@ export const authSlice = createSlice({
         })
         .addCase(login.fulfilled, ( state, action ) => {
             state.isLoading = false;
+            state.isError = false; 
             state.isSuccess = true;
             state.user = action.payload;
-            if(state.isSuccess) {
-                setTimeout(() => {
-                    window.location.reload();
-                  }, 1); // 2000 milliseconds = 2 seconds
-            }
         })
         .addCase(login.rejected, (state, action) => {
             state.isLoading = false;
             state.isError = true;
             state.isSuccess = false;
-            state.user = null;
             state.message = action.payload ? action.payload.message : "Unknown error occurred";
             toast.error("Unable To Login. Try Again."); 
         })
@@ -118,7 +116,7 @@ export const authSlice = createSlice({
             state.isLoading = false;
             state.isError = true;
             state.isSuccess = false;
-            state.message = action.payload.message;
+            state.message = action.payload;
         })
         .addCase(updateAOrder.pending, ( state ) => {
             state.isLoading = true;
@@ -127,7 +125,7 @@ export const authSlice = createSlice({
             state.isError = true;
             state.isLoading = false;
             state.isSuccess = true;
-            state.updateOrders = action.payload;
+            state.orders = action.payload;
             state.message = "success";
         })
         .addCase(updateAOrder.rejected, ( state, action ) => {
@@ -143,7 +141,7 @@ export const authSlice = createSlice({
             state.isError = true;
             state.isLoading = false;
             state.isSuccess = true;
-            state.orderbyorderid = action.payload;
+            state.orders = action.payload;
             state.message = "success";
         })
         .addCase(getOrderByOrderId.rejected, ( state, action ) => {

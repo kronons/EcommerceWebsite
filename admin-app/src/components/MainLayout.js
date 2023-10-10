@@ -3,7 +3,6 @@ import { Outlet } from "react-router-dom";
 import { Layout, Menu, Button, theme } from "antd";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Icons
@@ -35,6 +34,7 @@ const MainLayout = () => {
   }
 
   return (
+    
     // Commented out code is to disable right click on website
     <Layout /* onContextMenu={(e) => e.preventDefault()} */>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -227,17 +227,6 @@ const MainLayout = () => {
             background: colorBgContainer,
           }}
         >
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={true}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              theme="light"
-            />
           <Outlet />
         </Content>
       </Layout>
