@@ -22,3 +22,15 @@ Development currently in progress:
 Future Development Functionality:
 
 - Add Session Cart Functionality
+
+Demo:
+
+Store: 
+
+https://kmx-ecommerce-client-a3c786ac6983.herokuapp.com/
+
+Admin/Management
+
+https://kmx-ecommerce-admin-7b5dbeddb2b7.herokuapp.com/admin
+
+
