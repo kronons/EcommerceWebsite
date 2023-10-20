@@ -1,5 +1,7 @@
 # EcommerceWebsite
 
+Sta
+
 Technology Used:
 
 - HTML5
@@ -17,7 +19,9 @@ Development Completed:
 
 Development currently in progress:
 
-- Connecting front end and backend.
+- Making full site responsive.
+- Rewrite Readme.
+- Comment all code.
 
 Future Development Functionality:
 
