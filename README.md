@@ -39,5 +39,7 @@ https://kmx-ecommerce-admin-7b5dbeddb2b7.herokuapp.com/admin
 
 
 Test Login
-User: kongmengxiong479@gmail.com 
+
+User: kongmengxiong479@gmail.com
+ 
 Password: test123
